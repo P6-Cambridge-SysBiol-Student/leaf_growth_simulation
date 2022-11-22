@@ -1,0 +1,24 @@
+//
+// Created by finley on 18/11/22.
+//
+
+static void draw_delaunay()  // adapted from code by Jean Bégaint
+{
+    /* Draw points. */
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBegin(GL_POINTS);
+    for (auto const& p : context::obj) {
+        glVertex2i(p.x, p.y);
+    }
+    glEnd();
+
+    const auto triangulation = triangulate(context::obj);
+
+    /* Draw lines. */
+    glBegin(GL_LINES);
+    for (auto const& e : triangulation.edges) {
+        glVertex2i(e.p0.x, e.p0.y);
+        glVertex2i(e.p1.x, e.p1.y);
+    }
+    glEnd();
+}

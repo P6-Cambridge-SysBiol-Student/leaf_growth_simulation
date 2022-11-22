@@ -1,0 +1,3 @@
+/home/finley/SLCU/frapc_with_triangles/cmake-build-debug/CMakeFiles/frap.dir
+/home/finley/SLCU/frapc_with_triangles/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/finley/SLCU/frapc_with_triangles/cmake-build-debug/CMakeFiles/rebuild_cache.dir
