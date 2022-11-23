@@ -27,7 +27,7 @@
 // hard-coded limit to the number of particles
 const size_t MAX = 16384;
 
-Object obj[MAX];
+pointClass pointsArray[MAX];
 
 // window size in pixels
 int winW = 800;
@@ -55,8 +55,10 @@ void polish()
 static void animate()
 {
     realTime += delta;
-    for ( int i = 0; i < nbo; ++i )
-        obj[i].step();
+    for ( int i = 0; i < nbo; ++i ) {
+        pointsArray[i].step();
+        pointsArray[i].attract();
+    }
 }
 
 void drawSquare(float w, float h)
@@ -83,7 +85,7 @@ static void draw()
     glPointSize(20);
     glBegin(GL_POINTS);
     for ( size_t i = 0; i < nbo; ++i )
-        obj[i].display();
+        pointsArray[i].display();
     glEnd();
     
     //printf("draw @ %f\n", realTime);
@@ -103,7 +105,7 @@ static void draw_triangles()
     for(i = 0; i < nbo; i += 3) {
         glBegin(GL_TRIANGLES);
         for (size_t j = 0; j <= 2; ++j)  // especially when it didn't need me to initialise j
-            obj[(i+j)].display();
+            pointsArray[(i+j)].display();
         glEnd();
     }
     printf("draw @ %f\n", realTime);
@@ -181,13 +183,6 @@ static void init(GLFWwindow* win)
     glDisable(GL_DEPTH_TEST);
 }
 
-using namespace delaunay;
-
-namespace context {
-    std::vector<Point<float>> points;
-} /* namespace context */
-
-
 
 /* program entry */
 int main(int argc, char *argv[])
@@ -226,7 +221,7 @@ int main(int argc, char *argv[])
         {
             next += 0.05; // will give 20 frames/second
             animate();
-            draw_triangles();
+            draw();
             glfwSwapBuffers(win);
         }
         glfwPollEvents();

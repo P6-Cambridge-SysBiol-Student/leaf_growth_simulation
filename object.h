@@ -2,14 +2,18 @@
  Basic diffusion and FRAP simulation
  Francois Nedelec, Copyright Cambridge University 2021
  */
+#include <math.h>
+
+float timegap = 0.16;
 
 ///Object class
-class Object
+class pointClass
 {
 public:  // these are attributes i think can be called outside of the script
     /// member variables:
     int color;
     float x, y; ///< position
+    float xvelocity, yvelocity;
     
     /// initialize in a random position
     void reset()
@@ -17,50 +21,59 @@ public:  // these are attributes i think can be called outside of the script
         color = 1;
         x = xBound * srand();
         y = yBound * srand();
+        xvelocity = 0.2 * srand();
+        yvelocity = 0.2 * srand();
+
     }
     
     /// call initialize
-    Object()
+    pointClass()
     {
         reset();
     }
-    
-    /// true if particle is within distance R of (xc, yc)
-    bool within(float R, float xc=0, float yc=0)
-    {
-        return ( (x-xc)*(x-xc) + (y-yc)*(y-yc) < R*R );
-    }
-    
-    /// particles bounce off walls
+
+/*    /// particles bounce off walls
     void bounce()
     {
-        if ( x >  xBound )  x =  2*xBound - x;
-        if ( x < -xBound )  x = -2*xBound - x;
-        if ( y >  yBound )  y =  2*yBound - y;
-        if ( y < -yBound )  y = -2*yBound - y;
+        if ( x >  xBound )  x =  2*xBound - x, xvelocity = -xvelocity;
+        if ( x < -xBound )  x = -2*xBound - x, xvelocity = -xvelocity;
+        if ( y >  yBound )  y =  2*yBound - y, yvelocity = -yvelocity;
+        if ( y < -yBound )  y = -2*yBound - y, yvelocity = -yvelocity;
     }
-    
-    /// make a step in a random direction
+*/
+    /// make a step in a specified
     void step()
     {
+        int num = 2;
+        float hooks = 2;
+        float xAcceleration = 0.5 * hooks * x;  /// modelling attraction to centre as a spring
+        float yAcceleration = 0.5 * hooks * y;
+
 #if ( 1 )
         //use 2 uniform random numbers
-        x += alpha * srand();
-        y += alpha * srand();
-#else
-        //use 2 Gaussian random numbers in polar coordinates:
-        float angle = 2 * PI * prand();
-        float norm = alpha * sqrt( -log( prand() ));
-        x += norm * cos(angle);
-        y += norm * sin(angle);
+        x += xvelocity*timegap - xAcceleration*pow(timegap, 2);
+        y += yvelocity*timegap - yAcceleration*pow(timegap, 2);
 #endif
-        bounce();
+        num = 3;
     }
-    
+
+
+    /// particles are constantly attracted to the centre
+    void attract()
+    {
+        float XdispFromCentre = x - 0;  /// these are redundant but I'm keeping for clarity / for working with pow()
+        float YdispFromCentre = y - 0;
+        float hooksConstant = 0.01;
+
+        xvelocity = xvelocity - 1/hooksConstant*XdispFromCentre;  /// accelerate the velocities towards the centre
+        yvelocity = yvelocity - 1/YdispFromCentre*YdispFromCentre;
+    }
+
+
     /// partial display: this needs to be called between glBegin() and glEnd()
     void display()
     {
-        //we use transparency to visualize overlapping particules
+        //we use transparency to visualize overlapping particles
         if ( color == 1 )
             glColor4f(1.0, 1.0, 0.0, 0.5);
         else
