@@ -32,7 +32,7 @@ public:  // these are attributes i think can be called outside of the script
         reset();
     }
 
-/*    /// particles bounce off walls
+   /// particles bounce off walls
     void bounce()
     {
         if ( x >  xBound )  x =  2*xBound - x, xvelocity = -xvelocity;
@@ -40,7 +40,7 @@ public:  // these are attributes i think can be called outside of the script
         if ( y >  yBound )  y =  2*yBound - y, yvelocity = -yvelocity;
         if ( y < -yBound )  y = -2*yBound - y, yvelocity = -yvelocity;
     }
-*/
+
     /// make a step in a specified
     void step()
     {
