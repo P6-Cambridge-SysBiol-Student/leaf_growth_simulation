@@ -1,38 +1,35 @@
 /*
- Basic diffusion and FRAP simulation
- Francois Nedelec, Copyright Cambridge University 2021
+Working simulation of points orbiting around the centre
  */
-#include <math.h>
-
-float timegap = 0.16;
 
 ///Object class
-class pointClass
+class Object
 {
 public:  // these are attributes i think can be called outside of the script
     /// member variables:
     int color;
-    float x, y; ///< position
-    float xvelocity, yvelocity;
+    float x, y; /// displacement
+    float xvelocity, yvelocity; /// velocity
+    float hooks;
     
     /// initialize in a random position
     void reset()
     {
         color = 1;
         x = xBound * srand();
-        y = yBound * srand();
         xvelocity = 0.2 * srand();
+        y = yBound * srand();
         yvelocity = 0.2 * srand();
-
+        hooks = 0.005;
     }
     
     /// call initialize
-    pointClass()
+    Object()
     {
         reset();
     }
 
-   /// particles bounce off walls
+    /// particles bounce off walls
     void bounce()
     {
         if ( x >  xBound )  x =  2*xBound - x, xvelocity = -xvelocity;
@@ -40,40 +37,34 @@ public:  // these are attributes i think can be called outside of the script
         if ( y >  yBound )  y =  2*yBound - y, yvelocity = -yvelocity;
         if ( y < -yBound )  y = -2*yBound - y, yvelocity = -yvelocity;
     }
-
-    /// make a step in a specified
+    
+    /// make a step in the given direction
     void step()
     {
-        int num = 2;
-        float hooks = 2;
-        float xAcceleration = 0.5 * hooks * x;  /// modelling attraction to centre as a spring
-        float yAcceleration = 0.5 * hooks * y;
-
 #if ( 1 )
         //use 2 uniform random numbers
-        x += xvelocity*timegap - xAcceleration*pow(timegap, 2);
-        y += yvelocity*timegap - yAcceleration*pow(timegap, 2);
+        x += xvelocity;
+        y += yvelocity;
+#else
+        //use 2 Gaussian random numbers in polar coordinates:
+        float angle = 2 * PI * prand();
+        float norm = alpha * sqrt( -log( prand() ));
+        x += norm * cos(angle);
+        y += norm * sin(angle);
 #endif
-        num = 3;
+        bounce();
     }
 
-
-    /// particles are constantly attracted to the centre
-    void attract()
+    void accelerate()
     {
-        float XdispFromCentre = x - 0;  /// these are redundant but I'm keeping for clarity / for working with pow()
-        float YdispFromCentre = y - 0;
-        float hooksConstant = 0.01;
-
-        xvelocity = xvelocity - 1/hooksConstant*XdispFromCentre;  /// accelerate the velocities towards the centre
-        yvelocity = yvelocity - 1/YdispFromCentre*YdispFromCentre;
+        xvelocity = xvelocity -x*hooks;
+        yvelocity = yvelocity -y*hooks;
     }
-
-
+    
     /// partial display: this needs to be called between glBegin() and glEnd()
     void display()
     {
-        //we use transparency to visualize overlapping particles
+        //we use transparency to visualize overlapping particules
         if ( color == 1 )
             glColor4f(1.0, 1.0, 0.0, 0.5);
         else
