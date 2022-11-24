@@ -1,8 +1,11 @@
-# FRAPC
+# LeafSim
 
-Elementary FRAP simulation built in C using GLFW
+Elementary leaf simulation built in C using GLFW
+Based on FRAPc by Francois Nedelec
 
-## Build
+## How to Build
+
+Make sure the terminal is in the leafsim directory
 
 ```
 mkdir build
