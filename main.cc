@@ -1,6 +1,6 @@
 /*
- * Elementary simulation using GLFW + OpenGL for display
- * Francois J Nedelec, Cambridge University, 13 Nov 2021, 11 Oct 2022
+ * Elementary simulation using GLFW + OpenGL for display modified for use in PlantSim by Finley Webb
+ * Original code by Francois J Nedelec, Cambridge University, 13 Nov 2021, 11 Oct 2022
  */
 
 #include <math.h>
@@ -14,54 +14,79 @@
 
 #include <vector>
 
-#include <GL/freeglut_std.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 #include "param.h"
 #include "random.h"
 #include "object.h"
-#include "delaunay.hpp"
+#include "Clarkson-Delaunay.cpp"  /// this is slightly ood, would be better to compile them seperately and link together (don't know how to do that lol)
 
+/// hard-coded limit to the number of particles
+/// size_t = size in bytes,  const means MAX is immutable
 
-// hard-coded limit to the number of particles
 const size_t MAX = 16384;
 
-pointClass pointsArray[MAX];
+/// create an array of these and allocate them the max amount of memory possibly required
+/// this is global, isn't on the local stack which is good
+Point pointsArray[MAX];
+int numTriangleVertices = 0;
 
-// window size in pixels
+
+/// window size in pixels
 int winW = 800;
 int winH = 800;
 
-//-----------------------------------------------------------------------------
+///-----------------------------------------------------------------------------
 
 static void error(int error, const char* text)
 {
     fprintf(stderr, "GLFW Error: %s\n", text);
 }
 
-// calculate derived parameters
+/// ensure nbo is a multiple of 3 for triangle drawing
 void polish()
 {
-    // limit number of particles:
+    // limit number of particles and round up to nearest 3
     if ( nbo >= MAX ) nbo = MAX-1;
-    // calibrate diffusion:
-    alpha = sqrt( 2 * diff * delta );
+    /// if ( nbo % 3 == 1) nbo += 2;
+    /// if ( nbo % 3 == 2) nbo += 1;
+    printf("The number of points used is %d", nbo);
+
     //initialize random number generator
     srandom(seed);
 }
 
-/* evolve System */
+
+/// evolves system, steping points forward and accelerating velocity
 static void animate()
 {
     realTime += delta;
     for ( int i = 0; i < nbo; ++i ) {
         pointsArray[i].step();
-        pointsArray[i].attract();
+        pointsArray[i].accelerate();
     }
 }
 
-void drawSquare(float w, float h)
+/// creates an array of xy co-ords for the delaunay triangulation function, then execute it
+static WORD* create_triangles_list()
+{
+    float xyValuesArray[nbo][2];
+    for ( int i = 0; i < nbo; i++){
+        xyValuesArray[i][0] = pointsArray[i].x;
+        xyValuesArray[i][1] = pointsArray[i].y;
+    }
+
+    numTriangleVertices = 0;
+    WORD* triangleIndexList = NULL;
+    triangleIndexList = BuildTriangleIndexList((void*)xyValuesArray, (float)1.0, nbo, (int)2, (int)0, &numTriangleVertices); /// having issues calling the delaunay tessleation function here
+
+    printf("\nThere are %d points moving around", nbo);
+    printf("\nThe number of vertices defined by numTriangleVertices is %d", numTriangleVertices);
+    printf("\ntriangleIndexList contains the values: ");
+    for (int i = 0; i < numTriangleVertices; i++)
+        printf("%u, ", triangleIndexList[i]);
+    return triangleIndexList;  /// the triangle index list created is to be used by the draw_triangles function
+}
+
+void drawSquare(float w, float h)  /// draws the square in the window that contains the poinst
 {
     glColor3f(0.5, 0.5, 0.5);
     glLineWidth(3);
@@ -74,7 +99,7 @@ void drawSquare(float w, float h)
 }
 
 /* draw System */
-static void draw()
+static void draw()  /// draws the points as single points in the window
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -82,7 +107,7 @@ static void draw()
     drawSquare(xBound, yBound);
     
     // draw particles as points:
-    glPointSize(20);
+    glPointSize(6);
     glBegin(GL_POINTS);
     for ( size_t i = 0; i < nbo; ++i )
         pointsArray[i].display();
@@ -92,7 +117,10 @@ static void draw()
     glFlush();
 }
 
-static void draw_triangles()
+
+/// connects 3 consective points into triangles, if using the indexed list of points created
+/// by the delaunay triangulation it should produce the triangulation
+static void draw_triangles(WORD* IndexListofTriangles)
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -100,12 +128,11 @@ static void draw_triangles()
     drawSquare(xBound, yBound);
 
     // draw particles as Triangles:
-    glPointSize(8);
-    int i;  // not quite sure why it wanted me to initialise i here before using it in the loop
-    for(i = 0; i < nbo; i += 3) {
-        glBegin(GL_TRIANGLES);
-        for (size_t j = 0; j <= 2; ++j)  // especially when it didn't need me to initialise j
-            pointsArray[(i+j)].display();
+    glPointSize(4); /// think this is unnecessary
+    for(int i = 0; i < nbo; i += 3) { /// iterates through 3 points at a time, needed as it loops back to the start
+        glBegin(GL_LINE_LOOP);
+        for (size_t j = 0; j <= 2; ++j)
+            pointsArray[IndexListofTriangles[i+j]].display();
         glEnd();
     }
     printf("draw @ %f\n", realTime);
@@ -113,7 +140,7 @@ static void draw_triangles()
 
     // EDITS BY FIN
 }
-
+/// some more graphics stuff
 /* change view angle, exit upon ESC */
 void key(GLFWwindow* win, int k, int s, int action, int mods)
 {
@@ -185,12 +212,15 @@ static void init(GLFWwindow* win)
 
 
 /* program entry */
+/// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[])
 {
-    for ( int i=1; i<argc; ++i ) {
+    WORD* triangleIndexList;
+    for ( int i=1; i<argc; ++i ) {  /// iterates through arguements
        if ( 0 == readOption(argv[i]) )
            printf("Argument '%s' was ignored\n", argv[i]);
     }
+    printf("I am here \n");
     polish();
     
     if ( !glfwInit() )
@@ -212,17 +242,19 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
     init(win);
-    
+
     double next = 0;
     while( !glfwWindowShouldClose(win) )
     {
         double now = glfwGetTime();
         if ( now > next )
         {
-            next += 0.05; // will give 20 frames/second
+            next += delay/1000;
             animate();
-            draw();
+            triangleIndexList = create_triangles_list();
+            draw_triangles(triangleIndexList);
             glfwSwapBuffers(win);
+            free(triangleIndexList);
         }
         glfwPollEvents();
     }

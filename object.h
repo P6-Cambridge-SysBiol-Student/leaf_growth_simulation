@@ -1,30 +1,31 @@
 /*
-Working simulation of points orbiting around the centre
+Working simulation of points orbiting around the centre of the window as a test for later physics
+This file contains information about Object which contains
  */
 
-///Object class
-class Object
+///Points class, contains info about xy displacement, velocity, and acceleration towards centre
+class Point
 {
-public:  // these are attributes i think can be called outside of the script
+public:  /// these are attributes that can be called outside of the script
     /// member variables:
     int color;
     float x, y; /// displacement
     float xvelocity, yvelocity; /// velocity
-    float hooks;
+    float hooks;  /// hooks constant for attracting points back to the centre
     
-    /// initialize in a random position
+    /// initialize each point in a random position with random x and y velocities
     void reset()
     {
         color = 1;
         x = xBound * srand();
-        xvelocity = 0.2 * srand();
+        xvelocity = 0.05 * srand();
         y = yBound * srand();
-        yvelocity = 0.2 * srand();
-        hooks = 0.005;
+        yvelocity = 0.05 * srand();
+        hooks = 0.0005;
     }
     
     /// call initialize
-    Object()
+    Point()
     {
         reset();
     }
@@ -42,7 +43,7 @@ public:  // these are attributes i think can be called outside of the script
     void step()
     {
 #if ( 1 )
-        //use 2 uniform random numbers
+        /// change displacement by a unit of velocity
         x += xvelocity;
         y += yvelocity;
 #else
@@ -55,7 +56,7 @@ public:  // these are attributes i think can be called outside of the script
         bounce();
     }
 
-    void accelerate()
+    void accelerate() /// change the velocity of each point proportional to the distance from centre and hooks constant
     {
         xvelocity = xvelocity -x*hooks;
         yvelocity = yvelocity -y*hooks;
@@ -64,7 +65,7 @@ public:  // these are attributes i think can be called outside of the script
     /// partial display: this needs to be called between glBegin() and glEnd()
     void display()
     {
-        //we use transparency to visualize overlapping particules
+        /// transparency used to visualize overlapping particules
         if ( color == 1 )
             glColor4f(1.0, 1.0, 0.0, 0.5);
         else

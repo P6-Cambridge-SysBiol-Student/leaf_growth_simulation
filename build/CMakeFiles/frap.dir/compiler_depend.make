@@ -134,9 +134,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   /usr/include/c++/11/bits/hash_bytes.h \
   /usr/include/c++/11/bits/range_access.h \
   /usr/include/c++/11/bits/vector.tcc \
-  /usr/include/GL/freeglut_std.h \
-  /usr/include/GL/gl.h \
-  /usr/include/GL/glu.h \
   ../param.h \
   /usr/include/c++/11/sstream \
   /usr/include/c++/11/istream \
@@ -224,54 +221,12 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   /usr/include/c++/11/bits/sstream.tcc \
   ../random.h \
   ../object.h \
-  ../delaunay.hpp \
-  /usr/include/c++/11/algorithm \
-  /usr/include/c++/11/utility \
-  /usr/include/c++/11/bits/stl_relops.h \
-  /usr/include/c++/11/bits/stl_algo.h \
-  /usr/include/c++/11/bits/algorithmfwd.h \
-  /usr/include/c++/11/bits/stl_heap.h \
-  /usr/include/c++/11/bits/stl_tempbuf.h \
-  /usr/include/c++/11/bits/uniform_int_dist.h \
-  /usr/include/c++/11/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/11/functional \
-  /usr/include/c++/11/tuple \
-  /usr/include/c++/11/array \
-  /usr/include/c++/11/bits/uses_allocator.h \
-  /usr/include/c++/11/bits/invoke.h \
-  /usr/include/c++/11/bits/refwrap.h \
-  /usr/include/c++/11/bits/std_function.h \
-  /usr/include/c++/11/unordered_map \
-  /usr/include/c++/11/ext/aligned_buffer.h \
-  /usr/include/c++/11/bits/hashtable.h \
-  /usr/include/c++/11/bits/hashtable_policy.h \
-  /usr/include/c++/11/bits/enable_special_members.h \
-  /usr/include/c++/11/bits/node_handle.h \
-  /usr/include/c++/11/bits/unordered_map.h \
-  /usr/include/c++/11/bits/erase_if.h \
-  /usr/include/c++/11/pstl/execution_defs.h \
-  /usr/include/c++/11/iostream
+  ../Clarkson-Delaunay.cpp \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
+  ../Clarkson-Delaunay.h
 
 
-/usr/include/c++/11/bits/erase_if.h:
-
-/usr/include/c++/11/bits/enable_special_members.h:
-
-/usr/include/c++/11/bits/hashtable_policy.h:
-
-/usr/include/c++/11/bits/hashtable.h:
-
-/usr/include/c++/11/bits/refwrap.h:
-
-/usr/include/c++/11/bits/uses_allocator.h:
-
-/usr/include/c++/11/array:
-
-/usr/include/c++/11/bits/stl_heap.h:
-
-/usr/include/c++/11/bits/algorithmfwd.h:
-
-/usr/include/c++/11/bits/stl_relops.h:
+/usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
 
 ../random.h:
 
@@ -303,8 +258,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/errno.h:
 
-/usr/include/c++/11/utility:
-
 /usr/include/errno.h:
 
 /usr/include/c++/11/cerrno:
@@ -325,17 +278,11 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
-/usr/include/c++/11/bits/invoke.h:
-
-../delaunay.hpp:
-
 /usr/include/x86_64-linux-gnu/bits/timex.h:
 
 /usr/include/time.h:
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
-
-/usr/include/c++/11/bits/unordered_map.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
 
@@ -349,8 +296,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/ctype.h:
 
-/usr/include/c++/11/unordered_map:
-
 /usr/include/c++/11/cctype:
 
 /usr/include/x86_64-linux-gnu/bits/locale.h:
@@ -362,8 +307,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++locale.h:
 
 /usr/include/c++/11/cstdint:
-
-/usr/include/c++/11/functional:
 
 /usr/include/asm-generic/errno-base.h:
 
@@ -380,8 +323,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/c++/11/exception:
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
-
-/usr/include/c++/11/bits/uniform_int_dist.h:
 
 /usr/include/c++/11/bits/cxxabi_init_exception.h:
 
@@ -425,21 +366,13 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
-/usr/include/c++/11/iostream:
-
-/usr/include/c++/11/algorithm:
-
 /usr/include/c++/11/backward/binders.h:
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
 
-/usr/include/c++/11/ext/aligned_buffer.h:
-
 /usr/include/endian.h:
-
-/usr/include/c++/11/pstl/glue_algorithm_defs.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/time_t.h:
 
@@ -450,8 +383,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
 /usr/include/c++/11/ios:
-
-/usr/include/GL/glu.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:
 
@@ -491,8 +422,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/stdlib.h:
 
-/usr/include/c++/11/pstl/execution_defs.h:
-
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
@@ -517,8 +446,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
-/usr/include/c++/11/bits/std_function.h:
-
 /usr/include/x86_64-linux-gnu/sys/single_threaded.h:
 
 /usr/include/c++/11/bits/allocator.h:
@@ -539,8 +466,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
 
-/usr/include/c++/11/bits/stl_tempbuf.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
 /usr/include/x86_64-linux-gnu/bits/time64.h:
@@ -558,6 +483,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/c++/11/debug/debug.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
+
+../Clarkson-Delaunay.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
@@ -587,8 +514,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
 
-/usr/include/GL/gl.h:
-
 /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h:
 
 /usr/include/c++/11/ext/type_traits.h:
@@ -606,8 +531,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/math.h:
 
 /usr/include/x86_64-linux-gnu/bits/typesizes.h:
-
-/usr/include/c++/11/bits/stl_algo.h:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
@@ -631,8 +554,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
 
-/usr/include/GL/freeglut_std.h:
-
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
 /usr/include/c++/11/ext/new_allocator.h:
@@ -654,8 +575,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
 
 /usr/include/c++/11/bits/move.h:
-
-/usr/include/c++/11/tuple:
 
 /usr/include/c++/11/type_traits:
 
@@ -690,8 +609,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/c++/11/string:
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
-
-/usr/include/c++/11/bits/node_handle.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
 
@@ -738,6 +655,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/c++/11/cmath:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++allocator.h:
+
+../Clarkson-Delaunay.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
 
