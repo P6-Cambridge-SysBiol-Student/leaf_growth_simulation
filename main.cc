@@ -253,8 +253,8 @@ int main(int argc, char *argv[])
             animate();
             triangleIndexList = create_triangles_list();
             draw_triangles(triangleIndexList);
-            glfwSwapBuffers(win);
             free(triangleIndexList);
+            glfwSwapBuffers(win);
         }
         glfwPollEvents();
     }

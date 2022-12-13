@@ -18,7 +18,7 @@ double delta = 0.001;   /// time-step
 double range = 1;       /// radius of bleached zone
 
 int delay = 16;         /// milli-seconds between successive display
-unsigned long seed = 1; /// seed for random number generator
+unsigned long seed = 2; /// seed for random number generator
 
 double realTime = 0;     /// time in the simulated world
 
