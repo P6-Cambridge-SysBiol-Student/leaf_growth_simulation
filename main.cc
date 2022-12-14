@@ -23,6 +23,7 @@
 /// size_t = size in bytes,  const means MAX is immutable
 
 const size_t MAX = 16384;
+const bool debugStatus = 1;
 
 /// create an array of these and allocate them the max amount of memory possibly required
 /// this is global, isn't on the local stack which is good
@@ -76,11 +77,14 @@ static WORD* create_triangles_list()
 
     numTriangleVertices = 0;
     WORD* triangleIndexList = NULL;
-    triangleIndexList = BuildTriangleIndexList((void*)xyValuesArray, (float)1.0, nbo, (int)2, (int)0, &numTriangleVertices); /// having issues calling the delaunay tessleation function here
+    triangleIndexList = BuildTriangleIndexList((void*)xyValuesArray, (float)1.0, nbo, (int)2, (int)1, &numTriangleVertices); /// having issues calling the delaunay tessleation function here
 
+#if DEBUG
     printf("\nThere are %d points moving around", nbo);
     printf("\nThe number of vertices defined by numTriangleVertices is %d", numTriangleVertices);
     printf("\ntriangleIndexList contains the values: ");
+#endif ///DEBUG
+
     for (int i = 0; i < numTriangleVertices; i++)
         printf("%u, ", triangleIndexList[i]);
     return triangleIndexList;  /// the triangle index list created is to be used by the draw_triangles function
@@ -128,11 +132,20 @@ static void draw_triangles(WORD* IndexListofTriangles)
     drawSquare(xBound, yBound);
 
     // draw particles as Triangles:
-    glPointSize(4); /// think this is unnecessary
-    for(int i = 0; i < nbo; i += 3) { /// iterates through 3 points at a time, needed as it loops back to the start
+    glPointSize(1); /// think this is unnecessary
+    for(int i = 0; i < numTriangleVertices; i += 3) { /// iterates through 3 points at a time, needed as it loops back to the start of each polygon
         glBegin(GL_LINE_LOOP);
-        for (size_t j = 0; j <= 2; ++j)
-            pointsArray[IndexListofTriangles[i+j]].display();
+        for (int j = 0; j <= 2; ++j) {
+
+#if DEBUG
+                printf("I is %d, J is %d \n", i, j);
+                printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
+                printf("The x value of the point is %f\n", pointsArray[i + j].x);
+                printf("The y value of the point is %f\n", pointsArray[i + j].y);
+#endif ///DEBUG
+
+            pointsArray[IndexListofTriangles[i + j]].display();
+        }
         glEnd();
     }
     printf("draw @ %f\n", realTime);
@@ -243,16 +256,20 @@ int main(int argc, char *argv[])
     }
     init(win);
 
+
     double next = 0;
     while( !glfwWindowShouldClose(win) )
     {
+        static int interationNumber = 1;
         double now = glfwGetTime();
-        if ( now > next )
+        if ( now > next)
         {
+            interationNumber++;
             next += delay/1000;
             animate();
             triangleIndexList = create_triangles_list();
             draw_triangles(triangleIndexList);
+            printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
             glfwSwapBuffers(win);
         }

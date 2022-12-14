@@ -11,14 +11,14 @@ double xBound = 5;   /// half-width of box (X)
 double yBound = 5;   /// half-height of box (Y)
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 4;    /// number of particles, currently is rounded up to nearest multiple of 3
+int nbo = 8;    /// number of particles
 
 double diff  = 1;       /// diffusion constant
 double delta = 0.001;   /// time-step
 double range = 1;       /// radius of bleached zone
 
 int delay = 16;         /// milli-seconds between successive display
-unsigned long seed = 2; /// seed for random number generator
+unsigned long seed = 1; /// seed for random number generator
 
 double realTime = 0;     /// time in the simulated world
 

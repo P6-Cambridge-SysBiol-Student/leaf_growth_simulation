@@ -1099,6 +1099,9 @@ static void triangleList_out (int v0, int v1, int v2, int v3) {
 
       // In all the testing I did so far, currenOutputIndex has never exceeeded maxOutputEntries
       // So I removed the test to see if currenOutputIndex is within the appropriate range
+      if((currenOutputIndex == 0) || (currenOutputIndex > maxOutputEntries)){
+          printf("Error, currenOutputIndex is Out of Bounds!");
+      }
    }
 }
 
