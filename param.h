@@ -11,7 +11,7 @@ double xBound = 5;   /// half-width of box (X)
 double yBound = 5;   /// half-height of box (Y)
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 8;    /// number of particles
+int nbo = 100;    /// number of particles
 
 double diff  = 1;       /// diffusion constant
 double delta = 0.001;   /// time-step

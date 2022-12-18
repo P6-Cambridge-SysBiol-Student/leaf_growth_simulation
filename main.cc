@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#define DEBUG TRUE
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -132,22 +132,29 @@ static void draw_triangles(WORD* IndexListofTriangles)
     drawSquare(xBound, yBound);
 
     // draw particles as Triangles:
-    glPointSize(1); /// think this is unnecessary
     for(int i = 0; i < numTriangleVertices; i += 3) { /// iterates through 3 points at a time, needed as it loops back to the start of each polygon
         glBegin(GL_LINE_LOOP);
         for (int j = 0; j <= 2; ++j) {
-
 #if DEBUG
                 printf("I is %d, J is %d \n", i, j);
                 printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
                 printf("The x value of the point is %f\n", pointsArray[i + j].x);
                 printf("The y value of the point is %f\n", pointsArray[i + j].y);
 #endif ///DEBUG
-
             pointsArray[IndexListofTriangles[i + j]].display();
         }
         glEnd();
     }
+
+#if DEBUG
+    glPointSize(6);
+    glBegin(GL_POINTS);
+    for ( size_t i = 0; i < nbo; ++i )
+        pointsArray[i].display();
+    glEnd();
+    }
+#endif ///DEBUG
+
     printf("draw @ %f\n", realTime);
     glFlush();  // i need to set this to not work if both draw_points and draw_triangles is true
 
