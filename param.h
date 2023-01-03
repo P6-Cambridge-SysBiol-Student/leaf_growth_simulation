@@ -6,16 +6,15 @@
 #include <cmath>
 #include <sstream>
 
-// physical parameters:
-double xBound = 5;   /// half-width of box (X)
-double yBound = 5;   /// half-height of box (Y)
+// physical parameters:  ensure to add any new parameters to the readOption() function
+double xBound = 200;   /// half-width of box (X). If this value is lower than 100 the deulaunay triangulation misses points
+double yBound = 200;   /// half-height of box (Y). Same as above, keep the value above 100
 double pixel = 1;    /// size of one pixel in GL units
 
 int nbo = 100;    /// number of particles
 
-double diff  = 1;       /// diffusion constant
 double delta = 0.001;   /// time-step
-double range = 1;       /// radius of bleached zone
+double repulsionRange = 10;  /// radius of repulsion around a point
 
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 1; /// seed for random number generator
@@ -40,9 +39,8 @@ int readParameter(const char arg[], const char name[], T & ptr)
 
 int readOption(const char arg[])
 {
-    if ( readParameter(arg, "range=", range) )  return 1;
     if ( readParameter(arg, "n=",     nbo) )    return 1;
-    if ( readParameter(arg, "diff=",  diff) )   return 1;
+    if ( readParameter(arg, "repulsionRange=",  repulsionRange) )   return 1;
     if ( readParameter(arg, "delta=", delta) )  return 1;
     if ( readParameter(arg, "seed=",  seed) )   return 1;
     if ( readParameter(arg, "delay=", delay) )  return 1;

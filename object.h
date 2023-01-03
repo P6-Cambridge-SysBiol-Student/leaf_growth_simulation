@@ -18,10 +18,10 @@ public:  /// these are attributes that can be called outside of the script
     {
         color = 1;
         x = xBound * srand();
-        xvelocity = 0.05 * srand();
+        xvelocity = 1 * srand();
         y = yBound * srand();
-        yvelocity = 0.05 * srand();
-        hooks = 0.0005;
+        yvelocity = 1 * srand();
+        hooks = 0.00005;
     }
     
     /// call initialize
@@ -63,11 +63,21 @@ public:  /// these are attributes that can be called outside of the script
     }
     
     /// partial display: this needs to be called between glBegin() and glEnd()
-    void display()
+    void displayYellow()
     {
-        /// transparency used to visualize overlapping particules
+        /// transparency used to visualize overlapping particles
         if ( color == 1 )
             glColor4f(1.0, 1.0, 0.0, 0.5);
+        else
+            glColor4f(0.3, 0.3, 0.3, 0.5);
+        glVertex2f(x, y);
+    }
+
+    void displayWhite()
+    {
+        /// transparency used to visualize overlapping particles
+        if ( color == 1 )
+            glColor4f(1.0, 1.0, 1.0, 0.5);
         else
             glColor4f(0.3, 0.3, 0.3, 0.5);
         glVertex2f(x, y);

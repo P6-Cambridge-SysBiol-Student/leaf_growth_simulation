@@ -45,10 +45,8 @@ static void error(int error, const char* text)
 /// ensure nbo is a multiple of 3 for triangle drawing
 void polish()
 {
-    // limit number of particles and round up to nearest 3
+    // limit number of particles
     if ( nbo >= MAX ) nbo = MAX-1;
-    /// if ( nbo % 3 == 1) nbo += 2;
-    /// if ( nbo % 3 == 2) nbo += 1;
     printf("The number of points used is %d", nbo);
 
     //initialize random number generator
@@ -114,7 +112,7 @@ static void draw()  /// draws the points as single points in the window
     glPointSize(6);
     glBegin(GL_POINTS);
     for ( size_t i = 0; i < nbo; ++i )
-        pointsArray[i].display();
+        pointsArray[i].displayYellow();
     glEnd();
     
     //printf("draw @ %f\n", realTime);
@@ -135,17 +133,22 @@ static void draw_triangles(WORD* IndexListofTriangles)
     for(int i = 0; i < numTriangleVertices; i += 3) { /// iterates through 3 points at a time, needed as it loops back to the start of each polygon
         glBegin(GL_LINE_LOOP);
         for (int j = 0; j <= 2; ++j) {
+            pointsArray[IndexListofTriangles[i + j]].displayYellow();
 #if DEBUG
-                printf("I is %d, J is %d \n", i, j);
-                printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
-                printf("The x value of the point is %f\n", pointsArray[i + j].x);
-                printf("The y value of the point is %f\n", pointsArray[i + j].y);
+            printf("I is %d, J is %d \n", i, j);
+            printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
+            printf("The x value of the point is %f\n", pointsArray[i + j].x);
+            printf("The y value of the point is %f\n", pointsArray[i + j].y);
 #endif ///DEBUG
-            pointsArray[IndexListofTriangles[i + j]].display();
         }
-        glEnd();
+glEnd();
+        for (int k = 0; k < nbo; k += 1) {
+            glPointSize(10);
+            glBegin(GL_POINTS);
+            pointsArray[k].displayWhite();
+            glEnd();
+        }
     }
-
 #if DEBUG
     glPointSize(6);
     glBegin(GL_POINTS);
@@ -160,6 +163,7 @@ static void draw_triangles(WORD* IndexListofTriangles)
 
     // EDITS BY FIN
 }
+
 /// some more graphics stuff
 /* change view angle, exit upon ESC */
 void key(GLFWwindow* win, int k, int s, int action, int mods)
