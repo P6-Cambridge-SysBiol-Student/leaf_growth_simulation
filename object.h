@@ -11,17 +11,23 @@ public:  /// these are attributes that can be called outside of the script
     int color;
     float x, y; /// displacement
     float xvelocity, yvelocity; /// velocity
+    float xacceleration, yacceleration; /// acceleration
     float hooks;  /// hooks constant for attracting points back to the centre
     
     /// initialize each point in a random position with random x and y velocities
+    /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-        color = 1;
-        x = xBound * srand();
+        x = 0.25*(xBound * srand());
         xvelocity = 1 * srand();
-        y = yBound * srand();
+        xacceleration = 0;
+
+        y = -abs(yBound * srand());
         yvelocity = 1 * srand();
+        yacceleration = 0;
+
         hooks = 0.00005;
+        color = 1;
     }
     
     /// call initialize

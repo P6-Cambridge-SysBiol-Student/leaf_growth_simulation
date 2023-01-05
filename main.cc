@@ -17,7 +17,8 @@
 #include "param.h"
 #include "random.h"
 #include "object.h"
-#include "Clarkson-Delaunay.cpp"  /// this is slightly ood, would be better to compile them seperately and link together (don't know how to do that lol)
+#include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together (don't know how to do that lol)
+
 
 /// hard-coded limit to the number of particles
 /// size_t = size in bytes,  const means MAX is immutable
@@ -29,7 +30,6 @@ const bool debugStatus = 1;
 /// this is global, isn't on the local stack which is good
 Point pointsArray[MAX];
 int numTriangleVertices = 0;
-
 
 /// window size in pixels
 int winW = 800;
@@ -88,6 +88,66 @@ static WORD* create_triangles_list()
     return triangleIndexList;  /// the triangle index list created is to be used by the draw_triangles function
 }
 
+/*
+bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max) /// checks through the pointsConnected array to see if secondary point is present
+{
+    static bool found = false;
+
+    for (int i = 0; i <= max; i++) {  /// going up to total instead of over all the array is faster
+        if (arrayToCheck[i] == indexValueToCheck) {
+            found = true;
+            break;
+        }
+        else {
+            continue;
+        }
+    }
+
+    if (found = false){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+/// finds all the points connected to the primary point through delaunay triangulations
+int* connectedSecondaryPoints(WORD* triangleIndexList, int indexOfInterest, int numberOfTriangleVertices)
+{
+    static int pointsConnected[MAX];  /// important to be static, so it can be called in pointAttractOrRepel function. Cannot be nbo sized as this is dynamic
+    static int total = 0; /// is a pointer for the pointsConnected array
+
+    for(int i = 0; i < numTriangleVertices; i +=3){
+        if((triangleIndexList[i]) || (triangleIndexList[i+1]) || (triangleIndexList[i+2] == indexOfInterest)){  /// iterates through each triangle in turn
+            for(int j = 0; j < j+3; j++){  /// iterates through each point the current triangle
+                /// below checks the secondary point isn't the same as the primary point and has not been referenced before
+                if((triangleIndexList[j] != indexOfInterest) and (noDuplicateCheck(triangleIndexList[j], pointsConnected, total) == true)){
+                    pointsConnected[total] = triangleIndexList[j];  /// adds the connected points to the array
+                    total++;
+                }
+                else{
+                    continue;
+                    }
+            }
+        }
+    }
+
+    return pointsConnected;
+}
+
+/// repels/attracts points to each other dependent on relative displacement (CURRENTLY PSEUDOCODE)
+void pointsAttractOrRepel(WORD* triangleIndexList)
+{
+    for(int i = 0; i < nbo; i++) { ///for each primary point
+        int *connectedSecondaryArray = connectedSecondaryPoints(triangleIndexList, i, numTriangleVertices);
+        for (int j = 0; j < sizeof(connectedSecondaryArray) / sizeof(int); j++) {
+            if /// the absolute difference in x
+
+        }
+    }
+}
+*/
+
 void drawSquare(float w, float h)  /// draws the square in the window that contains the poinst
 {
     glColor3f(0.5, 0.5, 0.5);
@@ -122,14 +182,14 @@ static void draw()  /// draws the points as single points in the window
 
 /// connects 3 consective points into triangles, if using the indexed list of points created
 /// by the delaunay triangulation it should produce the triangulation
-static void draw_triangles(WORD* IndexListofTriangles)
+static void drawTrianglesAndPoints(WORD* IndexListofTriangles)
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // draw system's edges
+    /// draw system's edges
     drawSquare(xBound, yBound);
 
-    // draw particles as Triangles:
+    /// draw particles as Triangles:
     for(int i = 0; i < numTriangleVertices; i += 3) { /// iterates through 3 points at a time, needed as it loops back to the start of each polygon
         glBegin(GL_LINE_LOOP);
         for (int j = 0; j <= 2; ++j) {
@@ -142,26 +202,45 @@ static void draw_triangles(WORD* IndexListofTriangles)
 #endif ///DEBUG
         }
 glEnd();
-        for (int k = 0; k < nbo; k += 1) {
+        /// overlay points on top
+        for(int k = 0; k < nbo; k += 1) {
             glPointSize(10);
             glBegin(GL_POINTS);
             pointsArray[k].displayWhite();
             glEnd();
         }
     }
-#if DEBUG
-    glPointSize(6);
-    glBegin(GL_POINTS);
-    for ( size_t i = 0; i < nbo; ++i )
-        pointsArray[i].display();
-    glEnd();
-    }
-#endif ///DEBUG
 
     printf("draw @ %f\n", realTime);
-    glFlush();  // i need to set this to not work if both draw_points and draw_triangles is true
+    glFlush();
+}
 
-    // EDITS BY FIN
+static void drawTriangles(WORD* IndexListofTriangles)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // draw system's edges
+    drawSquare(xBound, yBound);
+
+    // draw particles as Triangles:
+    for(int i = 0; i < numTriangleVertices; i += 3) { /// iterates through 3 points at a time, needed as it loops back to the start of each polygon
+        glBegin(GL_LINE_LOOP);
+        for (int j = 0; j <= 2; ++j) {
+            pointsArray[IndexListofTriangles[i + j]].displayYellow();
+
+#if DEBUG
+            printf("I is %d, J is %d \n", i, j);
+            printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
+            printf("The x value of the point is %f\n", pointsArray[i + j].x);
+            printf("The y value of the point is %f\n", pointsArray[i + j].y);
+#endif ///DEBUG
+
+        }
+        glEnd();
+    }
+
+    printf("draw @ %f\n", realTime);
+    glFlush();
 }
 
 /// some more graphics stuff
@@ -279,7 +358,7 @@ int main(int argc, char *argv[])
             next += delay/1000;
             animate();
             triangleIndexList = create_triangles_list();
-            draw_triangles(triangleIndexList);
+            drawTrianglesAndPoints(triangleIndexList);
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
             glfwSwapBuffers(win);
