@@ -19,14 +19,14 @@ public:  /// these are attributes that can be called outside of the script
     void reset()
     {
         x = 0.25*(xBound * srand());
-        xvelocity = 1 * srand();
+        xvelocity = xBound/1500 * srand();
         xacceleration = 0;
 
         y = -abs(yBound * srand());
-        yvelocity = 1 * srand();
+        yvelocity = xBound/1500 * srand();
         yacceleration = 0;
 
-        hooks = 0.00005;
+        hooks = 0.05;
         color = 1;
     }
     
@@ -49,9 +49,12 @@ public:  /// these are attributes that can be called outside of the script
     void step()
     {
 #if ( 1 )
+        /// change the velocity depending on the acceleration
+        /*xvelocity += xacceleration;
+        yvelocity += yacceleration;*/ /// dont think i need this due to high viscotiy
         /// change displacement by a unit of velocity
-        x += xvelocity;
-        y += yvelocity;
+        x += xvelocity*timestep;
+        y += yvelocity*timestep;
 #else
         //use 2 Gaussian random numbers in polar coordinates:
         float angle = 2 * PI * prand();
@@ -62,7 +65,7 @@ public:  /// these are attributes that can be called outside of the script
         bounce();
     }
 
-    void accelerate() /// change the velocity of each point proportional to the distance from centre and hooks constant
+    void accelerateToCentre() /// change the velocity of each point proportional to the distance from centre and hooks constant
     {
         xvelocity = xvelocity -x*hooks;
         yvelocity = yvelocity -y*hooks;

@@ -221,6 +221,7 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   /usr/include/c++/11/bits/sstream.tcc \
   ../random.h \
   ../object.h \
+  ../polish.h \
   ../Clarkson-Delaunay.cpp \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
   ../Clarkson-Delaunay.h
@@ -351,6 +352,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/c++/11/initializer_list:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+../polish.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
 

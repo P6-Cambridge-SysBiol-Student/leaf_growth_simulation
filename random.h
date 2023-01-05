@@ -3,6 +3,7 @@
  Jonathan Ward and Francois Nedelec, Copyright EMBL 2007-2009
  */
 
+
 #include <cstdlib>
 
 /// signed random real in [-1, 1]
