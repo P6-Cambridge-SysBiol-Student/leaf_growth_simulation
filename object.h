@@ -19,11 +19,13 @@ public:  /// these are attributes that can be called outside of the script
     void reset()
     {
         x = 0.25*(xBound * srand());
-        xvelocity = xBound/1500 * srand();
+        // xvelocity = xBound/1500 * srand();
+        xvelocity = 0;
         xacceleration = 0;
 
         y = -abs(yBound * srand());
-        yvelocity = xBound/1500 * srand();
+        // yvelocity = xBound/1500 * srand();
+        xvelocity = 0;
         yacceleration = 0;
 
         hooks = 0.05;

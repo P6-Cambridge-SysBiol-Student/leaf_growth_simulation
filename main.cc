@@ -28,7 +28,7 @@ static void error(int error, const char* text)
     fprintf(stderr, "GLFW Error: %s\n", text);
 }
 
-void polish()
+void limitNbo()
 {
     // limit number of particles
     if ( nbo >= MAX ) nbo = MAX-1;
@@ -37,7 +37,6 @@ void polish()
     //initialize random number generator
     srandom(seed);
 }
-
 
 /// evolves system, stepping points forward and accelerating velocity
 static void animate()
@@ -71,19 +70,18 @@ void create_triangles_list()
         printf("%u, ", triangleIndexList[i]);
 }
 
-
-bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max) /// checks through the pointsConnected array to see if secondary point is present
+/// checks through the pointsConnected array to see if secondary point is present
+bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max)
 {
-    static bool found = false;
+    static bool unique = true;
 
     for (int i = 0; i <= max; i++) {  /// going up to total instead of over all the array is faster
         if (arrayToCheck[i] == indexValueToCheck) {
-            found = true;
-            break;
+            unique = false;
         }
     }
 
-    if (found = false){
+    if (unique = true){
         return true;
     }
     else{
@@ -91,43 +89,19 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max) /// ch
     }
 }
 
-/// finds all the points connected to the primary point through delaunay triangulations (IS REDUNDANT)
-int* connectedSecondaryPoints(int indexOfInterest, int numberOfTriangleVertices)
-{
-    static int pointsConnected[MAX];  /// important to be static, so it can be called in pointAttractOrRepel function. Cannot be nbo sized as this is dynamic
-    static int total = 0; /// is a pointer for the pointsConnected array
-
-    for(int i = 0; i < numTriangleVertices; i +=3){
-        if((triangleIndexList[i] == indexOfInterest) || \
-           (triangleIndexList[i+1] == indexOfInterest) || \
-           (triangleIndexList[i+2] == indexOfInterest)){  /// iterates through each triangle in turn
-            for(int j = 0; j < j+3; j++){  /// iterates through each point the current triangle
-                /// below checks the secondary point isn't the same as the primary point and has not been referenced before
-                if((triangleIndexList[j] != indexOfInterest) and (noDuplicateCheck(triangleIndexList[j], pointsConnected, total) == true)){
-                    pointsConnected[total] = triangleIndexList[j];  /// adds the connected points to the array
-                    total++;
-                }
-            }
-        }
-    }
-
-    return pointsConnected;
-}
-
-/// repels/attracts points to each other dependent on relative displacement (CURRENTLY PSEUDOCODE)
+/// repels/attracts points to each other dependent on relative displacement
 void pointsAttractOrRepel()
 {
-    for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (a primary point is identified as i)
+    for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
 
-        /// create an array of all neighbouring points (a secondary point is identified as j)
-        int pointsConnected[MAX];  /// important to be static, so it can be called in pointAttractOrRepel function. Cannot be nbo sized as this is dynamic
+        int pointsConnected[MAX]; /// create an array for the neighbours of a primary point
         int total = 0; /// is a pointer for the pointsConnected array
 
         for(int j = 0; j < numTriangleVertices; j +=3){ /// we step through triangleIndexList in 3's
             if((triangleIndexList[j] == i) || \
-           (triangleIndexList[j+1] == i) || \
-           (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are out primary point
-                for(int k = 0; k < (j+3) ; k++){  /// iterates through each point the current triangle if our primary point is found
+               (triangleIndexList[j+1] == i) || \
+               (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are the primary point
+                for(int k = 0; k < (j+3) ; k++){  /// triangle iterated through using k
                     /// below checks the secondary point isn't the same as the primary point and has not been referenced before
                     if((triangleIndexList[k] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, total) == true)){
                         pointsConnected[total] = triangleIndexList[j+k];  /// adds the connected points to the array
@@ -137,25 +111,26 @@ void pointsAttractOrRepel()
             }
         }
 
-        /// now we've gotten all the connected points we need to change the velocities of the central point
-        for (int j = 0; j <= total; j++) {
-            double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[j]].x) - (pointsArray[i].x), 2)\
-                                               + pow((pointsArray[pointsConnected[j]].y) - (pointsArray[i].y), 2) ));
+        /// now we've gotten all the connected points we need to change the velocity of the central point
+        for (int l = 0; l < total; l++) {
+            /// find the magnitude of distance between the neighbouring point and the central point
+            double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)\
+                                               + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2) ));
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
             if (deltaMagnitude > 0){ /// aka point exists outside of the repulsion radius and are attracted
-                pointsArray[i].xvelocity += (pointsArray[pointsConnected[j]].x) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].hooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                pointsArray[i].yvelocity += (pointsArray[pointsConnected[j]].y) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].hooks;
+                pointsArray[i].xvelocity -= (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].hooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                pointsArray[i].yvelocity -= (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].hooks;
             }
             else{ /// aka point exists within the radius and is repelled
-                pointsArray[i].xvelocity -= (pointsArray[pointsConnected[j]].x) - (pointsArray[i].x) * pointsArray[i].hooks;
-                pointsArray[i].yvelocity -= (pointsArray[pointsConnected[j]].y) - (pointsArray[i].y) * pointsArray[i].hooks;
+                pointsArray[i].xvelocity += (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].hooks;
+                pointsArray[i].yvelocity += (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].hooks;
             }
         }
     }
 }
 
-
-void drawSquare(float w, float h)  /// draws the square in the window that contains the poinst
+/// draws the square in the window that contains the poinst
+void drawSquare(float w, float h)
 {
     glColor3f(0.5, 0.5, 0.5);
     glLineWidth(3);
@@ -167,8 +142,8 @@ void drawSquare(float w, float h)  /// draws the square in the window that conta
     glEnd();
 }
 
-/* draw System */
-static void draw()  /// draws the points as single points in the window
+/// draws the points as single points in the window
+static void drawPoints()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -186,8 +161,7 @@ static void draw()  /// draws the points as single points in the window
     glFlush();
 }
 
-
-/// connects 3 consective points into triangles, if using the indexed list of points created
+/// connects 3 consecutive points into triangles, if using the indexed list of points created
 /// by the delaunay triangulation it should produce the triangulation
 static void drawTrianglesAndPoints()
 {
@@ -330,7 +304,7 @@ int main(int argc, char *argv[])
            printf("Argument '%s' was ignored\n", argv[i]);
     }
     printf("I am here \n");
-    polish();
+    limitNbo();
     
     if ( !glfwInit() )
     {
@@ -362,10 +336,10 @@ int main(int argc, char *argv[])
         {
             interationNumber++;
             next += delay/100000;
-            pointsAttractOrRepel();
-            animate();
             create_triangles_list();
             drawTrianglesAndPoints();
+            pointsAttractOrRepel();
+            animate();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
             glfwSwapBuffers(win);

@@ -11,7 +11,7 @@ double xBound = 20000;   /// half-width of box (X). If this value is lower than 
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 10;    /// number of particles
+int nbo = 6;    /// number of particles
 
 double delta = 0.00001;   /// time-step
 double repulsionRadius = xBound/25000;  /// radius of repulsion around a point
