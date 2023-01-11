@@ -12,23 +12,24 @@ public:  /// these are attributes that can be called outside of the script
     float x, y; /// displacement
     float xvelocity, yvelocity; /// velocity
     float xacceleration, yacceleration; /// acceleration
-    float hooks;  /// hooks constant for attracting points back to the centre
+    float extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
     
     /// initialize each point in a random position with random x and y velocities
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-        x = 0.25*(xBound * srand());
+        x = xBound * srand();
         // xvelocity = xBound/1500 * srand();
         xvelocity = 0;
         xacceleration = 0;
 
-        y = -abs(yBound * srand());
+        y = yBound * srand();
         // yvelocity = xBound/1500 * srand();
         xvelocity = 0;
         yacceleration = 0;
 
-        hooks = 0.05;
+        extendedHooks = 0.005;
+        compressedHooks = 0.5;
         color = 1;
     }
     
@@ -69,8 +70,8 @@ public:  /// these are attributes that can be called outside of the script
 
     void accelerateToCentre() /// change the velocity of each point proportional to the distance from centre and hooks constant
     {
-        xvelocity = xvelocity -x*hooks;
-        yvelocity = yvelocity -y*hooks;
+        xvelocity = xvelocity -x*extendedHooks;
+        yvelocity = yvelocity -y*extendedHooks;
     }
     
     /// partial display: this needs to be called between glBegin() and glEnd()

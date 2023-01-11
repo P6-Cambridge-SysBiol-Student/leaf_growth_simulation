@@ -101,11 +101,11 @@ void pointsAttractOrRepel()
             if((triangleIndexList[j] == i) || \
                (triangleIndexList[j+1] == i) || \
                (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are the primary point
-                for(int k = 0; k < (j+3) ; k++){  /// triangle iterated through using k
+                for(int k = 0; k < 3; k++){  /// triangle iterated through using k
                     /// below checks the secondary point isn't the same as the primary point and has not been referenced before
-                    if((triangleIndexList[k] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, total) == true)){
+                    if((triangleIndexList[k+j] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, total) == true)){
                         pointsConnected[total] = triangleIndexList[j+k];  /// adds the connected points to the array
-                        total++;  /// increments the pointer of the poitnsConnected Array
+                        total++;  /// increments the pointer of the pointsConnected Array
                     }
                 }
             }
@@ -118,14 +118,23 @@ void pointsAttractOrRepel()
                                                + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2) ));
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
             if (deltaMagnitude > 0){ /// aka point exists outside of the repulsion radius and are attracted
-                pointsArray[i].xvelocity -= (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].hooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                pointsArray[i].yvelocity -= (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].hooks;
+                pointsArray[i].xvelocity += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                pointsArray[i].yvelocity += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
             }
             else{ /// aka point exists within the radius and is repelled
-                pointsArray[i].xvelocity += (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].hooks;
-                pointsArray[i].yvelocity += (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].hooks;
+                pointsArray[i].xvelocity -= (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].compressedHooks;
+                pointsArray[i].yvelocity -= (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].compressedHooks;
             }
         }
+    }
+}
+
+void friction()
+{
+    for(int i = 0; i < nbo; i++)
+    {
+        pointsArray[i].xvelocity *= 0.98;
+        pointsArray[i].yvelocity *= 0.98;
     }
 }
 
@@ -339,6 +348,7 @@ int main(int argc, char *argv[])
             create_triangles_list();
             drawTrianglesAndPoints();
             pointsAttractOrRepel();
+            friction();
             animate();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);

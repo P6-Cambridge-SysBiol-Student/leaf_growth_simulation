@@ -7,14 +7,14 @@
 #include <sstream>
 
 // physical parameters:  ensure to add any new parameters to the readOption() function
-double xBound = 20000;   /// half-width of box (X). If this value is lower than 100 the deulaunay triangulation misses points
+double xBound = 200000;   /// half-width of box (X). If this value is lower than 100 the deulaunay triangulation misses points
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 6;    /// number of particles
+int nbo = 100;    /// number of particles
 
 double delta = 0.00001;   /// time-step
-double repulsionRadius = xBound/25000;  /// radius of repulsion around a point
+double repulsionRadius = xBound/70;  /// radius of repulsion around a point
 
 double timestep = 0.005;
 int delay = 16;         /// milli-seconds between successive display
