@@ -11,12 +11,15 @@ double xBound = 200000;   /// half-width of box (X). If this value is lower than
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 100;    /// number of particles
+int nbo = 200;    /// number of particles
 
 double delta = 0.00001;   /// time-step
-double repulsionRadius = xBound/70;  /// radius of repulsion around a point
+double repulsionRadius = xBound/15;  /// radius of repulsion around a point
+double dampening = 0.95;
+double velocityNoiseParam = 10;
+double fluidViscosity = 1.0016; /// mPa.s, velocity of water at 20 degrees celcius
 
-double timestep = 0.005;
+double timestep = 0.0030;
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 1; /// seed for random number generator
 

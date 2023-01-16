@@ -13,23 +13,26 @@ public:  /// these are attributes that can be called outside of the script
     float xvelocity, yvelocity; /// velocity
     float xacceleration, yacceleration; /// acceleration
     float extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
+    float cellRadius;
     
     /// initialize each point in a random position with random x and y velocities
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-        x = xBound * srand();
+        x = 0.1*(xBound * srand());
         // xvelocity = xBound/1500 * srand();
         xvelocity = 0;
         xacceleration = 0;
 
-        y = yBound * srand();
+        y = 0.1*(yBound * srand());
         // yvelocity = xBound/1500 * srand();
         xvelocity = 0;
         yacceleration = 0;
 
         extendedHooks = 0.005;
-        compressedHooks = 0.5;
+        compressedHooks = 1;
+
+        cellRadius = xBound / 30;
         color = 1;
     }
     
@@ -68,6 +71,12 @@ public:  /// these are attributes that can be called outside of the script
         bounce();
     }
 
+    double stokesDrag() /// returns the drag force
+    {
+        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * sqrt(pow(xvelocity, 2) + pow(yvelocity, 2));
+        return dragForce;
+    }
+
     void accelerateToCentre() /// change the velocity of each point proportional to the distance from centre and hooks constant
     {
         xvelocity = xvelocity -x*extendedHooks;
@@ -89,9 +98,9 @@ public:  /// these are attributes that can be called outside of the script
     {
         /// transparency used to visualize overlapping particles
         if ( color == 1 )
-            glColor4f(1.0, 1.0, 1.0, 0.5);
+            glColor4f(1.0, 1.0, 1.0, 0.05);
         else
-            glColor4f(0.3, 0.3, 0.3, 0.5);
+            glColor4f(0.3, 0.3, 0.3, 0.05);
         glVertex2f(x, y);
     }
 };

@@ -32,6 +32,7 @@ void limitNbo()
 {
     // limit number of particles
     if ( nbo >= MAX ) nbo = MAX-1;
+
     printf("The number of points used is %d", nbo);
 
     //initialize random number generator
@@ -64,10 +65,11 @@ void create_triangles_list()
     printf("\nThere are %d points moving around", nbo);
     printf("\nThe number of vertices defined by numTriangleVertices is %d", numTriangleVertices);
     printf("\ntriangleIndexList contains the values: ");
-#endif ///DEBUG
-
     for (int i = 0; i < numTriangleVertices; i++)
         printf("%u, ", triangleIndexList[i]);
+#endif ///DEBUG
+
+
 }
 
 /// checks through the pointsConnected array to see if secondary point is present
@@ -117,11 +119,13 @@ void pointsAttractOrRepel()
             double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)\
                                                + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2) ));
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
-            if (deltaMagnitude > 0){ /// aka point exists outside of the repulsion radius and are attracted
+            if ((deltaMagnitude > 0)){
+            /// aka point exists outside of the repulsion radius of neighbour (and isnt super far away) it is attracted
                 pointsArray[i].xvelocity += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                 pointsArray[i].yvelocity += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
             }
-            else{ /// aka point exists within the radius and is repelled
+            else if ((deltaMagnitude < 0)){
+            /// aka point exists within the radius of the neighbouring point and is repelled
                 pointsArray[i].xvelocity -= (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].compressedHooks;
                 pointsArray[i].yvelocity -= (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].compressedHooks;
             }
@@ -129,12 +133,21 @@ void pointsAttractOrRepel()
     }
 }
 
-void friction()
+void dampenVelocity()
 {
     for(int i = 0; i < nbo; i++)
     {
-        pointsArray[i].xvelocity *= 0.98;
-        pointsArray[i].yvelocity *= 0.98;
+        pointsArray[i].xvelocity *= dampening;
+        pointsArray[i].yvelocity *= dampening;
+    }
+}
+
+void addVelocityNoise()
+{
+    for(int i = 0; i<nbo; i++)
+    {
+        pointsArray[i].xvelocity += velocityNoiseParam * srand();
+        pointsArray[i].yvelocity += velocityNoiseParam * srand();
     }
 }
 
@@ -348,7 +361,8 @@ int main(int argc, char *argv[])
             create_triangles_list();
             drawTrianglesAndPoints();
             pointsAttractOrRepel();
-            friction();
+            addVelocityNoise();
+            dampenVelocity();
             animate();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);

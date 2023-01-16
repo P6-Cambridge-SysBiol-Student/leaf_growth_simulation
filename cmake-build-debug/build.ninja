@@ -56,6 +56,13 @@ build CMakeFiles/frap.dir/main.cc.o: CXX_COMPILER__frap_Debug /home/finley/SLCU/
   OBJECT_DIR = CMakeFiles/frap.dir
   OBJECT_FILE_DIR = CMakeFiles/frap.dir
 
+build CMakeFiles/frap.dir/physics.cpp.o: CXX_COMPILER__frap_Debug /home/finley/SLCU/frapc_with_triangles/physics.cpp || cmake_object_order_depends_target_frap
+  DEP_FILE = CMakeFiles/frap.dir/physics.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -I/home/finley/SLCU/frapc_with_triangles/deps
+  OBJECT_DIR = CMakeFiles/frap.dir
+  OBJECT_FILE_DIR = CMakeFiles/frap.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target frap
@@ -64,7 +71,7 @@ build CMakeFiles/frap.dir/main.cc.o: CXX_COMPILER__frap_Debug /home/finley/SLCU/
 #############################################
 # Link the executable frap
 
-build frap: CXX_EXECUTABLE_LINKER__frap_Debug CMakeFiles/frap.dir/main.cc.o | /home/finley/SLCU/frapc_with_triangles/deps/libglfw3.a /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so
+build frap: CXX_EXECUTABLE_LINKER__frap_Debug CMakeFiles/frap.dir/main.cc.o CMakeFiles/frap.dir/physics.cpp.o | /home/finley/SLCU/frapc_with_triangles/deps/libglfw3.a /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so
   FLAGS = -g
   LINK_LIBRARIES = /home/finley/SLCU/frapc_with_triangles/deps/libglfw3.a  /usr/lib/x86_64-linux-gnu/libGLX.so  /usr/lib/x86_64-linux-gnu/libOpenGL.so
   OBJECT_DIR = CMakeFiles/frap.dir
