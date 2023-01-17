@@ -121,13 +121,24 @@ void pointsAttractOrRepel()
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
             if ((deltaMagnitude > 0)){
             /// aka point exists outside of the repulsion radius of neighbour (and isnt super far away) it is attracted
-                pointsArray[i].xvelocity += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                pointsArray[i].yvelocity += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
+                pointsArray[i].x += timestep *
+                        ((pointsArray[pointsConnected[l]].x - pointsArray[i].x)  /// the extension
+                        * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks)   /// the force
+                        / pointsArray[i].stokesDrag(pointsArray[i].xvelocity);  /// viscous drag
+
+                pointsArray[i].y += timestep *
+                        (pointsArray[pointsConnected[l]].y - pointsArray[i].y)
+                        * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks
+                        /pointsArray[i].stokesDrag(pointsArray[i].yvelocity);  /// same but in y direction
             }
             else if ((deltaMagnitude < 0)){
             /// aka point exists within the radius of the neighbouring point and is repelled
-                pointsArray[i].xvelocity -= (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].compressedHooks;
-                pointsArray[i].yvelocity -= (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].compressedHooks;
+                pointsArray[i].x -= ((pointsArray[pointsConnected[l]].x - pointsArray[i].x)  /// the extension
+                                    * pointsArray[i].compressedHooks)   /// the force
+                                    / pointsArray[i].stokesDrag(pointsArray[i].xvelocity);
+                pointsArray[i].y -= ((pointsArray[pointsConnected[l]].y - pointsArray[i].y)  /// the extension
+                                     * pointsArray[i].compressedHooks)   /// the force
+                                    / pointsArray[i].stokesDrag(pointsArray[i].yvelocity);
             }
         }
     }

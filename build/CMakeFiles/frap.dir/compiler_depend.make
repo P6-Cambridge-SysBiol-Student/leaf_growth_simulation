@@ -226,6 +226,9 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
   ../Clarkson-Delaunay.h
 
+CMakeFiles/frap.dir/physics.cpp.o: ../physics.cpp \
+  /usr/include/stdc-predef.h
+
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
 
@@ -518,6 +521,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h:
+
+../physics.cpp:
 
 /usr/include/c++/11/ext/type_traits.h:
 

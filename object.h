@@ -71,9 +71,9 @@ public:  /// these are attributes that can be called outside of the script
         bounce();
     }
 
-    double stokesDrag() /// returns the drag force
+    double stokesDrag(float inputVelocity) /// returns the drag force
     {
-        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * sqrt(pow(xvelocity, 2) + pow(yvelocity, 2));
+        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * inputVelocity;
         return dragForce;
     }
 
@@ -98,9 +98,9 @@ public:  /// these are attributes that can be called outside of the script
     {
         /// transparency used to visualize overlapping particles
         if ( color == 1 )
-            glColor4f(1.0, 1.0, 1.0, 0.05);
+            glColor4f(1.0, 1.0, 1.0, 1);
         else
-            glColor4f(0.3, 0.3, 0.3, 0.05);
+            glColor4f(0.3, 0.3, 0.3, 1);
         glVertex2f(x, y);
     }
 };

@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/frap.dir/main.cc.o -o frap  ../deps/libglfw3.a /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so 
+/usr/bin/c++ CMakeFiles/frap.dir/main.cc.o CMakeFiles/frap.dir/physics.cpp.o -o frap  ../deps/libglfw3.a /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so 
