@@ -19,7 +19,7 @@ double dampening = 0.95;
 double velocityNoiseParam = 10;
 double fluidViscosity = 1.0016; /// mPa.s, velocity of water at 20 degrees celcius
 
-double timestep = 0.0030;
+double timestep = 0.000000000000030;
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 1; /// seed for random number generator
 

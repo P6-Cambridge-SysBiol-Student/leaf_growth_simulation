@@ -83,7 +83,7 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max)
         }
     }
 
-    if (unique = true){
+    if ((unique = true)){
         return true;
     }
     else{
@@ -121,8 +121,8 @@ void pointsAttractOrRepel()
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
             if ((deltaMagnitude > 0)){
             /// aka point exists outside of the repulsion radius of neighbour (and isnt super far away) it is attracted
-                pointsArray[i].xvelocity += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                pointsArray[i].yvelocity += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
+                pointsArray[i].xvelocity += timestep * (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                pointsArray[i].yvelocity += timestep * (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
             }
             else if ((deltaMagnitude < 0)){
             /// aka point exists within the radius of the neighbouring point and is repelled
@@ -133,12 +133,17 @@ void pointsAttractOrRepel()
     }
 }
 
-void dampenVelocity()
-{
-    for(int i = 0; i < nbo; i++)
-    {
-        pointsArray[i].xvelocity *= dampening;
-        pointsArray[i].yvelocity *= dampening;
+void dampenVelocity(){
+    for(int i = 0; i < nbo; i++){
+        pointsArray[i].xvelocity -= pointsArray[i].stokesDragX();
+        pointsArray[i].yvelocity -= pointsArray[i].stokesDragY();
+    }
+}
+
+void displacePoints(){
+    for(int i = 0; i<nbo; i++){
+        pointsArray[i].step();
+        pointsArray[i].bounce();
     }
 }
 
@@ -361,9 +366,8 @@ int main(int argc, char *argv[])
             create_triangles_list();
             drawTrianglesAndPoints();
             pointsAttractOrRepel();
-            addVelocityNoise();
             dampenVelocity();
-            animate();
+            displacePoints();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
             glfwSwapBuffers(win);

@@ -71,9 +71,15 @@ public:  /// these are attributes that can be called outside of the script
         bounce();
     }
 
-    double stokesDrag() /// returns the drag force
+    double stokesDragX() /// returns the drag force of X component
     {
-        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * sqrt(pow(xvelocity, 2) + pow(yvelocity, 2));
+        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * xvelocity;
+        return dragForce;
+    }
+
+    double stokesDragY() /// returns the drag force of X component
+    {
+        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * yvelocity;
         return dragForce;
     }
 
