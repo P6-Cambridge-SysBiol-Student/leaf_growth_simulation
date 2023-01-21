@@ -12,8 +12,11 @@ public:  /// these are attributes that can be called outside of the script
     float x, y; /// displacement
     float xvelocity, yvelocity; /// velocity
     float xacceleration, yacceleration; /// acceleration
+    float xSpringForce, ySpringForce;
+    float xStokesDrag, yStokesDrag;
     float extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
     float cellRadius;
+    float cellMass;
     
     /// initialize each point in a random position with random x and y velocities
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
@@ -23,16 +26,21 @@ public:  /// these are attributes that can be called outside of the script
         // xvelocity = xBound/1500 * srand();
         xvelocity = 0;
         xacceleration = 0;
+        xSpringForce = 0;
+        xStokesDrag = 0;
 
         y = 0.1*(yBound * srand());
         // yvelocity = xBound/1500 * srand();
         xvelocity = 0;
         yacceleration = 0;
+        ySpringForce = 0;
+        yStokesDrag = 0;
 
         extendedHooks = 0.005;
-        compressedHooks = 1;
+        compressedHooks = 0.00014;
 
         cellRadius = xBound / 30;
+        cellMass = 1;
         color = 1;
     }
     
@@ -59,8 +67,8 @@ public:  /// these are attributes that can be called outside of the script
         /*xvelocity += xacceleration;
         yvelocity += yacceleration;*/ /// dont think i need this due to high viscotiy
         /// change displacement by a unit of velocity
-        x += xvelocity*timestep;
-        y += yvelocity*timestep;
+        x += timestep * xvelocity;
+        y += timestep * yvelocity;
 #else
         //use 2 Gaussian random numbers in polar coordinates:
         float angle = 2 * PI * prand();
@@ -71,24 +79,21 @@ public:  /// these are attributes that can be called outside of the script
         bounce();
     }
 
-    double stokesDragX() /// returns the drag force of X component
+    void calcStokesDragX() /// returns the drag force of X component
     {
-        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * xvelocity;
-        return dragForce;
+        xStokesDrag = 6 * 3.14159 * cellRadius * fluidViscosity * xvelocity;
     }
 
-    double stokesDragY() /// returns the drag force of X component
+    void calcStokesDragY() /// returns the drag force of X component
     {
-        double dragForce = 6 * 3.14159 * cellRadius * fluidViscosity * yvelocity;
-        return dragForce;
+        yStokesDrag = 6 * 3.14159 * cellRadius * fluidViscosity * yvelocity;
     }
 
-    void accelerateToCentre() /// change the velocity of each point proportional to the distance from centre and hooks constant
-    {
-        xvelocity = xvelocity -x*extendedHooks;
-        yvelocity = yvelocity -y*extendedHooks;
+    void calculateVelocity(){
+        xvelocity += timestep * (xSpringForce - xStokesDrag)/cellMass;
+        yvelocity += timestep * (ySpringForce - yStokesDrag)/cellMass;
     }
-    
+
     /// partial display: this needs to be called between glBegin() and glEnd()
     void displayYellow()
     {

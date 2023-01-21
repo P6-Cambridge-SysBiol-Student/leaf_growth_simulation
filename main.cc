@@ -14,8 +14,8 @@
 
 #include <vector>
 
-#include "param.h"
 #include "random.h"
+#include "param.h"
 #include "object.h"
 #include "polish.h"
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together (don't know how to do that lol)
@@ -40,8 +40,7 @@ void limitNbo()
 }
 
 /// evolves system, stepping points forward and accelerating velocity
-static void animate()
-{
+static void animate(){
     realTime += delta;
     for ( int i = 0; i < nbo; ++i ) {
         pointsArray[i].step();
@@ -50,8 +49,7 @@ static void animate()
 }
 
 /// creates an array of xy co-ords for the delaunay triangulation function, then execute it
-void create_triangles_list()
-{
+void create_triangles_list(){
     float xyValuesArray[nbo][2];
     for ( int i = 0; i < nbo; i++){
         xyValuesArray[i][0] = pointsArray[i].x;
@@ -73,8 +71,7 @@ void create_triangles_list()
 }
 
 /// checks through the pointsConnected array to see if secondary point is present
-bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max)
-{
+bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
     static bool unique = true;
 
     for (int i = 0; i <= max; i++) {  /// going up to total instead of over all the array is faster
@@ -92,12 +89,13 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max)
 }
 
 /// repels/attracts points to each other dependent on relative displacement
-void pointsAttractOrRepel()
-{
+void calculateSpringForces(){
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
 
         int pointsConnected[MAX]; /// create an array for the neighbours of a primary point
         int total = 0; /// is a pointer for the pointsConnected array
+        pointsArray[i].xSpringForce = 0; /// set spring forces to 0
+        pointsArray[i].ySpringForce = 0;
 
         for(int j = 0; j < numTriangleVertices; j +=3){ /// we step through triangleIndexList in 3's
             if((triangleIndexList[j] == i) || \
@@ -121,22 +119,30 @@ void pointsAttractOrRepel()
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
             if ((deltaMagnitude > 0)){
             /// aka point exists outside of the repulsion radius of neighbour (and isnt super far away) it is attracted
-                pointsArray[i].xvelocity += timestep * (pointsArray[pointsConnected[l]].x - (pointsArray[i].x)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                pointsArray[i].yvelocity += timestep * (pointsArray[pointsConnected[l]].y - (pointsArray[i].y)) * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
+                pointsArray[i].xSpringForce += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x))
+                                            * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                pointsArray[i].ySpringForce += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y))
+                                            * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
             }
             else if ((deltaMagnitude < 0)){
             /// aka point exists within the radius of the neighbouring point and is repelled
-                pointsArray[i].xvelocity -= (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].compressedHooks;
-                pointsArray[i].yvelocity -= (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].compressedHooks;
+                pointsArray[i].xSpringForce -= (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].compressedHooks;
+                pointsArray[i].ySpringForce -= (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].compressedHooks;
             }
         }
     }
 }
 
-void dampenVelocity(){
+void calculateStokesDrag(){
     for(int i = 0; i < nbo; i++){
-        pointsArray[i].xvelocity -= pointsArray[i].stokesDragX();
-        pointsArray[i].yvelocity -= pointsArray[i].stokesDragY();
+        pointsArray[i].calcStokesDragX();
+        pointsArray[i].calcStokesDragY();
+    }
+}
+
+void mainCalculateVelocity(){
+    for (int i = 0; i < nbo; i++){
+        pointsArray[i].calculateVelocity();
     }
 }
 
@@ -147,14 +153,6 @@ void displacePoints(){
     }
 }
 
-void addVelocityNoise()
-{
-    for(int i = 0; i<nbo; i++)
-    {
-        pointsArray[i].xvelocity += velocityNoiseParam * srand();
-        pointsArray[i].yvelocity += velocityNoiseParam * srand();
-    }
-}
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h)
@@ -365,8 +363,9 @@ int main(int argc, char *argv[])
             next += delay/100000;
             create_triangles_list();
             drawTrianglesAndPoints();
-            pointsAttractOrRepel();
-            dampenVelocity();
+            calculateSpringForces();
+            calculateStokesDrag();
+            mainCalculateVelocity();
             displacePoints();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
