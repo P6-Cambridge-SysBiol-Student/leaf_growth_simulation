@@ -9,64 +9,66 @@ class Point
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
     int color;
-    float x, y; /// displacement
-    float xvelocity, yvelocity; /// velocity
-    float xacceleration, yacceleration; /// acceleration
-    float xSpringForce, ySpringForce;
-    float xStokesDrag, yStokesDrag;
-    float extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
-    float cellRadius;
-    float cellMass;
+    double x, y; /// displacement
+    double xvelocity, yvelocity; /// velocity
+    double xacceleration, yacceleration; /// acceleration
+    double xSpringForce, ySpringForce;
+    double xStokesDrag, yStokesDrag;
+    double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
+    double cellRadius;
+    double cellMass;
     
     /// initialize each point in a random position with random x and y velocities
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-        x = 0.1*(xBound * srand());
-        // xvelocity = xBound/1500 * srand();
-        xvelocity = 0;
+        x = (xBound * srand());
+        xvelocity = 0.001 * srand();
         xacceleration = 0;
         xSpringForce = 0;
         xStokesDrag = 0;
 
-        y = 0.1*(yBound * srand());
-        // yvelocity = xBound/1500 * srand();
-        xvelocity = 0;
+        y = (yBound * srand());
+        xvelocity = 0.001 * srand();
         yacceleration = 0;
         ySpringForce = 0;
         yStokesDrag = 0;
 
-        extendedHooks = 0.005;
-        compressedHooks = 0.00014;
-
-        cellRadius = xBound / 30;
-        cellMass = 1;
+        extendedHooks   = 0.0000000003;
+        compressedHooks = 0.000000001;
+        cellRadius = repulsionRadius; /// in micrometers
+        cellMass = 1; /// in nanograms
         color = 1;
     }
     
     /// call initialize
-    Point()
-    {
+    Point(){
         reset();
     }
 
     /// particles bounce off walls
-    void bounce()
-    {
+    void bounce(){
         if ( x >  xBound )  x =  2*xBound - x, xvelocity = -xvelocity;
         if ( x < -xBound )  x = -2*xBound - x, xvelocity = -xvelocity;
         if ( y >  yBound )  y =  2*yBound - y, yvelocity = -yvelocity;
         if ( y < -yBound )  y = -2*yBound - y, yvelocity = -yvelocity;
     }
-    
+
+    void calcStokesDrag(){ /// returns the drag force of X component
+        xStokesDrag = 6 * 3.14159 * cellRadius/1000000 * fluidViscosity * xvelocity/1000000;
+        yStokesDrag = 6 * 3.14159 * cellRadius/1000000 * fluidViscosity * yvelocity/1000000;
+        /// velocity and cellRadius in micrometres
+    }
+
+    void calculateVelocity(){
+        xvelocity += timestep * (xSpringForce - xStokesDrag)/(cellMass/1000000000);
+        yvelocity += timestep * (ySpringForce - yStokesDrag)/(cellMass/1000000000);
+    }
+
     /// make a step in the given direction
-    void step()
-    {
+    void step(){
 #if ( 1 )
         /// change the velocity depending on the acceleration
-        /*xvelocity += xacceleration;
-        yvelocity += yacceleration;*/ /// dont think i need this due to high viscotiy
-        /// change displacement by a unit of velocity
         x += timestep * xvelocity;
         y += timestep * yvelocity;
 #else
@@ -79,24 +81,8 @@ public:  /// these are attributes that can be called outside of the script
         bounce();
     }
 
-    void calcStokesDragX() /// returns the drag force of X component
-    {
-        xStokesDrag = 6 * 3.14159 * cellRadius * fluidViscosity * xvelocity;
-    }
-
-    void calcStokesDragY() /// returns the drag force of X component
-    {
-        yStokesDrag = 6 * 3.14159 * cellRadius * fluidViscosity * yvelocity;
-    }
-
-    void calculateVelocity(){
-        xvelocity += timestep * (xSpringForce - xStokesDrag)/cellMass;
-        yvelocity += timestep * (ySpringForce - yStokesDrag)/cellMass;
-    }
-
     /// partial display: this needs to be called between glBegin() and glEnd()
-    void displayYellow()
-    {
+    void displayYellow(){
         /// transparency used to visualize overlapping particles
         if ( color == 1 )
             glColor4f(1.0, 1.0, 0.0, 0.5);
@@ -109,9 +95,9 @@ public:  /// these are attributes that can be called outside of the script
     {
         /// transparency used to visualize overlapping particles
         if ( color == 1 )
-            glColor4f(1.0, 1.0, 1.0, 0.05);
+            glColor4f(1.0, 1.0, 1.0, 0.5);
         else
-            glColor4f(0.3, 0.3, 0.3, 0.05);
+            glColor4f(0.3, 0.3, 0.3, 0.5);
         glVertex2f(x, y);
     }
 };

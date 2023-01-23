@@ -23,28 +23,12 @@
 
 ///-----------------------------------------------------------------------------
 
-static void error(int error, const char* text)
-{
-    fprintf(stderr, "GLFW Error: %s\n", text);
-}
-
-void limitNbo()
-{
-    // limit number of particles
-    if ( nbo >= MAX ) nbo = MAX-1;
-
-    printf("The number of points used is %d", nbo);
-
-    //initialize random number generator
-    srandom(seed);
-}
 
 /// evolves system, stepping points forward and accelerating velocity
 static void animate(){
     realTime += delta;
     for ( int i = 0; i < nbo; ++i ) {
         pointsArray[i].step();
-        /// pointsArray[i].accelerateToCentre();
     }
 }
 
@@ -98,8 +82,8 @@ void calculateSpringForces(){
         pointsArray[i].ySpringForce = 0;
 
         for(int j = 0; j < numTriangleVertices; j +=3){ /// we step through triangleIndexList in 3's
-            if((triangleIndexList[j] == i) || \
-               (triangleIndexList[j+1] == i) || \
+            if((triangleIndexList[j] == i) ||
+               (triangleIndexList[j+1] == i) ||
                (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are the primary point
                 for(int k = 0; k < 3; k++){  /// triangle iterated through using k
                     /// below checks the secondary point isn't the same as the primary point and has not been referenced before
@@ -111,14 +95,14 @@ void calculateSpringForces(){
             }
         }
 
-        /// now we've gotten all the connected points we need to change the velocity of the central point
+        /// now we've gotten all the connected points we need to change the velocity of each central point in turn
         for (int l = 0; l < total; l++) {
             /// find the magnitude of distance between the neighbouring point and the central point
-            double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)\
-                                               + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2) ));
+            double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)
+                                                + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2)));
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
             if ((deltaMagnitude > 0)){
-            /// aka point exists outside of the repulsion radius of neighbour (and isnt super far away) it is attracted
+            /// aka point exists outside of the repulsion radius of neighbour it is attracted
                 pointsArray[i].xSpringForce += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x))
                                             * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                 pointsArray[i].ySpringForce += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y))
@@ -133,30 +117,33 @@ void calculateSpringForces(){
     }
 }
 
-void calculateStokesDrag(){
+void iterateStokesDrag(){
     for(int i = 0; i < nbo; i++){
-        pointsArray[i].calcStokesDragX();
-        pointsArray[i].calcStokesDragY();
+        pointsArray[i].calcStokesDrag();
+        printf("The stokesY of points %d is %f \n", i, pointsArray[i].yStokesDrag);
     }
 }
 
-void mainCalculateVelocity(){
+void iterateVelocity(){
     for (int i = 0; i < nbo; i++){
         pointsArray[i].calculateVelocity();
+        printf("The Yvelocity of  %d is %f \n", i, pointsArray[i].yvelocity);
     }
 }
 
-void displacePoints(){
+void iterateDisplace(){
     for(int i = 0; i<nbo; i++){
         pointsArray[i].step();
-        pointsArray[i].bounce();
     }
 }
 
+void giveMetStats(){
+    double temp_comparison = pointsArray[1].xSpringForce/pointsArray[1].xStokesDrag;
+    printf("The ratio of the x spring force and x drag is %f \n", temp_comparison);
+}
 
 /// draws the square in the window that contains the poinst
-void drawSquare(float w, float h)
-{
+void drawSquare(float w, float h){
     glColor3f(0.5, 0.5, 0.5);
     glLineWidth(3);
     glBegin(GL_LINE_LOOP);
@@ -168,8 +155,7 @@ void drawSquare(float w, float h)
 }
 
 /// draws the points as single points in the window
-static void drawPoints()
-{
+static void drawPoints(){
     glClear(GL_COLOR_BUFFER_BIT);
     
     // draw system's edges
@@ -188,8 +174,7 @@ static void drawPoints()
 
 /// connects 3 consecutive points into triangles, if using the indexed list of points created
 /// by the delaunay triangulation it should produce the triangulation
-static void drawTrianglesAndPoints()
-{
+static void drawTrianglesAndPoints(){
     glClear(GL_COLOR_BUFFER_BIT);
 
     /// draw system's edges
@@ -221,8 +206,7 @@ glEnd();
     glFlush();
 }
 
-static void drawTriangles()
-{
+static void drawTriangles(){
     glClear(GL_COLOR_BUFFER_BIT);
 
     // draw system's edges
@@ -251,8 +235,7 @@ static void drawTriangles()
 
 /// some more graphics stuff
 /* change view angle, exit upon ESC */
-void key(GLFWwindow* win, int k, int s, int action, int mods)
-{
+void key(GLFWwindow* win, int k, int s, int action, int mods){
     if ( action != GLFW_PRESS )
         return;
     
@@ -275,8 +258,7 @@ void key(GLFWwindow* win, int k, int s, int action, int mods)
 }
 
 /* change window size, adjust display to maintain isometric axes */
-void reshape(GLFWwindow* win, int W, int H)
-{
+void reshape(GLFWwindow* win, int W, int H){
     glfwGetWindowSize(win, &winW, &winH);
     //printf("window size %i %i buffer : %i %i\n", winW, winH, W, H);
 
@@ -297,8 +279,7 @@ void reshape(GLFWwindow* win, int W, int H)
 }
 
 /* program & OpenGL initialization */
-static void init(GLFWwindow* win)
-{
+static void init(GLFWwindow* win){
     // Set GLFW callback functions
     glfwSetFramebufferSizeCallback(win, reshape);
     glfwSetKeyCallback(win, key);
@@ -322,8 +303,7 @@ static void init(GLFWwindow* win)
 
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
     for ( int i=1; i<argc; ++i ) {  /// iterates through arguements
        if ( 0 == readOption(argv[i]) )
            printf("Argument '%s' was ignored\n", argv[i]);
@@ -362,11 +342,12 @@ int main(int argc, char *argv[])
             interationNumber++;
             next += delay/100000;
             create_triangles_list();
-            drawTrianglesAndPoints();
+            iterateVelocity();
+            iterateStokesDrag();
+            iterateDisplace();
             calculateSpringForces();
-            calculateStokesDrag();
-            mainCalculateVelocity();
-            displacePoints();
+            drawTrianglesAndPoints();
+            giveMetStats();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
             glfwSwapBuffers(win);

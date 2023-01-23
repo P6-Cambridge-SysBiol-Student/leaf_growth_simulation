@@ -27,3 +27,18 @@ int winW = 800;
 int winH = 800;
 
 
+static void error(int error, const char* text)
+{
+    fprintf(stderr, "GLFW Error: %s\n", text);
+}
+
+void limitNbo()
+{
+    // limit number of particles
+    if ( nbo >= MAX ) nbo = MAX-1;
+    printf("The number of points used is %d", nbo);
+    //initialize random number generator
+    srandom(seed);
+}
+
+
