@@ -2,6 +2,7 @@
 Working simulation of points orbiting around the centre of the window as a test for later physics
 This file contains information about Object which contains
  */
+#include <math.h>
 
 ///Points class, contains info about xy displacement, velocity, and acceleration towards centre
 class Point
@@ -34,8 +35,8 @@ public:  /// these are attributes that can be called outside of the script
         ySpringForce = 0;
         yStokesDrag = 0;
 
-        extendedHooks   = 0.0000000003;
-        compressedHooks = 0.000000001;
+        extendedHooks   = 0.000003;
+        compressedHooks = 0.00001;
         cellRadius = repulsionRadius; /// in micrometers
         cellMass = 1; /// in nanograms
         color = 1;
@@ -55,8 +56,8 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     void calcStokesDrag(){ /// returns the drag force of X component
-        xStokesDrag = 6 * 3.14159 * cellRadius/1000000 * fluidViscosity * xvelocity/1000000;
-        yStokesDrag = 6 * 3.14159 * cellRadius/1000000 * fluidViscosity * yvelocity/1000000;
+        xStokesDrag = 6 * 3.14159 * cellRadius/1000000 * fluidViscosity * xvelocity;
+        yStokesDrag = 6 * 3.14159 * cellRadius/1000000 * fluidViscosity * yvelocity;
         /// velocity and cellRadius in micrometres
     }
 

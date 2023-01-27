@@ -342,10 +342,10 @@ int main(int argc, char *argv[]){
             interationNumber++;
             next += delay/100000;
             create_triangles_list();
-            iterateVelocity();
-            iterateStokesDrag();
-            iterateDisplace();
             calculateSpringForces();
+            iterateStokesDrag();
+            iterateVelocity();
+            iterateDisplace();
             drawTrianglesAndPoints();
             giveMetStats();
             printf("This is iteration: %d \n", interationNumber);
