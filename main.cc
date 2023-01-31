@@ -71,7 +71,8 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
         return false;
     }
 }
-
+/// TODO current algorithm grows with N squared, as you have N points which you scan over list of length N
+// r
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
@@ -110,24 +111,10 @@ void calculateSpringForces(){
             }
             else if ((deltaMagnitude < 0)){
             /// aka point exists within the radius of the neighbouring point and is repelled
-                pointsArray[i].xSpringForce -= (pointsArray[pointsConnected[l]].x) - (pointsArray[i].x) * pointsArray[i].compressedHooks;
-                pointsArray[i].ySpringForce -= (pointsArray[pointsConnected[l]].y) - (pointsArray[i].y) * pointsArray[i].compressedHooks;
+                pointsArray[i].xSpringForce -= ((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x)) * pointsArray[i].compressedHooks;
+                pointsArray[i].ySpringForce -= ((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y)) * pointsArray[i].compressedHooks;
             }
         }
-    }
-}
-
-void iterateStokesDrag(){
-    for(int i = 0; i < nbo; i++){
-        pointsArray[i].calcStokesDrag();
-        printf("The stokesY of points %d is %f \n", i, pointsArray[i].yStokesDrag);
-    }
-}
-
-void iterateVelocity(){
-    for (int i = 0; i < nbo; i++){
-        pointsArray[i].calculateVelocity();
-        printf("The Yvelocity of  %d is %f \n", i, pointsArray[i].yvelocity);
     }
 }
 
@@ -135,11 +122,6 @@ void iterateDisplace(){
     for(int i = 0; i<nbo; i++){
         pointsArray[i].step();
     }
-}
-
-void giveMetStats(){
-    double temp_comparison = pointsArray[1].xSpringForce/pointsArray[1].xStokesDrag;
-    printf("The ratio of the x spring force and x drag is %f \n", temp_comparison);
 }
 
 /// draws the square in the window that contains the poinst
@@ -309,6 +291,7 @@ int main(int argc, char *argv[]){
            printf("Argument '%s' was ignored\n", argv[i]);
     }
     printf("I am here \n");
+    printf("Size of point object is %ld \n", sizeof(Point));
     limitNbo();
     
     if ( !glfwInit() )
@@ -343,11 +326,8 @@ int main(int argc, char *argv[]){
             next += delay/100000;
             create_triangles_list();
             calculateSpringForces();
-            iterateStokesDrag();
-            iterateVelocity();
             iterateDisplace();
             drawTrianglesAndPoints();
-            giveMetStats();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
             glfwSwapBuffers(win);
