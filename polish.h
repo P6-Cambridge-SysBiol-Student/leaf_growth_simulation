@@ -41,4 +41,3 @@ void limitNbo()
     srandom(seed);
 }
 
-

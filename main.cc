@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define DEBUG TRUE
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
@@ -73,8 +74,22 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 }
 /// TODO current algorithm grows with N squared, as you have N points which you scan over list of length N
 /// TODO add an alogirhtm to create an adjacency matrix, use that to calculate forces between neighbours
+/// in C array  are not assignable, means a function cannot return an array
+/// but you can return a pointer to the start of the adjmatrix array
 
+int* calcAdjMatrix(){
+    int* adjMatrix = (int*)malloc(nbo * nbo * sizeof(int));  /// default malloc create a void* value, -> typecast
+    memset(adjMatrix, 0, nbo * nbo * sizeof(int)); /// sets all elements to 0
 
+    for (int i = 0; i < numTriangleVertices; i += 3) {
+        adjMatrix[(i), (i+1)] = 1;
+        adjMatrix[(i), (i+2)] = 1;
+        adjMatrix[(i+1), (i+2)] = 1;
+    }
+
+    return adjMatrix;
+
+}
 
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
