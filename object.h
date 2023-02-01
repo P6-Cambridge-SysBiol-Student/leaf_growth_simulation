@@ -23,16 +23,16 @@ public:  /// these are attributes that can be called outside of the script
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-        x = 0.2*(xBound * srand());
+        x = 0.1*(xBound * srand());
         xvelocity = 0.001 * srand();
         xSpringForce = 0;
 
-        y = 1*(yBound * srand());
+        y = 0.1*(yBound * srand());
         xvelocity = 0.001 * srand();
         ySpringForce = 0;
 
         extendedHooks   = 0.000003;
-        compressedHooks = 0.00001;
+        compressedHooks = 0.00003;
         cellRadius = repulsionRadius; /// in micrometers
         cellMass = 1; /// in nanograms
         color = 1;

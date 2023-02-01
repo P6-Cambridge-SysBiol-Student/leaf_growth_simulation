@@ -153,6 +153,30 @@ main.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/frap.dir/build.make CMakeFiles/frap.dir/main.cc.s
 .PHONY : main.cc.s
 
+physics.o: physics.cpp.o
+.PHONY : physics.o
+
+# target to build an object file
+physics.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/frap.dir/build.make CMakeFiles/frap.dir/physics.cpp.o
+.PHONY : physics.cpp.o
+
+physics.i: physics.cpp.i
+.PHONY : physics.i
+
+# target to preprocess a source file
+physics.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/frap.dir/build.make CMakeFiles/frap.dir/physics.cpp.i
+.PHONY : physics.cpp.i
+
+physics.s: physics.cpp.s
+.PHONY : physics.s
+
+# target to generate assembly for a file
+physics.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/frap.dir/build.make CMakeFiles/frap.dir/physics.cpp.s
+.PHONY : physics.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -165,6 +189,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... physics.o"
+	@echo "... physics.i"
+	@echo "... physics.s"
 .PHONY : help
 
 

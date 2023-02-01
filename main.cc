@@ -72,7 +72,10 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
     }
 }
 /// TODO current algorithm grows with N squared, as you have N points which you scan over list of length N
-// r
+/// TODO add an alogirhtm to create an adjacency matrix, use that to calculate forces between neighbours
+
+
+
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)

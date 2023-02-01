@@ -8,7 +8,7 @@ set(TARGET frap)
 include_directories("deps")
 find_package(OpenGL REQUIRED)
 
-set(GLAD_GL "deps/glad/gl.h" finley_object.h createTriangles.h polish.h physics.cpp)
+set(GLAD_GL "deps/glad/gl.h" finley_object.h createTriangles.h polish.h physics.cpp vector.h)
 
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE main.cc ${ICON} ${GLAD_GL})
 

@@ -81,12 +81,12 @@ clean: CMakeFiles/frap.dir/clean
 CMakeFiles/frap.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/frap.dir/build.make CMakeFiles/frap.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/frap.dir/build.make CMakeFiles/frap.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/finley/SLCU/frapc_with_triangles/build/CMakeFiles --progress-num=1,2 "Built target frap"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/finley/SLCU/frapc_with_triangles/build/CMakeFiles --progress-num=1,2,3 "Built target frap"
 .PHONY : CMakeFiles/frap.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/frap.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/finley/SLCU/frapc_with_triangles/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/finley/SLCU/frapc_with_triangles/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/frap.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/finley/SLCU/frapc_with_triangles/build/CMakeFiles 0
 .PHONY : CMakeFiles/frap.dir/rule
