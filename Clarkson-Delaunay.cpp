@@ -1112,6 +1112,7 @@ WORD *BuildTriangleIndexList (void *pointList, float factor, int numberOfInputPo
 
    // I don't know what the limit of Clarkson's function is in regards to how many input points
    // it will accept, but I set the return value to 16-bit integers because I assume nobody needs
+   // TODO I may need more than this many points, hence change to larger-bit integers if possible
    // more than 64,000 triangles at a time
 
 if (factor)  {

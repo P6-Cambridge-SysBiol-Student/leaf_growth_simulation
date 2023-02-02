@@ -7,19 +7,18 @@
 #include <sstream>
 
 // physical parameters:  ensure to add any new parameters to the readOption() function
-double xBound = 500;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
+double xBound = 5000;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 50;    /// number of particles
+int nbo = 100;    /// number of particles
 
 double delta = 0.00001;   /// currently useless
-double repulsionRadius = 20;  /// radius of repulsion around a point (micrometers)
-double dampening = 0.95;
+double repulsionRadius = 300;  /// radius of repulsion around a point (micrometers)
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 
-double timestep = 0.000005; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
+double timestep = 0.0003; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 1; /// seed for random number generator
 

@@ -47,7 +47,7 @@ void create_triangles_list(){
 #if DEBUG
     printf("\nThere are %d points moving around", nbo);
     printf("\nThe number of vertices defined by numTriangleVertices is %d", numTriangleVertices);
-    printf("\ntriangleIndexList contains the values: ");
+    // printf("\ntriangleIndexList contains the values: ");
     for (int i = 0; i < numTriangleVertices; i++)
         printf("%u, ", triangleIndexList[i]);
 #endif ///DEBUG
@@ -73,8 +73,9 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
     }
 }
 
+/*
 /// repels/attracts points to each other dependent on relative displacement
-void calculateSpringForces(){
+void adjMatrixSpringForces(){
 
     bool adjMatrix[nbo][nbo];
     memset(adjMatrix, false, nbo * nbo * sizeof(bool)); /// create adjacency matrix and set all elements to fasle
@@ -89,7 +90,7 @@ void calculateSpringForces(){
         adjMatrix[triangleIndexList[i+2]][triangleIndexList[i+1]]= true;
 
     }
-
+/*
 #if DEBUG
     printf("adjMatrix is as follows \n");
     for (int r = 0; r<nbo; r++){
@@ -101,18 +102,17 @@ void calculateSpringForces(){
     printf("\n");
 #endif
 
-
-    /// this should be quicker, instead of scanning over nbo points, nbo time (nbo^(2)) we only scan over
-    /// triangleIndexList once, so instead of O(N^(2)) we have O(N)
-    /// however this is not a really optimal way to index points, as an nbo^(2) matrix has to be scanned over
-
+    /// TODO could add different for loop syntax for int(row = nbo-1; i--; )
     /// use the adjacencyMatrix values to produce spring forces
     for (int row=0; row < nbo; row++) {  /// think of row value as central point, columns as neighbours
         for (int col = 0; col < nbo; col++) /// go through all neighbouring neighbours
-            if (adjMatrix[row][col] == 1){  /// if the adjMatrix is true in this position
-                double magDistance = sqrt((pow(pointsArray[col].x - pointsArray[row].x, 2))
+            if (adjMatrix[row][col] == 1){  /// if there is an edge between the vertices
+                double magDistance = sqrt((pow(pointsArray[col].x - pointsArray[row].x, 2)) ///calc magnitude of distance
                                             +pow(pointsArray[col].y - pointsArray[row].y, 2));
-                double deltaMag = magDistance - pointsArray[row].cellRadius;
+                double deltaMag = magDistance - pointsArray[row].cellRadius; /// calc if neighbour is outside
+                #if DEBUG
+                // printf("magDistance = %f, deltaMag = %f\n", magDistance, deltaMag);
+                #endif
                 if ((deltaMag>0)){
                     /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                     pointsArray[row].xSpringForce += (pointsArray[col].x - pointsArray[row].x)
@@ -122,7 +122,7 @@ void calculateSpringForces(){
                 }
                 else if ((deltaMag <0)){
                     #if DEBUG
-                    printf("There is a point under compression!\n");
+                    /// printf("There is a point under compression!\n");
                     #endif
                     pointsArray[row].xSpringForce -= (pointsArray[col].x - pointsArray[row].x)
                                                      * pointsArray[row].compressedHooks;
@@ -132,7 +132,58 @@ void calculateSpringForces(){
             }
         }
 }
+*/
+/// repels/attracts points to each other dependent on relative displacement
+void calculateSpringForces(){
+    /// TODO make sure this is right number of rows
+    bool connectedPoints2D[nbo][6];
 
+    for (int v = 0; v < numTriangleVertices; v++){
+
+    }
+
+    for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
+
+        int pointsConnected[MAX]; /// create an array for the neighbours of a primary point
+        int total = 0; /// is a pointer for the pointsConnected array
+        pointsArray[i].xSpringForce = 0; /// set spring forces to 0
+        pointsArray[i].ySpringForce = 0;
+
+        for(int j = 0; j < numTriangleVertices; j +=3){ /// we step through triangleIndexList in 3's
+            if((triangleIndexList[j] == i) ||
+               (triangleIndexList[j+1] == i) ||
+               (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are the primary point
+                for(int k = 0; k < 3; k++){  /// triangle iterated through using k
+                    /// below checks the secondary point isn't the same as the primary point and has not been referenced before
+                    if((triangleIndexList[k+j] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, total) == true)){
+                        pointsConnected[total] = triangleIndexList[j+k];  /// adds the connected points to the array
+                        total++;  /// increments the pointer of the pointsConnected Array
+                    }
+                }
+            }
+        }
+
+        /// now we've gotten all the connected points we need to change the velocity of each central point in turn
+        for (int l = 0; l < total; l++) {
+            /// find the magnitude of distance between the neighbouring point and the central point
+            double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)
+                                               + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2)));
+            double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
+            if ((deltaMagnitude > 0)){
+                /// aka point exists outside of the repulsion radius of neighbour it is attracted
+                pointsArray[i].xSpringForce += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x))
+                                               * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                pointsArray[i].ySpringForce += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y))
+                                               * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
+            }
+            else if ((deltaMagnitude < 0)){
+                /// aka point exists within the radius of the neighbouring point and is repelled
+                pointsArray[i].xSpringForce -= ((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x)) * pointsArray[i].compressedHooks;
+                pointsArray[i].ySpringForce -= ((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y)) * pointsArray[i].compressedHooks;
+            }
+        }
+    }
+}
 
 void iterateDisplace(){
     for(int i = 0; i<nbo; i++){
