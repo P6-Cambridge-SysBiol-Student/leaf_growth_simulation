@@ -31,7 +31,7 @@ public:  /// these are attributes that can be called outside of the script
         yvelocity = 0.001 * srand();
         ySpringForce = 0;
 
-        extendedHooks   = 0.00003;
+        extendedHooks   = 0.003;
         compressedHooks = 0.0001;
         cellRadius = 20; /// in micrometers
         cellMass = 1; /// in nanograms

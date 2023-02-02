@@ -105,7 +105,7 @@ void calculateSpringForces(){
     /// this should be quicker, instead of scanning over nbo points, nbo time (nbo^(2)) we only scan over
     /// triangleIndexList once, so instead of O(N^(2)) we have O(N)
     /// however this is not a really optimal way to index points, as an nbo^(2) matrix has to be scanned over
-    
+
     /// use the adjacencyMatrix values to produce spring forces
     for (int row=0; row < nbo; row++) {  /// think of row value as central point, columns as neighbours
         for (int col = 0; col < nbo; col++) /// go through all neighbouring neighbours
@@ -113,15 +113,17 @@ void calculateSpringForces(){
                 double magDistance = sqrt((pow(pointsArray[col].x - pointsArray[row].x, 2))
                                             +pow(pointsArray[col].y - pointsArray[row].y, 2));
                 double deltaMag = magDistance - pointsArray[row].cellRadius;
-                if (deltaMag>0){
+                if ((deltaMag>0)){
                     /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                     pointsArray[row].xSpringForce += (pointsArray[col].x - pointsArray[row].x)
                                                      * (deltaMag / magDistance) * pointsArray[row].extendedHooks;
                     pointsArray[row].ySpringForce += (pointsArray[col].y - pointsArray[row].y)
                                                      * (deltaMag / magDistance) * pointsArray[row].extendedHooks;
                 }
-                else{
+                else if ((deltaMag <0)){
+                    #if DEBUG
                     printf("There is a point under compression!\n");
+                    #endif
                     pointsArray[row].xSpringForce -= (pointsArray[col].x - pointsArray[row].x)
                                                      * pointsArray[row].compressedHooks;
                     pointsArray[row].ySpringForce -= (pointsArray[col].y - pointsArray[row].y)
