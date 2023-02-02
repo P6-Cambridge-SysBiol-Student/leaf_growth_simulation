@@ -11,7 +11,7 @@ double xBound = 400;   /// half-width of box (X) in micrometers. If this value i
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 100;    /// number of particles
+int nbo = 10;    /// number of particles
 
 double delta = 0.00001;   /// currently useless
 double repulsionRadius = 20;  /// radius of repulsion around a point (micrometers)
@@ -48,7 +48,8 @@ int readOption(const char arg[])
     if ( readParameter(arg, "delta=", delta) )  return 1;
     if ( readParameter(arg, "seed=",  seed) )   return 1;
     if ( readParameter(arg, "delay=", delay) )  return 1;
-    if ( readParameter(arg, "bound=", xBound) )  return 1;
+    if ( readParameter(arg, "bounds=", xBound) )  return 1;
+
 
     return 0;
 }

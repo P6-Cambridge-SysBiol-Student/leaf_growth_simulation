@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define DEBUG FALSE
+#define DEBUG true
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -72,40 +72,59 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
         return false;
     }
 }
-/// TODO current algorithm grows with N squared, as you have N points which you scan over list of length N
-/// TODO add an alogirhtm to create an adjacency matrix, use that to calculate forces between neighbours
 
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
 
-    int adjMatrix[nbo][nbo];
-    memset(adjMatrix, 0, nbo * nbo * sizeof(int)); /// create adjacency matrix and set all elements to 0
+    bool adjMatrix[nbo][nbo];
+    memset(adjMatrix, false, nbo * nbo * sizeof(bool)); /// create adjacency matrix and set all elements to fasle
+    /// using bool here to save space as it is 1 byte vs 4 for int
 
     for (int i = 0; i < numTriangleVertices; i += 3) { /// sets all pairwise interactions to 1 in an adjacency matrix
-        adjMatrix[triangleIndexList[i]][triangleIndexList[i+1]] = 1;
-        adjMatrix[triangleIndexList[i]][triangleIndexList[i+2]] = 1;
-        adjMatrix[triangleIndexList[i+1]][triangleIndexList[i+2]]= 1;
+        adjMatrix[triangleIndexList[i]][triangleIndexList[i+1]] = true;
+        adjMatrix[triangleIndexList[i+1]][triangleIndexList[i]] = true;
+        adjMatrix[triangleIndexList[i]][triangleIndexList[i+2]] = true;
+        adjMatrix[triangleIndexList[i+2]][triangleIndexList[i]] = true;
+        adjMatrix[triangleIndexList[i+1]][triangleIndexList[i+2]]= true;
+        adjMatrix[triangleIndexList[i+2]][triangleIndexList[i+1]]= true;
+
     }
 
+#if DEBUG
+    printf("adjMatrix is as follows \n");
+    for (int r = 0; r<nbo; r++){
+        for (int c =0; c<nbo; c++){
+            printf("%d  ", adjMatrix[r][c]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+#endif
+
+
+    /// this should be quicker, instead of scanning over nbo points, nbo time (nbo^(2)) we only scan over
+    /// triangleIndexList once, so instead of O(N^(2)) we have O(N)
+    /// however this is not a really optimal way to index points, as an nbo^(2) matrix has to be scanned over
+    
     /// use the adjacencyMatrix values to produce spring forces
     for (int row=0; row < nbo; row++) {  /// think of row value as central point, columns as neighbours
-        for (int col = 0; col < nbo; col++) /// go through all connecting neighbours
-            if (adjMatrix[row][col] = 1){
+        for (int col = 0; col < nbo; col++) /// go through all neighbouring neighbours
+            if (adjMatrix[row][col] == 1){  /// if the adjMatrix is true in this position
                 double magDistance = sqrt((pow(pointsArray[col].x - pointsArray[row].x, 2))
                                             +pow(pointsArray[col].y - pointsArray[row].y, 2));
-                double deltaMag = magDistance - repulsionRadius;
-
-                if (deltaMag>0) {
+                double deltaMag = magDistance - pointsArray[row].cellRadius;
+                if (deltaMag>0){
                     /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                    pointsArray[row].xSpringForce += (pointsArray[col].x - (pointsArray[row].x))
+                    pointsArray[row].xSpringForce += (pointsArray[col].x - pointsArray[row].x)
                                                      * (deltaMag / magDistance) * pointsArray[row].extendedHooks;
-                    pointsArray[row].ySpringForce += (pointsArray[col].y - (pointsArray[row].y))
+                    pointsArray[row].ySpringForce += (pointsArray[col].y - pointsArray[row].y)
                                                      * (deltaMag / magDistance) * pointsArray[row].extendedHooks;
                 }
-                else if (deltaMag < 0){
-                    pointsArray[row].xSpringForce -= ((pointsArray[col].x) - (pointsArray[row].x))
+                else{
+                    printf("There is a point under compression!\n");
+                    pointsArray[row].xSpringForce -= (pointsArray[col].x - pointsArray[row].x)
                                                      * pointsArray[row].compressedHooks;
-                    pointsArray[row].ySpringForce -= ((pointsArray[col].y) - (pointsArray[row].y))
+                    pointsArray[row].ySpringForce -= (pointsArray[col].y - pointsArray[row].y)
                                                      * pointsArray[row].compressedHooks;
                 }
             }
@@ -162,12 +181,7 @@ static void drawTrianglesAndPoints(){
         glBegin(GL_LINE_LOOP);
         for (int j = 0; j <= 2; ++j) {
             pointsArray[triangleIndexList[i + j]].displayYellow();
-#if DEBUG
-            printf("I is %d, J is %d \n", i, j);
-            printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
-            printf("The x value of the point is %f\n", pointsArray[i + j].x);
-            printf("The y value of the point is %f\n", pointsArray[i + j].y);
-#endif ///DEBUG
+
         }
 glEnd();
         /// overlay points on top
@@ -195,12 +209,6 @@ static void drawTriangles(){
         for (int j = 0; j <= 2; ++j) {
             pointsArray[triangleIndexList[i + j]].displayYellow();
 
-#if DEBUG
-            printf("I is %d, J is %d \n", i, j);
-            printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
-            printf("The x value of the point is %f\n", pointsArray[i + j].x);
-            printf("The y value of the point is %f\n", pointsArray[i + j].y);
-#endif ///DEBUG
 
         }
         glEnd();

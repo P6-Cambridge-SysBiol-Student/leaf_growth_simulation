@@ -23,17 +23,17 @@ public:  /// these are attributes that can be called outside of the script
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-        x = 0.1*(xBound * srand());
+        x = (xBound * srand());
         xvelocity = 0.001 * srand();
         xSpringForce = 0;
 
-        y = 0.1*(yBound * srand());
-        xvelocity = 0.001 * srand();
+        y = (yBound * srand());
+        yvelocity = 0.001 * srand();
         ySpringForce = 0;
 
-        extendedHooks   = 0.000003;
-        compressedHooks = 0.00003;
-        cellRadius = repulsionRadius; /// in micrometers
+        extendedHooks   = 0.00003;
+        compressedHooks = 0.0001;
+        cellRadius = 20; /// in micrometers
         cellMass = 1; /// in nanograms
         color = 1;
     }
@@ -57,8 +57,8 @@ public:  /// these are attributes that can be called outside of the script
     /// make a step in the given direction
     void step(){
         /// change the velocity depending on the acceleration
-        x += timestep * xSpringForce/(mobilityCoefficient * cellRadius/1000000);
-        y += timestep * ySpringForce/(mobilityCoefficient * cellRadius/1000000);
+        x += timestep * xSpringForce/(mobilityCoefficient * cellRadius/100000);
+        y += timestep * ySpringForce/(mobilityCoefficient * cellRadius/100000);
     }
 
     /// partial display: this needs to be called between glBegin() and glEnd()
