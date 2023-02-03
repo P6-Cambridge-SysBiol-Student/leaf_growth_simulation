@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define DEBUG true
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
@@ -44,11 +45,13 @@ void create_triangles_list(){
     triangleIndexList = BuildTriangleIndexList((void*)xyValuesArray, (float)1.0, nbo, (int)2, (int)1, &numTriangleVertices); /// having issues calling the delaunay tessleation function here
 
 #if DEBUG
-    printf("\nThere are %d points moving around", nbo);
-    printf("\nThe number of vertices defined by numTriangleVertices is %d", numTriangleVertices);
-    printf("\ntriangleIndexList contains the values: ");
+    printf("\nThere are %d points moving around \n", nbo);
+    printf("\nThe number of vertices defined by numTriangleVertices is %d\n", numTriangleVertices);
+    printf("int has size %ld", sizeof(int ));
+    /*printf("\ntriangleIndexList contains the values: ");
     for (int i = 0; i < numTriangleVertices; i++)
         printf("%u, ", triangleIndexList[i]);
+    printf("\n");*/
 #endif ///DEBUG
 
 
@@ -78,10 +81,52 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
+
+    /// number of triangle vertices seems to average at 6 per point, setting to 10 for saftey
+    int neighbourhood[nbo][9];
+    /// fill neighbourhood with -1 value (as can be check for end of neighbours)
+    memset(neighbourhood, (int)-1, nbo * 10 * sizeof(int));
+    /// need an array of pointers that store current position to add neighbours in
+    int total[nbo];
+    memset(total, (int)0, nbo*sizeof(int));
+
+    /// now to fill the neighbourhood array
+    for (int vertex = 0; vertex < numTriangleVertices; vertex+=3){
+        /// add neighbours of the first value of the triangle to its row in the neighbourhood array
+        neighbourhood[vertex][total[vertex]] = triangleIndexList[vertex + 1];
+        total[vertex]++;
+        neighbourhood[vertex][total[vertex]] = triangleIndexList[vertex + 2];
+        total[vertex]++;
+
+        /// add neighbours of the second value in triangleIndex List to its row in the neighbour array
+        neighbourhood[vertex + 1][total[vertex + 1]] = triangleIndexList[vertex];
+        total[vertex + 1]++;
+        neighbourhood[vertex + 1][total[vertex + 1]] = triangleIndexList[vertex + 2];
+        total[vertex + 1]++;
+
+        /// add neighbours of the third value
+        neighbourhood[vertex + 2][total[vertex + 2]] = triangleIndexList[vertex];
+        total[vertex + 2]++;
+        neighbourhood[vertex + 2][total[vertex + 2]] = triangleIndexList[vertex + 1];
+        total[vertex + 2]++;
+    }
+
+#if DEBUG
+    printf("Neighbourhood array: \n");
+    for (int n = 0; n < nbo; n++){
+        printf("nbo %d", nbo);
+        for (int i = 0; i < 10; i++){
+            printf(" %d", neighbourhood[n][i]);
+        }
+    }
+    printf("\n\n")
+#endif
+
+
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
 
         int pointsConnected[MAX]; /// create an array for the neighbours of a primary point
-        int total = 0; /// is a pointer for the pointsConnected array
+        int xtotal = 0; /// is a pointer for the pointsConnected array
         pointsArray[i].xSpringForce = 0; /// set spring forces to 0
         pointsArray[i].ySpringForce = 0;
 
@@ -91,16 +136,16 @@ void calculateSpringForces(){
                (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are the primary point
                 for(int k = 0; k < 3; k++){  /// triangle iterated through using k
                     /// below checks the secondary point isn't the same as the primary point and has not been referenced before
-                    if((triangleIndexList[k+j] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, total) == true)){
-                        pointsConnected[total] = triangleIndexList[j+k];  /// adds the connected points to the array
-                        total++;  /// increments the pointer of the pointsConnected Array
+                    if((triangleIndexList[k+j] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, xtotal) == true)){
+                        pointsConnected[xtotal] = triangleIndexList[j+k];  /// adds the connected points to the array
+                        xtotal++;  /// increments the pointer of the pointsConnected Array
                     }
                 }
             }
         }
 
         /// now we've gotten all the connected points we need to change the velocity of each central point in turn
-        for (int l = 0; l < total; l++) {
+        for (int l = 0; l < xtotal; l++) {
             /// find the magnitude of distance between the neighbouring point and the central point
             double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)
                                                 + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2)));

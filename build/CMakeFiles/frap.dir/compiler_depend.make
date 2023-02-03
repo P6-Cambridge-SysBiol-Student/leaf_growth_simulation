@@ -108,13 +108,13 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
   /usr/include/c++/11/stdlib.h \
   /usr/include/c++/11/cstdlib \
-  /usr/include/string.h \
-  /usr/include/strings.h \
   ../deps/glad/gl.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
   /usr/include/stdint.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   ../deps/GLFW/glfw3.h \
   /usr/include/c++/11/vector \
   /usr/include/c++/11/bits/allocator.h \
@@ -225,6 +225,9 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   ../Clarkson-Delaunay.cpp \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
   ../Clarkson-Delaunay.h
+
+CMakeFiles/frap.dir/physics.cpp.o: ../physics.cpp \
+  /usr/include/stdc-predef.h
 
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
@@ -519,6 +522,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h:
 
+../physics.cpp:
+
 /usr/include/c++/11/ext/type_traits.h:
 
 /usr/include/c++/11/tr1/modified_bessel_func.tcc:
@@ -633,14 +638,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 ../deps/GLFW/glfw3.h:
 
-/usr/include/c++/11/bits/sstream.tcc:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
-
-/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
-
-/usr/include/strings.h:
-
 /usr/include/c++/11/vector:
 
 ../deps/glad/gl.h:
@@ -654,6 +651,14 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h:
+
+/usr/include/c++/11/bits/sstream.tcc:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
+
+/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
+
+/usr/include/strings.h:
 
 /usr/include/c++/11/cmath:
 
