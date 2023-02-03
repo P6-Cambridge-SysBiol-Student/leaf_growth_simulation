@@ -46,7 +46,7 @@ void create_triangles_list(){
 
 #if DEBUG
     printf("\nThere are %d points moving around", nbo);
-    printf("\nThe number of vertices defined by numTriangleVertices is %d", numTriangleVertices);
+    printf("\nThe number of vertices defined by numTriangleVertices is %d \n", numTriangleVertices);
     // printf("\ntriangleIndexList contains the values: ");
     for (int i = 0; i < numTriangleVertices; i++)
         printf("%u, ", triangleIndexList[i]);
@@ -73,7 +73,7 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
     }
 }
 
-/*
+
 /// repels/attracts points to each other dependent on relative displacement
 void adjMatrixSpringForces(){
 
@@ -90,7 +90,7 @@ void adjMatrixSpringForces(){
         adjMatrix[triangleIndexList[i+2]][triangleIndexList[i+1]]= true;
 
     }
-/*
+
 #if DEBUG
     printf("adjMatrix is as follows \n");
     for (int r = 0; r<nbo; r++){
@@ -102,7 +102,6 @@ void adjMatrixSpringForces(){
     printf("\n");
 #endif
 
-    /// TODO could add different for loop syntax for int(row = nbo-1; i--; )
     /// use the adjacencyMatrix values to produce spring forces
     for (int row=0; row < nbo; row++) {  /// think of row value as central point, columns as neighbours
         for (int col = 0; col < nbo; col++) /// go through all neighbouring neighbours
@@ -132,15 +131,11 @@ void adjMatrixSpringForces(){
             }
         }
 }
-*/
+
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
     /// TODO make sure this is right number of rows
     bool connectedPoints2D[nbo][6];
-
-    for (int v = 0; v < numTriangleVertices; v++){
-
-    }
 
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
 

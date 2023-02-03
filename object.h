@@ -32,7 +32,7 @@ public:  /// these are attributes that can be called outside of the script
         ySpringForce = 0;
 
         extendedHooks   = 0.00003;
-        compressedHooks = 0.00009;
+        compressedHooks = 0.0003;
         cellRadius = 20; /// in micrometers
         cellMass = 1; /// in nanograms
         color = 1;
