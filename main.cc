@@ -74,10 +74,6 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
         return false;
     }
 }
-/// TODO current algorithm grows with N squared, as you have N points which you scan over list of length N
-/// TODO add an alogirhtm to create an adjacency matrix, use that to calculate forces between neighbours
-
-
 
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
@@ -92,7 +88,6 @@ void calculateSpringForces(){
 
     /// now to fill the neighbourhood array
     for (int v = 0; v < numTriangleVertices; v+=3){
-        /// TODO add the no duplicate check the last value of each array is taking a value
 
         /// add neighbours of the first value of the triangle to its row in the neighbourhood array
         neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+1];
@@ -128,15 +123,14 @@ void calculateSpringForces(){
     /// need to remove duplicates from each row, so that each interaction is only present once
     for (int i = 0; i < nbo; i++) {    /// for each row
         for (int j = 0; j < (total[i]+1); j++) {    /// for each value in the row
-            for (int k = j+1; k < (total[i]+1); k++) {    /// for each value until the end of filled elements
-                if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are duplicates
+            for (int k = j+1; k < (total[i]+1); k++) {    /// for each subsequent value until the end of filled elements
+                if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are pairwise duplicates
                     for (int l = k; l < (total[i]+1); l++) {
-                        neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// shift all values to the left
+                        neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// override duplicate and shift all values left
                         neighbourhoods[i][total[i]] = -1;  /// left most value is converted to empty element
                     }
                     total[i]--; /// decrement pointer for the array to account for this
                     j--;    /// pointer to possible duplicates shifts left one
-                    k--;    /// pointer to comparison point shift left
                 }
             }
         }
