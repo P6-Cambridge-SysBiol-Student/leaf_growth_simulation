@@ -95,11 +95,11 @@ CMakeFiles/frap.dir/main.cc.o: \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/c++/11/stdlib.h /usr/include/c++/11/cstdlib \
+ /usr/include/string.h /usr/include/strings.h \
  /home/finley/SLCU/frapc_with_triangles/deps/glad/gl.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h /usr/include/string.h \
- /usr/include/strings.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /home/finley/SLCU/frapc_with_triangles/deps/GLFW/glfw3.h \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/allocator.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++allocator.h \

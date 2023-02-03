@@ -28,12 +28,12 @@ public:  /// these are attributes that can be called outside of the script
         xSpringForce = 0;
 
         y = 0.1*(yBound * srand());
-        xvelocity = 0.001 * srand();
+        yvelocity = 0.001 * srand();
         ySpringForce = 0;
 
-        extendedHooks   = 0.000003;
-        compressedHooks = 0.00003;
-        cellRadius = repulsionRadius; /// in micrometers
+        extendedHooks   = 0.00003;
+        compressedHooks = 0.0003;
+        cellRadius = 20; /// in micrometers
         cellMass = 1; /// in nanograms
         color = 1;
     }
@@ -57,8 +57,8 @@ public:  /// these are attributes that can be called outside of the script
     /// make a step in the given direction
     void step(){
         /// change the velocity depending on the acceleration
-        x += timestep * xSpringForce/(mobilityCoefficient * cellRadius/1000000);
-        y += timestep * ySpringForce/(mobilityCoefficient * cellRadius/1000000);
+        x += timestep * xSpringForce/(mobilityCoefficient * cellRadius/100000);
+        y += timestep * ySpringForce/(mobilityCoefficient * cellRadius/100000);
     }
 
     /// partial display: this needs to be called between glBegin() and glEnd()

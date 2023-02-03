@@ -23,8 +23,8 @@ int numTriangleVertices = 0;
 WORD* triangleIndexList;
 
 /// window size in pixels
-int winW = 800;
-int winH = 800;
+int winW = 1000;
+int winH = 1000;
 
 
 static void error(int error, const char* text)
@@ -40,5 +40,4 @@ void limitNbo()
     //initialize random number generator
     srandom(seed);
 }
-
 
