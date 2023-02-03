@@ -47,7 +47,7 @@ void create_triangles_list(){
 #if DEBUG
     printf("\nThere are %d points moving around \n", nbo);
     printf("\nThe number of vertices defined by numTriangleVertices is %d\n", numTriangleVertices);
-    printf("int has size %ld", sizeof(int ));
+    printf("int has size %ld \n", sizeof(int ));
     /*printf("\ntriangleIndexList contains the values: ");
     for (int i = 0; i < numTriangleVertices; i++)
         printf("%u, ", triangleIndexList[i]);
@@ -83,43 +83,47 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 void calculateSpringForces(){
 
     /// number of triangle vertices seems to average at 6 per point, setting to 10 for saftey
-    int neighbourhood[nbo][9];
+    int neighbourhood[nbo][20];
     /// fill neighbourhood with -1 value (as can be check for end of neighbours)
-    memset(neighbourhood, (int)-1, nbo * 10 * sizeof(int));
+    memset(neighbourhood, (int)-1, nbo * 20 * sizeof(int));
     /// need an array of pointers that store current position to add neighbours in
     int total[nbo];
     memset(total, (int)0, nbo*sizeof(int));
 
+
     /// now to fill the neighbourhood array
-    for (int vertex = 0; vertex < numTriangleVertices; vertex+=3){
+    for (int v = 0; v < numTriangleVertices; v+=3){
+        /// TODO add the no duplicate check the last value of each array is taking a value
+
         /// add neighbours of the first value of the triangle to its row in the neighbourhood array
-        neighbourhood[vertex][total[vertex]] = triangleIndexList[vertex + 1];
-        total[vertex]++;
-        neighbourhood[vertex][total[vertex]] = triangleIndexList[vertex + 2];
-        total[vertex]++;
+        neighbourhood[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+1];
+        total[triangleIndexList[v]]++;
+        neighbourhood[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+2];
+        total[triangleIndexList[v]]++;
 
         /// add neighbours of the second value in triangleIndex List to its row in the neighbour array
-        neighbourhood[vertex + 1][total[vertex + 1]] = triangleIndexList[vertex];
-        total[vertex + 1]++;
-        neighbourhood[vertex + 1][total[vertex + 1]] = triangleIndexList[vertex + 2];
-        total[vertex + 1]++;
+        neighbourhood[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v];
+        total[triangleIndexList[v+1]]++;
+        neighbourhood[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v+2];
+        total[triangleIndexList[v+1]]++;
 
         /// add neighbours of the third value
-        neighbourhood[vertex + 2][total[vertex + 2]] = triangleIndexList[vertex];
-        total[vertex + 2]++;
-        neighbourhood[vertex + 2][total[vertex + 2]] = triangleIndexList[vertex + 1];
-        total[vertex + 2]++;
+        neighbourhood[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v];
+        total[triangleIndexList[v+2]]++;
+        neighbourhood[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v+1];
+        total[triangleIndexList[v+2]]++;
     }
 
 #if DEBUG
     printf("Neighbourhood array: \n");
     for (int n = 0; n < nbo; n++){
-        printf("nbo %d", nbo);
-        for (int i = 0; i < 10; i++){
+        printf("nbo %d:  ", n);
+        for (int i = 0; i < 20; i++){
             printf(" %d", neighbourhood[n][i]);
         }
+        printf("\n");
     }
-    printf("\n\n")
+    printf("\n\n");
 #endif
 
 
