@@ -83,9 +83,9 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 void calculateSpringForces(){
 
     /// number of triangle vertices seems to average at 6 per point, setting to 10 for saftey
-    int neighbourhood[nbo][20];
+    int neighbourhoods[nbo][20];
     /// fill neighbourhood with -1 value (as can be check for end of neighbours)
-    memset(neighbourhood, (int)-1, nbo * 20 * sizeof(int));
+    memset(neighbourhoods, (int)-1, nbo * 20 * sizeof(int));
     /// need an array of pointers that store current position to add neighbours in
     int total[nbo];
     memset(total, (int)0, nbo*sizeof(int));
@@ -96,22 +96,37 @@ void calculateSpringForces(){
         /// TODO add the no duplicate check the last value of each array is taking a value
 
         /// add neighbours of the first value of the triangle to its row in the neighbourhood array
-        neighbourhood[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+1];
+        neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+1];
         total[triangleIndexList[v]]++;
-        neighbourhood[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+2];
+        neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+2];
         total[triangleIndexList[v]]++;
 
         /// add neighbours of the second value in triangleIndex List to its row in the neighbour array
-        neighbourhood[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v];
+        neighbourhoods[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v];
         total[triangleIndexList[v+1]]++;
-        neighbourhood[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v+2];
+        neighbourhoods[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v+2];
         total[triangleIndexList[v+1]]++;
 
         /// add neighbours of the third value
-        neighbourhood[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v];
+        neighbourhoods[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v];
         total[triangleIndexList[v+2]]++;
-        neighbourhood[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v+1];
+        neighbourhoods[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v+1];
         total[triangleIndexList[v+2]]++;
+    }
+
+    /// need to remove duplicates from each row, so that each interaction is only present once
+    for (int i = 0; i < nbo; i++) {    /// for each row
+        for (int j = 0; j < total[i]; j++) {    /// for each value in the row
+            for (int k = j+1; k < total[i]; k++) {    /// for each value until the end
+                if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are duplicates
+                    for (int l = k; l < total[i]-1; l++) {
+                        neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// shift all values to the left
+                    }
+                    total[i]--; /// decrement pointer for the array to account for this
+                    k--;    /// decrement pointer to remaining elements in the row as well
+                }
+            }
+        }
     }
 
 #if DEBUG
@@ -119,7 +134,7 @@ void calculateSpringForces(){
     for (int n = 0; n < nbo; n++){
         printf("nbo %d:  ", n);
         for (int i = 0; i < 20; i++){
-            printf(" %d", neighbourhood[n][i]);
+            printf(" %d", neighbourhoods[n][i]);
         }
         printf("\n");
     }
