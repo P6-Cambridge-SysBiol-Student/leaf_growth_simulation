@@ -151,42 +151,25 @@ void calculateSpringForces(){
 
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
 
-        int pointsConnected[MAX]; /// create an array for the neighbours of a primary point
-        int xtotal = 0; /// is a pointer for the pointsConnected array
         pointsArray[i].xSpringForce = 0; /// set spring forces to 0
         pointsArray[i].ySpringForce = 0;
 
-        for(int j = 0; j < numTriangleVertices; j +=3){ /// we step through triangleIndexList in 3's
-            if((triangleIndexList[j] == i) ||
-               (triangleIndexList[j+1] == i) ||
-               (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are the primary point
-                for(int k = 0; k < 3; k++){  /// triangle iterated through using k
-                    /// below checks the secondary point isn't the same as the primary point and has not been referenced before
-                    if((triangleIndexList[k+j] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, xtotal) == true)){
-                        pointsConnected[xtotal] = triangleIndexList[j+k];  /// adds the connected points to the array
-                        xtotal++;  /// increments the pointer of the pointsConnected Array
-                    }
-                }
-            }
-        }
-
-        /// now we've gotten all the connected points we need to change the velocity of each central point in turn
-        for (int l = 0; l < xtotal; l++) {
+        for (int l = 0; l < total[i]; l++) {
             /// find the magnitude of distance between the neighbouring point and the central point
-            double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)
-                                                + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2)));
+            double magnitudeOfDistance = sqrt((pow((pointsArray[neighbourhoods[i][l]].x) - (pointsArray[i].x), 2)
+                                                + pow((pointsArray[neighbourhoods[i][l]].y) - (pointsArray[i].y), 2)));
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
             if ((deltaMagnitude > 0)){
             /// aka point exists outside of the repulsion radius of neighbour it is attracted
-                pointsArray[i].xSpringForce += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x))
+                pointsArray[i].xSpringForce += (pointsArray[neighbourhoods[i][l]].x - (pointsArray[i].x))
                                             * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                pointsArray[i].ySpringForce += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y))
+                pointsArray[i].ySpringForce += (pointsArray[neighbourhoods[i][l]].y - (pointsArray[i].y))
                                             * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
             }
             else if ((deltaMagnitude < 0)){
             /// aka point exists within the radius of the neighbouring point and is repelled
-                pointsArray[i].xSpringForce -= ((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x)) * pointsArray[i].compressedHooks;
-                pointsArray[i].ySpringForce -= ((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y)) * pointsArray[i].compressedHooks;
+                pointsArray[i].xSpringForce -= ((pointsArray[neighbourhoods[i][l]].x) - (pointsArray[i].x)) * pointsArray[i].compressedHooks;
+                pointsArray[i].ySpringForce -= ((pointsArray[neighbourhoods[i][l]].y) - (pointsArray[i].y)) * pointsArray[i].compressedHooks;
             }
         }
     }
