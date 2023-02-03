@@ -47,8 +47,8 @@ void create_triangles_list(){
 #if DEBUG
     printf("\nThere are %d points moving around \n", nbo);
     printf("\nThe number of vertices defined by numTriangleVertices is %d\n", numTriangleVertices);
-    printf("int has size %ld \n", sizeof(int ));
-    /*printf("\ntriangleIndexList contains the values: ");
+    /*printf("int has size %ld \n", sizeof(int ));
+    printf("\ntriangleIndexList contains the values: ");
     for (int i = 0; i < numTriangleVertices; i++)
         printf("%u, ", triangleIndexList[i]);
     printf("\n");*/
@@ -128,10 +128,10 @@ void calculateSpringForces(){
 
     /// need to remove duplicates from each row, so that each interaction is only present once
     for (int i = 0; i < nbo; i++) {    /// for each row
-        for (int j = 0; j < total[i]; j++) {    /// for each value in the row
-            for (int k = j+1; k < total[i]; k++) {    /// for each value until the end
+        for (int j = 0; j < (total[i]+1); j++) {    /// for each value in the row
+            for (int k = j+1; k < (total[i]+1); k++) {    /// for each value until the end of filled elements
                 if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are duplicates
-                    for (int l = k; l < total[i]-1; l++) {
+                    for (int l = k; l < total[i]; l++) {
                         neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// shift all values to the left
                         neighbourhoods[i][total[i]] = -1;  /// left most value is converted to empty element
                     }
