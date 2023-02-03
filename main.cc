@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define DEBUG TRUE
+#define DEBUG true
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -170,12 +170,7 @@ static void drawTrianglesAndPoints(){
         glBegin(GL_LINE_LOOP);
         for (int j = 0; j <= 2; ++j) {
             pointsArray[triangleIndexList[i + j]].displayYellow();
-#if DEBUG
-            printf("I is %d, J is %d \n", i, j);
-            printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
-            printf("The x value of the point is %f\n", pointsArray[i + j].x);
-            printf("The y value of the point is %f\n", pointsArray[i + j].y);
-#endif ///DEBUG
+
         }
 glEnd();
         /// overlay points on top
@@ -202,13 +197,6 @@ static void drawTriangles(){
         glBegin(GL_LINE_LOOP);
         for (int j = 0; j <= 2; ++j) {
             pointsArray[triangleIndexList[i + j]].displayYellow();
-
-#if DEBUG
-            printf("I is %d, J is %d \n", i, j);
-            printf("The IndexListofTriangles[i+j] is %d\n", IndexListofTriangles[i + j]);
-            printf("The x value of the point is %f\n", pointsArray[i + j].x);
-            printf("The y value of the point is %f\n", pointsArray[i + j].y);
-#endif ///DEBUG
 
         }
         glEnd();
