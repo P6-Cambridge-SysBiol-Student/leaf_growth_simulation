@@ -133,6 +133,7 @@ void calculateSpringForces(){
                 if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are duplicates
                     for (int l = k; l < total[i]-1; l++) {
                         neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// shift all values to the left
+                        neighbourhoods[i][total[i]] = -1;  /// left most value is converted to empty element
                     }
                     total[i]--; /// decrement pointer for the array to account for this
                     j--;    /// pointer to possible duplicates shifts left one

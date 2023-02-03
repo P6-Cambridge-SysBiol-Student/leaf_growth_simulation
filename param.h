@@ -11,7 +11,7 @@ double xBound = 5000;   /// half-width of box (X) in micrometers. If this value 
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 50;    /// number of particles
+int nbo = 10;    /// number of particles
 
 double delta = 0.00001;   /// currently useless
 double repulsionRadius = 300;  /// radius of repulsion around a point (micrometers)
