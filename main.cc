@@ -114,6 +114,18 @@ void calculateSpringForces(){
         total[triangleIndexList[v+2]]++;
     }
 
+#if DEBUG
+    printf("Neighbourhood array BEFORE cleaning: \n");
+    for (int n = 0; n < nbo; n++){
+        printf("nbo %d:  ", n);
+        for (int i = 0; i < 20; i++){
+            printf(" %d", neighbourhoods[n][i]);
+        }
+        printf("\n");
+    }
+    printf("\n\n");
+#endif
+
     /// need to remove duplicates from each row, so that each interaction is only present once
     for (int i = 0; i < nbo; i++) {    /// for each row
         for (int j = 0; j < total[i]; j++) {    /// for each value in the row
@@ -123,14 +135,15 @@ void calculateSpringForces(){
                         neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// shift all values to the left
                     }
                     total[i]--; /// decrement pointer for the array to account for this
-                    k--;    /// decrement pointer to remaining elements in the row as well
+                    j--;    /// pointer to possible duplicates shifts left one
+                    k--;    /// pointer to comparison point shift left
                 }
             }
         }
     }
 
 #if DEBUG
-    printf("Neighbourhood array: \n");
+    printf("Neighbourhood array AFTER cleaning: \n");
     for (int n = 0; n < nbo; n++){
         printf("nbo %d:  ", n);
         for (int i = 0; i < 20; i++){
