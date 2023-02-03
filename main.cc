@@ -77,6 +77,7 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
+
     /// number of triangle vertices seems to average at 6 per point, setting to 15 for saftey
     int neighbourhoods[nbo][NAW];
     /// fill neighbourhood with -1 value (as can be check for end of neighbours)
@@ -86,7 +87,7 @@ void calculateSpringForces(){
     memset(total, (int)0, nbo*sizeof(int));
 
 
-    /// now to fill the neighbourhood array
+    /// now to fill the neighbourhood array. nb only goes over triangleIndexList once, rather than once per point
     for (int v = 0; v < numTriangleVertices; v+=3){
 
         /// add neighbours of the first value of the triangle to its row in the neighbourhood array
@@ -107,6 +108,7 @@ void calculateSpringForces(){
         neighbourhoods[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v+1];
         total[triangleIndexList[v+2]]++;
     }
+
 
 #if DEBUG
     printf("Neighbourhood array BEFORE cleaning: \n");
@@ -140,6 +142,7 @@ void calculateSpringForces(){
     printf("Neighbourhood array AFTER cleaning: \n");
     for (int n = 0; n < nbo; n++){
         printf("nbo %d:  ", n);
+        printf("total value for nbo is: %d\n", total[n]);
         for (int i = 0; i < NAW; i++){
             printf(" %d", neighbourhoods[n][i]);
         }
@@ -154,7 +157,7 @@ void calculateSpringForces(){
         pointsArray[i].xSpringForce = 0; /// set spring forces to 0
         pointsArray[i].ySpringForce = 0;
 
-        for (int l = 0; l < total[i]; l++) {
+        for (int l = 0; l < (total[i]+1); l++) {
             /// find the magnitude of distance between the neighbouring point and the central point
             double magnitudeOfDistance = sqrt((pow((pointsArray[neighbourhoods[i][l]].x) - (pointsArray[i].x), 2)
                                                 + pow((pointsArray[neighbourhoods[i][l]].y) - (pointsArray[i].y), 2)));
