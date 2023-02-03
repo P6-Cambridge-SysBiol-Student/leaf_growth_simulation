@@ -81,11 +81,10 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 
 /// repels/attracts points to each other dependent on relative displacement
 void calculateSpringForces(){
-
-    /// number of triangle vertices seems to average at 6 per point, setting to 10 for saftey
-    int neighbourhoods[nbo][20];
+    /// number of triangle vertices seems to average at 6 per point, setting to 15 for saftey
+    int neighbourhoods[nbo][NAW];
     /// fill neighbourhood with -1 value (as can be check for end of neighbours)
-    memset(neighbourhoods, (int)-1, nbo * 20 * sizeof(int));
+    memset(neighbourhoods, (int)-1, nbo * NAW * sizeof(int));
     /// need an array of pointers that store current position to add neighbours in
     int total[nbo];
     memset(total, (int)0, nbo*sizeof(int));
@@ -118,7 +117,7 @@ void calculateSpringForces(){
     printf("Neighbourhood array BEFORE cleaning: \n");
     for (int n = 0; n < nbo; n++){
         printf("nbo %d:  ", n);
-        for (int i = 0; i < 20; i++){
+        for (int i = 0; i < NAW; i++){
             printf(" %d", neighbourhoods[n][i]);
         }
         printf("\n");
@@ -131,7 +130,7 @@ void calculateSpringForces(){
         for (int j = 0; j < (total[i]+1); j++) {    /// for each value in the row
             for (int k = j+1; k < (total[i]+1); k++) {    /// for each value until the end of filled elements
                 if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are duplicates
-                    for (int l = k; l < total[i]; l++) {
+                    for (int l = k; l < (total[i]+1); l++) {
                         neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// shift all values to the left
                         neighbourhoods[i][total[i]] = -1;  /// left most value is converted to empty element
                     }
@@ -147,7 +146,7 @@ void calculateSpringForces(){
     printf("Neighbourhood array AFTER cleaning: \n");
     for (int n = 0; n < nbo; n++){
         printf("nbo %d:  ", n);
-        for (int i = 0; i < 20; i++){
+        for (int i = 0; i < NAW; i++){
             printf(" %d", neighbourhoods[n][i]);
         }
         printf("\n");
