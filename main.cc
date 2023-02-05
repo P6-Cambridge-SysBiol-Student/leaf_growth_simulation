@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #define DEBUG false
-#define DISPLAY true /// set to true to display
-#define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
+#define DISPLAY false /// set to true to display
+#define BENCHMARK true /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -411,9 +411,9 @@ int main(int argc, char *argv[]){
 
 #if BENCHMARK
     for (int i = 11; i < 16; i++) {
-        nbo = i*1000;
+        nbo = 200;
         printf("Points to be simulated: %d\n", nbo);
-        speedTest(1000, true, 10);
+        speedTest(1000, false, 10);
         printf("\n");
         /// TODO plot these values, take derivative to find exponent (derivatve may also be exponenetial
     }
