@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define DEBUG true
+#define DEBUG false
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -76,7 +76,7 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 }
 
 /// repels/attracts points to each other dependent on relative displacement
-void calculateSpringForces(){
+void newCalculateSpringForces(){
 
     /// number of triangle vertices seems to average at 6 per point, setting to 15 for saftey
     int neighbourhoods[nbo][NAW];
@@ -84,29 +84,30 @@ void calculateSpringForces(){
     memset(neighbourhoods, (int)-1, nbo * NAW * sizeof(int));
     /// need an array of pointers that store current position to add neighbours in
     int total[nbo];
-    memset(total, (int)0, nbo*sizeof(int));
+    memset(total, (int)-1, nbo*sizeof(int));
+    /// pointers set to -1, are moved forwards before filling element. Ensure pointers point to final filled element
 
 
     /// now to fill the neighbourhood array. nb only goes over triangleIndexList once, rather than once per point
     for (int v = 0; v < numTriangleVertices; v+=3){
 
         /// add neighbours of the first value of the triangle to its row in the neighbourhood array
+        total[triangleIndexList[v]]++;
         neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+1];
         total[triangleIndexList[v]]++;
         neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+2];
-        total[triangleIndexList[v]]++;
 
         /// add neighbours of the second value in triangleIndex List to its row in the neighbour array
+        total[triangleIndexList[v+1]]++;
         neighbourhoods[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v];
         total[triangleIndexList[v+1]]++;
         neighbourhoods[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v+2];
-        total[triangleIndexList[v+1]]++;
 
         /// add neighbours of the third value
+        total[triangleIndexList[v+2]]++;
         neighbourhoods[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v];
         total[triangleIndexList[v+2]]++;
         neighbourhoods[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v+1];
-        total[triangleIndexList[v+2]]++;
     }
 
 
@@ -142,7 +143,6 @@ void calculateSpringForces(){
     printf("Neighbourhood array AFTER cleaning: \n");
     for (int n = 0; n < nbo; n++){
         printf("nbo %d:  ", n);
-        printf("total value for nbo is: %d\n", total[n]);
         for (int i = 0; i < NAW; i++){
             printf(" %d", neighbourhoods[n][i]);
         }
@@ -157,26 +157,73 @@ void calculateSpringForces(){
         pointsArray[i].xSpringForce = 0; /// set spring forces to 0
         pointsArray[i].ySpringForce = 0;
 
-        for (int l = 0; l < (total[i]+1); l++) {
-            /// find the magnitude of distance between the neighbouring point and the central point
-            double magnitudeOfDistance = sqrt((pow((pointsArray[neighbourhoods[i][l]].x) - (pointsArray[i].x), 2)
-                                                + pow((pointsArray[neighbourhoods[i][l]].y) - (pointsArray[i].y), 2)));
-            double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
-            if ((deltaMagnitude > 0)){
-            /// aka point exists outside of the repulsion radius of neighbour it is attracted
-                pointsArray[i].xSpringForce += (pointsArray[neighbourhoods[i][l]].x - (pointsArray[i].x))
-                                            * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
-                pointsArray[i].ySpringForce += (pointsArray[neighbourhoods[i][l]].y - (pointsArray[i].y))
-                                            * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
-            }
-            else if ((deltaMagnitude < 0)){
-            /// aka point exists within the radius of the neighbouring point and is repelled
-                pointsArray[i].xSpringForce -= ((pointsArray[neighbourhoods[i][l]].x) - (pointsArray[i].x)) * pointsArray[i].compressedHooks;
-                pointsArray[i].ySpringForce -= ((pointsArray[neighbourhoods[i][l]].y) - (pointsArray[i].y)) * pointsArray[i].compressedHooks;
+        for (int l = 0; l < NAW; l++) {
+            if (neighbourhoods[i][l] != -1){
+                /// find the magnitude of distance between the neighbouring point and the central point
+                double magnitudeOfDistance = sqrt((pow((pointsArray[neighbourhoods[i][l]].x) - (pointsArray[i].x), 2)
+                                                   + pow((pointsArray[neighbourhoods[i][l]].y) - (pointsArray[i].y), 2)));
+                double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
+                if ((deltaMagnitude > 0)){
+                    /// aka point exists outside of the repulsion radius of neighbour it is attracted
+                    pointsArray[i].xSpringForce += (pointsArray[neighbourhoods[i][l]].x - (pointsArray[i].x))
+                                                   * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                    pointsArray[i].ySpringForce += (pointsArray[neighbourhoods[i][l]].y - (pointsArray[i].y))
+                                                   * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
+                }
+                else if ((deltaMagnitude < 0)){
+                    /// aka point exists within the radius of the neighbouring point and is repelled
+                    pointsArray[i].xSpringForce -= ((pointsArray[neighbourhoods[i][l]].x) - (pointsArray[i].x)) * pointsArray[i].compressedHooks;
+                    pointsArray[i].ySpringForce -= ((pointsArray[neighbourhoods[i][l]].y) - (pointsArray[i].y)) * pointsArray[i].compressedHooks;
+                }
             }
         }
     }
 }
+
+void oldCalculateSpringForces(){
+    for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
+
+        int pointsConnected[MAX]; /// create an array for the neighbours of a primary point
+        int xtotal = 0; /// is a pointer for the pointsConnected array
+        pointsArray[i].xSpringForce = 0; /// set spring forces to 0
+        pointsArray[i].ySpringForce = 0;
+
+        for(int j = 0; j < numTriangleVertices; j +=3){ /// we step through triangleIndexList in 3's
+            if((triangleIndexList[j] == i) ||
+               (triangleIndexList[j+1] == i) ||
+               (triangleIndexList[j+2] == i)){  /// iterates through each triangle to check if any of the vertices are the primary point
+                for(int k = 0; k < 3; k++){  /// triangle iterated through using k
+                    /// below checks the secondary point isn't the same as the primary point and has not been referenced before
+                    if((triangleIndexList[k+j] != i) and (noDuplicateCheck(triangleIndexList[j+k], pointsConnected, xtotal) == true)){
+                        pointsConnected[xtotal] = triangleIndexList[j+k];  /// adds the connected points to the array
+                        xtotal++;  /// increments the pointer of the pointsConnected Array
+                    }
+                }
+            }
+        }
+
+        /// now we've gotten all the connected points we need to change the velocity of each central point in turn
+        for (int l = 0; l < xtotal; l++) {
+            /// find the magnitude of distance between the neighbouring point and the central point
+            double magnitudeOfDistance = sqrt((pow((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x), 2)
+                                               + pow((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y), 2)));
+            double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
+            if ((deltaMagnitude > 0)){
+                /// aka point exists outside of the repulsion radius of neighbour it is attracted
+                pointsArray[i].xSpringForce += (pointsArray[pointsConnected[l]].x - (pointsArray[i].x))
+                                               * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                pointsArray[i].ySpringForce += (pointsArray[pointsConnected[l]].y - (pointsArray[i].y))
+                                               * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;
+            }
+            else if ((deltaMagnitude < 0)){
+                /// aka point exists within the radius of the neighbouring point and is repelled
+                pointsArray[i].xSpringForce -= ((pointsArray[pointsConnected[l]].x) - (pointsArray[i].x)) * pointsArray[i].compressedHooks;
+                pointsArray[i].ySpringForce -= ((pointsArray[pointsConnected[l]].y) - (pointsArray[i].y)) * pointsArray[i].compressedHooks;
+            }
+        }
+    }
+}
+
 
 void iterateDisplace(){
     for(int i = 0; i<nbo; i++){
@@ -330,6 +377,26 @@ static void init(GLFWwindow* win){
     glDisable(GL_DEPTH_TEST);
 }
 
+void speedTest(int iterationNumber, bool old, int nboDesired){
+    double now =glfwGetTime();
+    for (int i = 0; i < iterationNumber; i++)
+        {
+            create_triangles_list();
+            if (old == true){
+                oldCalculateSpringForces();
+            }
+            else{
+                newCalculateSpringForces();
+            }
+            iterateDisplace();
+            free(triangleIndexList);
+        }
+    double cpu = glfwGetTime() - now;
+    printf("Iterations = %d\n Time taken = %f \n", iterationNumber, cpu);
+
+}
+
+
 
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
@@ -338,8 +405,6 @@ int main(int argc, char *argv[]){
        if ( 0 == readOption(argv[i]) )
            printf("Argument '%s' was ignored\n", argv[i]);
     }
-    printf("I am here \n");
-    printf("Size of point object is %ld \n", sizeof(Point));
     limitNbo();
     
     if ( !glfwInit() )
@@ -362,28 +427,12 @@ int main(int argc, char *argv[]){
     }
     init(win);
 
-
-    double next = 0;
-    while( !glfwWindowShouldClose(win) )
-    {
-        static int interationNumber = 1;
-        double now = glfwGetTime();
-        if ( now > next)
-        {
-            interationNumber++;
-            next += delay/100000;
-            create_triangles_list();
-            calculateSpringForces();
-            iterateDisplace();
-            drawTrianglesAndPoints();
-            printf("This is iteration: %d \n", interationNumber);
-            free(triangleIndexList);
-            glfwSwapBuffers(win);
-        }
-        glfwPollEvents();
+    for (int i = 9; i < 11; i++) {
+        nbo = i*1000;
+        printf("Points to be simulated: %d\n", nbo);
+        speedTest(1000, true, 10);
+        printf("\n");
+        /// TODO plot these values, take derivative to find exponent (derivatve may also be exponenetial
     }
-    
-    glfwDestroyWindow(win);
-    glfwTerminate();
 }
 

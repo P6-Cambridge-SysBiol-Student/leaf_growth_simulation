@@ -37,7 +37,9 @@ void limitNbo()
 {
     // limit number of particles
     if ( nbo >= MAX ) nbo = MAX-1;
-    printf("The number of points used is %d", nbo);
+#if DEBUG
+    printf("The number of points used is %d \n", nbo);
+#endif
     //initialize random number generator
     srandom(seed);
 }

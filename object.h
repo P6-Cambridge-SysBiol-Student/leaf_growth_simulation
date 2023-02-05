@@ -1,5 +1,5 @@
 /*
-Working simulation of points orbiting around the centre of the window as a test for later physics
+Class which represents cells which repel and attract each other on a 2D plane
 This file contains information about Object which contains
  */
 #include <math.h>
