@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #define DEBUG false
-#define DISPLAY false /// set to true to display
-#define BENCHMARK true /// set to true to benchmark (not bottlenecked by printing or displaying)
+#define DISPLAY true /// set to true to display
+#define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
