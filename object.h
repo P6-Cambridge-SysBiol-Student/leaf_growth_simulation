@@ -13,9 +13,9 @@ class Point
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
     int color;
-    double x, y; /// displacement
-    double xvelocity, yvelocity; /// velocity
-    double xSpringForce, ySpringForce;
+    vector2D disVec = vector2D(double (xBound*srand()), double (yBound*srand())); /// sets x and y values randomly
+    vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
+    vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadius;
     double cellMass;
@@ -24,15 +24,7 @@ public:  /// these are attributes that can be called outside of the script
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-        x = (xBound * srand());
-        xvelocity = 0.001 * srand();
-        xSpringForce = 0;
-
-        y = (yBound * srand());
-        yvelocity = 0.001 * srand();
-        ySpringForce = 0;
-
-        extendedHooks   = 0.00003;
+      extendedHooks   = 0.00003;
         compressedHooks = 0.003;
         cellRadius = 20; /// in micrometers
         cellMass = 1; /// in nanograms

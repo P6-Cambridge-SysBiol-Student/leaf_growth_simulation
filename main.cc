@@ -19,6 +19,7 @@
 
 #include "random.h"
 #include "param.h"
+#include "vector.h"
 #include "object.h"
 #include "polish.h"
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together (don't know how to do that lol)
