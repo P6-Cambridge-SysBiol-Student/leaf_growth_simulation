@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #define DEBUG false
+#define DISPLAY true /// set to true to display
+#define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -42,7 +44,7 @@ void create_triangles_list(){
     }
 
     numTriangleVertices = 0;
-    triangleIndexList = BuildTriangleIndexList((void*)xyValuesArray, (float)1.0, nbo, (int)2, (int)1, &numTriangleVertices); /// having issues calling the delaunay tessleation function here
+    triangleIndexList = BuildTriangleIndexList((void*)xyValuesArray, (float)1.0, nbo, (int)2, (int)1, &numTriangleVertices);
 
 #if DEBUG
     printf("\nThere are %d points moving around \n", nbo);
@@ -377,12 +379,12 @@ static void init(GLFWwindow* win){
     glDisable(GL_DEPTH_TEST);
 }
 
-void speedTest(int iterationNumber, bool old, int nboDesired){
+void speedTest(int iterationNumber, bool useOldAlgo, int nboDesired){
     double now =glfwGetTime();
     for (int i = 0; i < iterationNumber; i++)
         {
             create_triangles_list();
-            if (old == true){
+            if (useOldAlgo == true){
                 oldCalculateSpringForces();
             }
             else{
@@ -406,7 +408,18 @@ int main(int argc, char *argv[]){
            printf("Argument '%s' was ignored\n", argv[i]);
     }
     limitNbo();
-    
+
+#if BENCHMARK
+    for (int i = 11; i < 16; i++) {
+        nbo = i*1000;
+        printf("Points to be simulated: %d\n", nbo);
+        speedTest(1000, true, 10);
+        printf("\n");
+        /// TODO plot these values, take derivative to find exponent (derivatve may also be exponenetial
+    }
+#endif
+
+#if DISPLAY
     if ( !glfwInit() )
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
@@ -427,12 +440,28 @@ int main(int argc, char *argv[]){
     }
     init(win);
 
-    for (int i = 9; i < 11; i++) {
-        nbo = i*1000;
-        printf("Points to be simulated: %d\n", nbo);
-        speedTest(1000, true, 10);
-        printf("\n");
-        /// TODO plot these values, take derivative to find exponent (derivatve may also be exponenetial
+    double next = 0;
+    while( !glfwWindowShouldClose(win) )
+    {
+        static int interationNumber = 1;
+        double now = glfwGetTime();
+        if ( now > next)
+        {
+            interationNumber++;
+            next += delay/100000;
+            create_triangles_list();
+            newCalculateSpringForces();
+            iterateDisplace();
+            drawTrianglesAndPoints();
+            printf("This is iteration: %d \n", interationNumber);
+            free(triangleIndexList);
+            glfwSwapBuffers(win);
+        }
+        glfwPollEvents();
     }
+
+    glfwDestroyWindow(win);
+    glfwTerminate();
+#endif
 }
 

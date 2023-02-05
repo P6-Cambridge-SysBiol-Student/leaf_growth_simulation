@@ -4,7 +4,7 @@
 
 #ifndef FRAP_POLISH_H
 #define FRAP_POLISH_H
-#define WORD  unsigned int
+#define WORD  unsigned long
 
 #endif //FRAP_POLISH_H
 
@@ -13,6 +13,7 @@
 
 const size_t MAX = 16384;
 const bool debugStatus = 1;
+
 
 /// create an array of these and allocate them the max amount of memory possibly required
 /// this is global and not in the main.c file to keep it tidy

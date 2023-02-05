@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#define WORD  unsigned int   /// this is defined in 2 placed, here and polish.h (tidy later)
+#define WORD  unsigned long   /// this is defined in 2 placed, here and polish.h (tidy later)
 
 #include "Clarkson-Delaunay.h"
 

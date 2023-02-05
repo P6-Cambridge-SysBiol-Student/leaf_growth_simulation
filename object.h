@@ -1,9 +1,10 @@
 /*
-Class which represents cells which repel and attract each other on a 2D plane
+Class which represents cells which repel and attract each other on a 2D plane, based on a delaunay triangulation.
+Points contain hooks constants which are used to simulate spring-like physics
+TODO add a vector class with class methods like sum, normalise etc.
 This file contains information about Object which contains
  */
 #include <math.h>
-/// TODO include a vector class and include vectors in object to clean code
 /// for the compiler this doesn't slow down the programme
 
 ///Points class, contains info about xy displacement, velocity, and acceleration towards centre
