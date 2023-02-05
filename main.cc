@@ -409,17 +409,6 @@ int main(int argc, char *argv[]){
     }
     limitNbo();
 
-#if BENCHMARK
-    for (int i = 11; i < 16; i++) {
-        nbo = 200;
-        printf("Points to be simulated: %d\n", nbo);
-        speedTest(1000, false, 10);
-        printf("\n");
-        /// TODO plot these values, take derivative to find exponent (derivatve may also be exponenetial
-    }
-#endif
-
-#if DISPLAY
     if ( !glfwInit() )
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
@@ -440,6 +429,17 @@ int main(int argc, char *argv[]){
     }
     init(win);
 
+#if BENCHMARK
+    for (int i = 11; i < 16; i++) {
+        nbo = 200;
+        printf("Points to be simulated: %d\n", nbo);
+        speedTest(1000, false, 10);
+        printf("\n");
+        /// TODO plot these values, take derivative to find exponent (derivatve may also be exponenetial
+    }
+#endif
+
+#if DISPLAY
     double next = 0;
     while( !glfwWindowShouldClose(win) )
     {
@@ -464,4 +464,3 @@ int main(int argc, char *argv[]){
     glfwTerminate();
 #endif
 }
-
