@@ -18,8 +18,9 @@ public:
     /// overload the + operator to add two vectors
     vector2D operator+(const vector2D &v) /// all these overloadings used to have const, removed
     {
-        return vector2D(x + v.x,
-                        y + v.y);
+        x = x + v.x;
+        y = y + v.y;
+        return *this;
         /// v1 = (1, 2)  v2 = (3, 4)  v3 = v1 + v2; is now value (v3 = 3, 6)
     }
 
@@ -35,8 +36,9 @@ public:
     /// overload the - operator to subtract two vectors
     vector2D operator-(const vector2D &v)
     {
-        return vector2D(x - v.x,
-                        y - v.y);
+        x = x - v.x;
+        y = y - v.y;
+        return *this;
         /// v4 = (5, 6)  v5 = (7, 8)   v6 = v4 - v5;  v6 now evaluates to (-2, -2)
     }
 
@@ -50,26 +52,31 @@ public:
     /// overload the * operator to multiply a vector by a scalar
     vector2D operator*(double k)
     {
-        return vector2D(k * x,
-                        k * y);
+        x = x * k;
+        y = y * k;
+        return *this;
     }
 
     vector2D operator*=(double k)
     {
-        return vector2D(x *= k, y *= k);
+        x *= k;
+        y *= k;
+        return *this;
     }
 
     /// overload the / operator to divide a vector by a scalar
     vector2D operator/(double k)
     {
-        return vector2D(x/k, y/k);
+        x = x / k;
+        y = y / k;
+        return *this;
     }
 
     /// overlaod the /= operator
     vector2D operator/=(double k)
     {
-        x/= k;
-        y/= k;
+        x /= k;
+        y /= k;
         return *this;
     }
 
