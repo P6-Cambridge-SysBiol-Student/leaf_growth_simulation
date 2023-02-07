@@ -1,7 +1,6 @@
 /*
 Class which represents cells which repel and attract each other on a 2D plane, based on a delaunay triangulation.
 Points contain hooks constants which are used to simulate spring-like physics
-TODO add a vector class with class methods like sum, normalise etc.
 This file contains information about Object which contains
  */
 #include <math.h>
@@ -38,10 +37,10 @@ public:  /// these are attributes that can be called outside of the script
 
     /// particles bounce off walls
     void bounce(){
-        if ( disVec.x >  xBound )  disVec.x =  2*xBound - , xvelocity = -xvelocity;
-        if ( x < -xBound )  x = -2*xBound - x, xvelocity = -xvelocity;
-        if ( y >  yBound )  y =  2*yBound - y, yvelocity = -yvelocity;
-        if ( y < -yBound )  y = -2*yBound - y, yvelocity = -yvelocity;
+        if ( disVec.x >  xBound )  disVec.x =  2*xBound - disVec.x, velVec.x = -velVec.x;
+        if ( disVec.x >  xBound )  disVec.x =  2*xBound - disVec.x, velVec.x = -velVec.x;
+        if ( disVec.y >  xBound )  disVec.y =  2*xBound - disVec.y, velVec.y = -velVec.x;
+        if ( disVec.y >  xBound )  disVec.y =  2*xBound - disVec.y, velVec.y = -velVec.x;
     }
 
 
@@ -50,8 +49,8 @@ public:  /// these are attributes that can be called outside of the script
     /// make a step in the given direction
     void step(){
         /// change the velocity depending on the acceleration
-        x += timestep * xSpringForce/(mobilityCoefficient * cellRadius/100000);
-        y += timestep * ySpringForce/(mobilityCoefficient * cellRadius/100000);
+        /// TODO the value given to
+        disVec += (timestep/(mobilityCoefficient * cellRadius/100000)) * springVec;
     }
 
     /// partial display: this needs to be called between glBegin() and glEnd()
@@ -61,7 +60,7 @@ public:  /// these are attributes that can be called outside of the script
             glColor4f(1.0, 1.0, 0.0, 0.5);
         else
             glColor4f(0.3, 0.3, 0.3, 0.5);
-        glVertex2f(x, y);
+        glVertex2f(disVec.x, disVec.y);
     }
 
     void displayWhite()
