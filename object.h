@@ -25,10 +25,10 @@ public:  /// these are attributes that can be called outside of the script
     void reset()
     {
       extendedHooks   = 0.00003;
-        compressedHooks = 0.003;
-        cellRadius = 20; /// in micrometers
-        cellMass = 1; /// in nanograms
-        color = 1;
+      compressedHooks = 0.003;
+      cellRadius = 20; /// in micrometers
+      cellMass = 1; /// in nanograms
+      color = 1;
     }
     
     /// call initialize
@@ -38,7 +38,7 @@ public:  /// these are attributes that can be called outside of the script
 
     /// particles bounce off walls
     void bounce(){
-        if ( x >  xBound )  x =  2*xBound - x, xvelocity = -xvelocity;
+        if ( disVec.x >  xBound )  disVec.x =  2*xBound - , xvelocity = -xvelocity;
         if ( x < -xBound )  x = -2*xBound - x, xvelocity = -xvelocity;
         if ( y >  yBound )  y =  2*yBound - y, yvelocity = -yvelocity;
         if ( y < -yBound )  y = -2*yBound - y, yvelocity = -yvelocity;
