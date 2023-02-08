@@ -160,19 +160,16 @@ void newCalculateSpringForces(){
         for (int l = 0; l < NAW; l++) {
             if (neighbourhoods[i][l] != -1){
                 /// find the magnitude of distance between the neighbouring point and the central point
-                vector2D deltaXY = vector2D(pointsArray[neighbourhoods[i][l]].disVec.xx - pointsArray[i].disVec.xx,
-                                            pointsArray[neighbourhoods[i][l]].disVec.yy - pointsArray[i].disVec.yy);
-
-                double magnitudeOfDistance = deltaXY.magnitude();
+                double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec - pointsArray[i].disVec).magnitude();
                 double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
-
+#if DEBUG
+                printf("deltaMag for %d to %d is %f \n", i, (neighbourhoods[i][l]), magnitudeOfDistance);
+#endif
                 if ((deltaMagnitude > 0)){
                     /// aka point exists outside of the repulsion radius of neighbour it is attracted
                     pointsArray[i].springVec += (pointsArray[neighbourhoods[i][l]].disVec - (pointsArray[i].disVec))
                                                    * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                 }
-                /// TODO check - can occur between 2 vecs, and vec * scalar are valid, and -=
-                /// TODO check, i think I need to return *this
                 else if ((deltaMagnitude < 0)){
                     /// aka point exists within the radius of the neighbouring point and is repelled
                     pointsArray[i].springVec -= ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * pointsArray[i].compressedHooks;
@@ -206,6 +203,7 @@ void oldCalculateSpringForces(){
         /// now we've gotten all the connected points we need to change the velocity of each central point in turn
         for (int l = 0; l < xtotal; l++) {
             /// find the magnitude of distance between the neighbouring point and the central point
+            /// TODO this stuff is very wrong, ignoring for now
             double magnitudeOfDistance = pointsArray[i].disVec.magnitude();
             double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
 

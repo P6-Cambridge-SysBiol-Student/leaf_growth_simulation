@@ -23,8 +23,8 @@ public:  /// these are attributes that can be called outside of the script
     /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
-      extendedHooks   = 0.00003;
-      compressedHooks = 0.003;
+      extendedHooks   = 0.3;
+      compressedHooks = 3;
       cellRadius = 10 * 10000; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
@@ -36,7 +36,6 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     /// particles bounce off walls
-    /// TODO make this more r
     void bounce(){
         if ( disVec.xx >  xBound )  disVec.xx =  2*xBound - disVec.xx, velVec.xx = -velVec.xx;
         if ( disVec.xx >  xBound )  disVec.xx =  2*xBound - disVec.xx, velVec.xx = -velVec.xx;
