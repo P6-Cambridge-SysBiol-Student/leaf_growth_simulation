@@ -18,7 +18,7 @@ public:  /// these are attributes that can be called outside of the script
     double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadius;
     double cellMass;
-    vector2D mitosisOrient = vector2D();
+    vector2D mitosisOrient = vector2D(1, 1);
     
     /// initialize each point in a random position with random x and y velocities
     void reset()
@@ -73,7 +73,14 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void mitose(){
+    void wasMotherMitosisDisplace(){
+        mitosisOrient.normalise();
+        disVec += 0.25*cellRadius*mitosisOrient; /// the cell that inherits mothers indexing
+    }
+
+    void isNewCellMitosisDisplace(){ /// is called when definiting position of newly created cell
+        mitosisOrient.normalise();
+
 
     }
 };

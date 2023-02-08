@@ -24,6 +24,10 @@
 #include "polish.h"
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together (don't know how to do that lol)
 
+/// TODO cleanup graphics and all GLFW into graphics file, allows easier ifdef removal
+/// TODO Hormones simulation (simple & reaciton-diffusion)
+/// TODO fourier series for fitness function
+/// TODO
 
 ///-----------------------------------------------------------------------------
 
@@ -165,7 +169,6 @@ void newCalculateSpringForces(){
 #if DEBUG
                 printf("deltaMag for %d to %d is %f \n", i, (neighbourhoods[i][l]), magnitudeOfDistance);
 #endif
-                /// TODO add switch case, inc. example where deltaMag > 3* repulsion radius
                 if ((deltaMagnitude > 3*pointsArray[i].cellRadius)) {
                 /// do nothing, the connection is ignored (need to show this in graphics somehow)
                 }
@@ -439,7 +442,6 @@ int main(int argc, char *argv[]){
         printf("Points to be simulated: %d\n", nbo);
         speedTest(1000, false, 10);
         printf("\n");
-        /// TODO plot these values, take derivative to find exponent (derivatve may also be exponenetial
     }
 #endif
 
