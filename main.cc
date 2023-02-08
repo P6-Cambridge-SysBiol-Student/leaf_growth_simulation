@@ -161,18 +161,28 @@ void newCalculateSpringForces(){
             if (neighbourhoods[i][l] != -1){
                 /// find the magnitude of distance between the neighbouring point and the central point
                 double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec - pointsArray[i].disVec).magnitude();
-                double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
+                double deltaMagnitude = magnitudeOfDistance - pointsArray[i].cellRadius;
 #if DEBUG
                 printf("deltaMag for %d to %d is %f \n", i, (neighbourhoods[i][l]), magnitudeOfDistance);
 #endif
-                if ((deltaMagnitude > 0)){
-                    /// aka point exists outside of the repulsion radius of neighbour it is attracted
-                    pointsArray[i].springVec += (pointsArray[neighbourhoods[i][l]].disVec - (pointsArray[i].disVec))
-                                                   * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                /// TODO add switch case, inc. example where deltaMag > 3* repulsion radius
+                if ((deltaMagnitude > 3*pointsArray[i].cellRadius)) {
+                /// do nothing, the connection is ignored (need to show this in graphics somehow)
                 }
-                else if ((deltaMagnitude < 0)){
-                    /// aka point exists within the radius of the neighbouring point and is repelled
+                else if ((deltaMagnitude > 0)){
+                /// aka point exists outside of the repulsion radius of neighbour it is attracted
+                pointsArray[i].springVec += (pointsArray[neighbourhoods[i][l]].disVec - (pointsArray[i].disVec))
+                                          * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                }
+                else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.5*pointsArray[i].cellRadius)){
+                    /// aka point exists just within the radius of the neighbouring point and is repelled
                     pointsArray[i].springVec -= ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * pointsArray[i].compressedHooks;
+                }
+                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.1*pointsArray[i].cellRadius)) {
+                    /// aka point exists just very far within the radius of the neighbouring point and is repelled strongly
+                    pointsArray[i].springVec -=
+                            ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * 30 *
+                            pointsArray[i].compressedHooks;
                 }
             }
         }

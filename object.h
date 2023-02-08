@@ -12,7 +12,7 @@ class Point
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
     int color;
-    vector2D disVec = vector2D(double (xBound*mySrand()), double (yBound*mySrand())); /// sets x and y values randomly
+    vector2D disVec = vector2D(double (0.2*xBound*mySrand()), double (0.2*yBound*mySrand())); /// sets x and y values randomly
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
@@ -25,7 +25,7 @@ public:  /// these are attributes that can be called outside of the script
     {
       extendedHooks   = 0.3;
       compressedHooks = 3;
-      cellRadius = 10 * 10000; /// in micrometers
+      cellRadius = 5 * 100000; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
     }
