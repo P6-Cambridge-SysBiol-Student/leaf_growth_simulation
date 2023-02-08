@@ -9,7 +9,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/finley/SLCU/frapc_with_triangles/main.cc" "CMakeFiles/frap.dir/main.cc.o" "gcc" "CMakeFiles/frap.dir/main.cc.o.d"
-  "/home/finley/SLCU/frapc_with_triangles/physics.cpp" "CMakeFiles/frap.dir/physics.cpp.o" "gcc" "CMakeFiles/frap.dir/physics.cpp.o.d"
   )
 
 # Targets to which this target links.

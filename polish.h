@@ -22,7 +22,7 @@ const bool debugStatus = 1;
 Point pointsArray[MAX];
 int numTriangleVertices = 0;
 WORD* triangleIndexList;
-const int NAW = 50;
+const int NAW = 50;  /// neighbourhood array width
 
 /// window size in pixels
 int winW = 1000;

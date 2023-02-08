@@ -12,7 +12,7 @@ class Point
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
     int color;
-    vector2D disVec = vector2D(double (xBound*srand()), double (yBound*srand())); /// sets x and y values randomly
+    vector2D disVec = vector2D(double (xBound*mySrand()), double (yBound*mySrand())); /// sets x and y values randomly
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
@@ -25,7 +25,7 @@ public:  /// these are attributes that can be called outside of the script
     {
       extendedHooks   = 0.00003;
       compressedHooks = 0.003;
-      cellRadius = 20; /// in micrometers
+      cellRadius = 10 * 10000; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
     }
@@ -36,11 +36,12 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     /// particles bounce off walls
+    /// TODO make this more r
     void bounce(){
-        if ( disVec.x >  xBound )  disVec.x =  2*xBound - disVec.x, velVec.x = -velVec.x;
-        if ( disVec.x >  xBound )  disVec.x =  2*xBound - disVec.x, velVec.x = -velVec.x;
-        if ( disVec.y >  xBound )  disVec.y =  2*xBound - disVec.y, velVec.y = -velVec.x;
-        if ( disVec.y >  xBound )  disVec.y =  2*xBound - disVec.y, velVec.y = -velVec.x;
+        if ( disVec.xx >  xBound )  disVec.xx =  2*xBound - disVec.xx, velVec.xx = -velVec.xx;
+        if ( disVec.xx >  xBound )  disVec.xx =  2*xBound - disVec.xx, velVec.xx = -velVec.xx;
+        if ( disVec.yy >  xBound )  disVec.yy =  2*xBound - disVec.yy, velVec.yy = -velVec.yy;
+        if ( disVec.yy >  xBound )  disVec.yy =  2*xBound - disVec.yy, velVec.yy = -velVec.yy;
     }
 
 
@@ -60,7 +61,7 @@ public:  /// these are attributes that can be called outside of the script
             glColor4f(1.0, 1.0, 0.0, 0.5);
         else
             glColor4f(0.3, 0.3, 0.3, 0.5);
-        glVertex2f(disVec.x, disVec.y);
+        glVertex2f(disVec.xx, disVec.yy);
     }
 
     void displayWhite()
@@ -70,6 +71,6 @@ public:  /// these are attributes that can be called outside of the script
             glColor4f(1.0, 1.0, 1.0, 0.5);
         else
             glColor4f(0.3, 0.3, 0.3, 0.5);
-        glVertex2f(x, y);
+        glVertex2f(disVec.xx, disVec.yy);
     }
 };
