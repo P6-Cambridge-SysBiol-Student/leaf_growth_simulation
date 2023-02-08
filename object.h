@@ -12,20 +12,20 @@ class Point
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
     int color;
-    vector2D disVec = vector2D(double (0.2*xBound*mySrand()), double (0.2*yBound*mySrand())); /// sets x and y values randomly
+    vector2D disVec = vector2D(double (0.8*xBound*mySrand()), double (0.8*yBound*mySrand())); /// sets x and y values randomly
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadius;
     double cellMass;
+    vector2D mitosisOrient = vector2D();
     
     /// initialize each point in a random position with random x and y velocities
-    /// currently these are set to start points randomly at the centre bottom to mimic plant leaves
     void reset()
     {
       extendedHooks   = 0.3;
       compressedHooks = 3;
-      cellRadius = 5 * 100000; /// in micrometers
+      cellRadius = 1.5 * 100000; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
     }
@@ -71,5 +71,9 @@ public:  /// these are attributes that can be called outside of the script
         else
             glColor4f(0.3, 0.3, 0.3, 0.5);
         glVertex2f(disVec.xx, disVec.yy);
+    }
+
+    void mitose(){
+
     }
 };
