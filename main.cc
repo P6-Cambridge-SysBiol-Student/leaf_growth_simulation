@@ -20,8 +20,8 @@
 #include "random.h"
 #include "param.h"
 #include "vector.h"
-#include "object.h"
 #include "hormone.h"
+#include "object.h"
 #include "polish.h"
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together
 
@@ -218,7 +218,7 @@ void oldCalculateSpringForces(){
             /// find the magnitude of distance between the neighbouring point and the central point
             /// TODO this stuff is very wrong, ignoring for now
             double magnitudeOfDistance = pointsArray[i].disVec.magnitude();
-            double deltaMagnitude = magnitudeOfDistance - repulsionRadius;
+            double deltaMagnitude = magnitudeOfDistance - pointsArray[i].cellRadius;
 
             if ((deltaMagnitude > 0)){
                 /// aka point exists outside of the repulsion radius of neighbour it is attracted
@@ -233,13 +233,23 @@ void oldCalculateSpringForces(){
     }
 }
 
-
 void iterateDisplace(){
     for(int i = 0; i<nbo; i++){
         pointsArray[i].step();
     }
 }
 
+double trackTime(){
+    return currentTime += timestep;
+}
+
+void includeHormone(Hormone inputHormone){
+    if (currentTime > inputHormone.timeOfHormoneStart){
+        Hormone inflationHormone =
+    }
+    else{
+    }
+}
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
     glColor3f(0.5, 0.5, 0.5);

@@ -7,7 +7,20 @@
 
 #endif //FRAP_HORMONE_H
 
-/// includes parameters relavent to diffusion and behaviour of hormones
+/// includes parameters relevant to diffusion and behaviour of hormones
+class Hormone{
+public:
+    /// member variables
+    double DiffCoeff, StartTime, initConcn, hormoneExpansionEffect, efficacy;
 
-double hormoneDiffCoeff = 5;
-vector2D hormoneOrigin = vector2D(0, 0);
+    /// constructor
+    Hormone(double inputDiffCoeff, double inputStartTime,
+            double inputInitConcn, double inputExpansion, double inputEfficacy) :
+
+            DiffCoeff(inputDiffCoeff),
+            StartTime(inputStartTime),
+            initConcn(inputInitConcn),
+            hormoneExpansionEffect(inputExpansion),
+            efficacy(inputEfficacy) {}
+};
+

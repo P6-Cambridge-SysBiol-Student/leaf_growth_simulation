@@ -17,12 +17,10 @@ public:  /// these are attributes that can be called outside of the script
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     vector2D mitosisOrient = vector2D(1, 1);
 
-    double hormoneConcn = 0; /// state of hormone concn at a given point
     double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadius;
     double cellMass;
 
-    
     /// initialize each point in a random position with random x and y velocities
     void reset()
     {
@@ -76,6 +74,12 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
+    void beginHormoneProd(){
+        Hormone myHormone = Hormone(5, 0.02, 1, 3, 1);
+    }
+
+
+    /* ignoring mitosis for now, focusing on morphogens
     void wasMotherMitosisDisplace(){
         mitosisOrient.normalise();
         disVec += 0.25*cellRadius*mitosisOrient; /// the cell that inherits mothers indexing
@@ -83,7 +87,5 @@ public:  /// these are attributes that can be called outside of the script
 
     void isNewCellMitosisDisplace(){ /// is called when definiting position of newly created cell
         mitosisOrient.normalise();
-
-
-    }
+    } */
 };

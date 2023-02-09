@@ -43,7 +43,6 @@ int readParameter(const char arg[], const char name[], T & ptr)
 int readOption(const char arg[])
 {
     if ( readParameter(arg, "n=",     nbo) )    return 1;
-    if ( readParameter(arg, "radius=",  repulsionRadius) )   return 1;
     if ( readParameter(arg, "delta=", delta) )  return 1;
     if ( readParameter(arg, "seed=",  seed) )   return 1;
     if ( readParameter(arg, "delay=", delay) )  return 1;

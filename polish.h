@@ -23,6 +23,7 @@ Point pointsArray[MAX];
 int numTriangleVertices = 0;
 WORD* triangleIndexList;
 const int NAW = 50;  /// neighbourhood array width
+double currentTime = 0;   /// a tracker for how many timesteps have passed
 
 /// window size in pixels
 int winW = 1000;
