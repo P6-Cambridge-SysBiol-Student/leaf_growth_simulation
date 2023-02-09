@@ -21,13 +21,13 @@
 #include "param.h"
 #include "vector.h"
 #include "object.h"
+#include "hormone.h"
 #include "polish.h"
-#include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together (don't know how to do that lol)
+#include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together
 
 /// TODO cleanup graphics and all GLFW into graphics file, allows easier ifdef removal
 /// TODO Hormones simulation (simple & reaciton-diffusion)
 /// TODO fourier series for fitness function
-/// TODO
 
 ///-----------------------------------------------------------------------------
 

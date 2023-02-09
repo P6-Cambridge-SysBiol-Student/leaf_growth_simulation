@@ -14,7 +14,6 @@ double pixel = 1;    /// size of one pixel in GL units
 int nbo = 1600;    /// number of particles
 
 double delta = 0.00001;   /// currently useless
-double repulsionRadius = 0.15 * 100000;  /// radius of repulsion around a point (micrometers)
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 
