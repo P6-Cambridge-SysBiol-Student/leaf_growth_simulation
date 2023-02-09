@@ -426,7 +426,7 @@ int main(int argc, char *argv[]){
     glfwWindowHint(GLFW_DEPTH_BITS, 0);
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
-    
+
     GLFWwindow* win = glfwCreateWindow(winW, winH, "FRAP", NULL, NULL);
     if (!win)
     {
@@ -437,8 +437,8 @@ int main(int argc, char *argv[]){
     init(win);
 
 #if BENCHMARK
-    for (int i = 11; i < 16; i++) {
-        nbo = 200;
+    for (int i = 1; i < 11; i++) {
+        nbo = 100 * i;
         printf("Points to be simulated: %d\n", nbo);
         speedTest(1000, false, 10);
         printf("\n");
