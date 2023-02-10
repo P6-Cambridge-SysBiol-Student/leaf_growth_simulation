@@ -367,7 +367,7 @@ void calcHormConcn(){
     for (int i = 0; i < nbo; i++){
         /// calculate amount of hormone made by producers
         if (pointsArray[i].isHormoneProducer == true){
-            pointsArray[i].produceHormone();
+            pointsArray[i].produceHormone(hormone1ProdRate);
             pointsArray[i].degradeHormone();
         }
         else{
@@ -441,7 +441,7 @@ static void drawTrianglesAndPoints(){
 glEnd();
         /// overlay points on top
         for(int k = 0; k < nbo; k += 1) {
-            glPointSize(30);
+            glPointSize(20);
             glBegin(GL_POINTS);
             pointsArray[k].displayHormone();
             glEnd();

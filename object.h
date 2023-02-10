@@ -25,7 +25,7 @@ public:  /// these are attributes that can be called outside of the script
 
     bool isHormoneProducer = false;
     double myTotalHormone = 0;
-    double myMaxTotalHorm  = 2;  /// NOTE this is max as calculated by numeric integration, need more robust max value
+    double myMaxTotalHorm  = 2;  /// TODO i need a max value to scale
     double myDiffCoeff = 0;
     double myRateOfProd = 0;
     double myRateOfDeg = 0;
@@ -85,17 +85,26 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void produceHormone(){
+    void produceHormone(int inputProdRate){
+        myRateOfProd = inputProdRate;
         myTotalHormone += myRateOfProd;
+
     }
 
     void degradeHormone(){
         myTotalHormone += - myTotalHormone*myRateOfDeg;
     }
 
-    void displayHormone(){
-        double normHormConc = myTotalHormone / myMaxTotalHorm;
-        glColor4f((normHormConc), 0, 1-normHormConc, 1);
+    void displayHormone() {
+        if (isHormoneProducer == true) {
+            glColor4f(0, 1, 0, 1);
+        } // TODO fix the lack of graphics for showing hormones
+        else if(isHormoneProducer == false){
+            double normHormConc = (1 + myTotalHormone)/myMaxTotalHorm;
+            double sigmoidDenominator = pow(exp, -(myTotalHormone-5));
+            double squishedHormoneValue = 1 / (1 + pow(exp, -(myTotalHormone-5)));
+            glColor4f((normHormConc), 0, (1 - normHormConc), 1);
+        }
         glVertex2f(disVec.xx, disVec.yy);
     }
 
