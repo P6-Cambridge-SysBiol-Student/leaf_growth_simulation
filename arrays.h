@@ -8,7 +8,7 @@
 #include <string.h>
 #endif //FRAP_ARRAYS_H
 
-int** create2D_array(int rows, int cols) {  /// here rows  = nbo and cols = NAW
+int** create2Darray(int rows, int cols) {  /// here rows  = nbo and cols = NAW
 
     /// mallocing the memory for the pointers to each row
     int **arr = (int **) malloc(rows * sizeof(int *));
@@ -19,19 +19,20 @@ int** create2D_array(int rows, int cols) {  /// here rows  = nbo and cols = NAW
     return arr;
 }
 
-int* create_1D_array(int size) {
+int* create1Darray(int size) {
     int* array = (int*) malloc(size * sizeof(int));
     return array;
 }
 
 /// fill neighbourhood array with -1's
-void init2DArray(int** inputArrayPointer, int rows, int cols){
+void init2DArray(int** inputArrayPointer, int rows, int cols, int inputFillValue){
     for (int i = 0; i < rows; i++) {
-        memset(inputArrayPointer[i], -1, cols * sizeof(int));
+        memset(inputArrayPointer[i], inputFillValue, cols * sizeof(int));
     }
 }
 
-void init1DArray(int* input1DArrayPointer, int size){
-    memset(input1DArrayPointer, 0, size * sizeof(int));
+void init1DArray(int* input1DArrayPointer, int size, int inputFillValue){
+    memset(input1DArrayPointer, inputFillValue, size * sizeof(int));
 }
+
 
