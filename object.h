@@ -23,6 +23,7 @@ public:  /// these are attributes that can be called outside of the script
 
     /// members related to hormone function
 
+    bool isHormoneProducer = false;
     double myTotalHormone = 0;
     double myMaxTotalHorm  = 2;  /// NOTE this is max as calculated by numeric integration, need more robust max value
     double myDiffCoeff = 0;
@@ -84,13 +85,12 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void startMakeHormone(){
-        myRateOfProd = 0.02;
-        myRateOfDeg = 0.01;
+    void produceHormone(){
+        myTotalHormone += myRateOfProd;
     }
 
-    void calcHormoneConcn(){
-        myTotalHormone += myRateOfProd - myTotalHormone*myRateOfDeg;
+    void degradeHormone(){
+        myTotalHormone += - myTotalHormone*myRateOfDeg;
     }
 
     void displayHormone(){

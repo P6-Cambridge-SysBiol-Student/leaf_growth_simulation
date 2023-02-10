@@ -113,9 +113,9 @@ void fill2DArrayNeighbourhoods(int** neighbourhoods, int* total, int rows){
     printf("\n\n");
 #endif
         /// remove duplicates
-        for (int i = 0; i < rows; i++) {    /// for each row
-            for (int j = 0; j < (total[i]+1); j++) {   /// for each value in the row
-                for (int k = j+1; k < (total[i]+1); k++)  {    /// for each subsequent value until the end of filled elements
+        for (int i = 0; i < nbo; i++) {    /// for each row
+            for (int j = 0; j < (total[i]+1); j++) {    /// for each value in the row
+                for (int k = j+1; k < (total[i]+1); k++) {    /// for each subsequent value until the end of filled elements
                     if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are pairwise duplicates
                         for (int l = k; l < (total[i]+1); l++) {
                             neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// override duplicate and shift all values left
@@ -339,15 +339,15 @@ double trackTime(){
     return currentTime += timestep;
 }
 
-void includeHormone(double inputStartTime){
-    if (currentTime > inputStartTime){
+void startHormone(double inputStartTime){ /// TODO is bugged, needs to select one point as hormone producer only once
+    bool flag = false;
+    if ((currentTime > inputStartTime) and (flag == false)){
+        flag = true;
         /// find the point closest to the hormone Origin
-        printf("input start time reached\n");
         int closest_point_index = -1;
         double min_distance = 1000*1000*xBound;
-
         for (int i = 0; i < nbo; i++) {
-            double squareDisFromOrigin = (pointsArray[i].disVec - hormoneOrigin).magnitude_squared();
+            double squareDisFromOrigin = (pointsArray[i].disVec - hormone1Origin).magnitude_squared();
             if (squareDisFromOrigin < min_distance) {
                 min_distance = squareDisFromOrigin;
                 closest_point_index = i;
@@ -355,23 +355,43 @@ void includeHormone(double inputStartTime){
         }
     /// set this point as the hormone producer
     printf("closest point to hormone origin is %d\n", closest_point_index);
-    pointsArray[closest_point_index].startMakeHormone();
-    pointsArray[closest_point_index].calcHormoneConcn();
+    pointsArray[closest_point_index].isHormoneProducer = true;
     }
     else{
     }
 }
 
-/*
-void hormoneDiffuse(){
+/// every cell degrades hormone, only produces produce it
+/// this calculates the amount of production / degredation within cells
+void calcHormConcn(){
     for (int i = 0; i < nbo; i++){
-        /// calculate amount of "incoming" hormone diffusing into point
-        for (int n = 0; n < NAW; n++){
-            if (neighbourhoods[i][n] != -1)
+        /// calculate amount of hormone made by producers
+        if (pointsArray[i].isHormoneProducer == true){
+            pointsArray[i].produceHormone();
+            pointsArray[i].degradeHormone();
+        }
+        else{
+            pointsArray[i].degradeHormone();
         }
     }
 }
- */
+
+void diffuseHorm(int** neighbourhoods){
+    for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
+        for (int l = 0; l < NAW; l++) {
+            if (neighbourhoods[i][l] != -1) {
+                /// find the magnitude of distance between the neighbouring point and the central point
+                double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec -
+                                              pointsArray[i].disVec).magnitude();
+                /// give hormone from centre to neighbour based on Fick's law
+                double hormoneConcnDiff = pointsArray[i].myTotalHormone / pointsArray[neighbourhoods[i][l]].myTotalHormone;
+                double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
+                pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
+            }
+        }
+    }
+}
+
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
@@ -601,7 +621,6 @@ int main(int argc, char *argv[]){
             trackTime();
 
             create_triangles_list();
-
             int** neighbourhoods = create2Darray(nbo, NAW);
             init2DArray(neighbourhoods, nbo, NAW, -1);
             int* totalArray = create1Darray(nbo);
@@ -610,9 +629,14 @@ int main(int argc, char *argv[]){
             v3CalcSprings(neighbourhoods);
 
             iterateDisplace();
-            includeHormone(0.02);
+            startHormone(hormone1IntroTime);
+            calcHormConcn();
+            diffuseHorm(neighbourhoods);
+
             drawTrianglesAndPoints();
             printf("This is iteration: %d \n", interationNumber);
+
+
             free(triangleIndexList);
             free(neighbourhoods);
             free(totalArray);
