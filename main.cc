@@ -83,7 +83,7 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 }
 
 /// repels/attracts points to each other dependent on relative displacement
-int *newCalculateSpringForces(){
+void newCalculateSpringForces(){
 
     /// number of triangle vertices seems to average at 6 per point, setting to 15 for saftey
     /// NAW = neighbourhood array width
