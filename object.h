@@ -85,8 +85,8 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     void startMakeHormone(){
-        myRateOfProd = 0.2;
-        myRateOfDeg = 0.1;
+        myRateOfProd = 0.02;
+        myRateOfDeg = 0.01;
     }
 
     void calcHormoneConcn(){

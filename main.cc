@@ -251,7 +251,7 @@ void includeHormone(double inputStartTime){
         double min_distance = 1000*1000*xBound;
 
         for (int i = 0; i < nbo; i++) {
-            double squareDisFromOrigin = pow(pointsArray[i].disVec.xx, 2) + pow(pointsArray[i].disVec.yy, 2);
+            double squareDisFromOrigin = (pointsArray[i].disVec - hormoneOrigin).magnitude_squared();
             if (squareDisFromOrigin < min_distance) {
                 min_distance = squareDisFromOrigin;
                 closest_point_index = i;
@@ -314,7 +314,7 @@ static void drawTrianglesAndPoints(){
 glEnd();
         /// overlay points on top
         for(int k = 0; k < nbo; k += 1) {
-            glPointSize(10);
+            glPointSize(30);
             glBegin(GL_POINTS);
             pointsArray[k].displayHormone();
             glEnd();

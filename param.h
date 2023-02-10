@@ -13,13 +13,13 @@ double pixel = 1;    /// size of one pixel in GL units
 
 int nbo = 100;    /// number of particles
 double delta = 0.00001;   /// currently useless
-vector2D hormoneOrigin = vector2D(0,0);
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 
 double timestep = 0.0002; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 1; /// seed for random number generator
+vector2D hormoneOrigin = vector2D(0.5*xBound,0.5*xBound);
 
 
 double realTime = 0;     /// time in the simulated world
