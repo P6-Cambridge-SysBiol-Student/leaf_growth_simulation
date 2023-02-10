@@ -11,16 +11,15 @@
 class Hormone{
 public:
     /// member variables
-    double DiffCoeff, StartTime, initConcn, hormoneExpansionEffect, efficacy;
+    double DiffCoeff, rateOfProd, rateOfDeg, expandEffect, efficacy, currentConcn;
 
     /// constructor
-    Hormone(double inputDiffCoeff, double inputStartTime,
-            double inputInitConcn, double inputExpansion, double inputEfficacy) :
-
+    Hormone(double inputDiffCoeff, double inputProdRate, double inputExpansion, double inputEfficacy, double inputDegRate) :
             DiffCoeff(inputDiffCoeff),
-            StartTime(inputStartTime),
-            initConcn(inputInitConcn),
-            hormoneExpansionEffect(inputExpansion),
-            efficacy(inputEfficacy) {}
+            rateOfProd(inputProdRate),
+            rateOfDeg(inputDegRate),
+            expandEffect(inputExpansion),
+            efficacy(inputEfficacy)
+            {}
 };
 

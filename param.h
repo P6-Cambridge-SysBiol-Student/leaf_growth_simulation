@@ -12,8 +12,8 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 int nbo = 1600;    /// number of particles
-
 double delta = 0.00001;   /// currently useless
+vector2D hormoneOrigin = vector2D(0,0);
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 

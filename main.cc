@@ -18,8 +18,8 @@
 #include <vector>
 
 #include "random.h"
-#include "param.h"
 #include "vector.h"
+#include "param.h"
 #include "hormone.h"
 #include "object.h"
 #include "polish.h"
@@ -243,13 +243,27 @@ double trackTime(){
     return currentTime += timestep;
 }
 
-void includeHormone(Hormone inputHormone){
-    if (currentTime > inputHormone.timeOfHormoneStart){
-        Hormone inflationHormone =
+void includeHormone(double inputStartTime){
+    if (currentTime > inputStartTime){
+        /// find the point closest to the hormone Origin
+        int closest_point_index = -1;
+        double min_distance = 1000*xBound;
+
+        for (int i = 0; i < nbo; i++) {
+            double squareDisFromOrigin = pow(pointsArray[i].disVec.xx, 2) + pow(pointsArray[i].disVec.yy, 2);
+            if (squareDisFromOrigin < min_distance) {
+                min_distance = squareDisFromOrigin;
+                closest_point_index = i;
+            }
+        }
+    /// set this point as the hormone producer
+    pointsArray[closest_point_index].makeHormone();
+    pointsArray[closest_point_index].calcHormoneConcn();
     }
     else{
     }
 }
+
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
     glColor3f(0.5, 0.5, 0.5);

@@ -21,6 +21,15 @@ public:  /// these are attributes that can be called outside of the script
     double cellRadius;
     double cellMass;
 
+    /// members related to hormone function
+
+    double myTotalHormone = 0;
+    double myDiffCoeff = 0;
+    double myRateOfProd = 0;
+    double myRateOfDeg = 0;
+    double myExpandEffect = 0;
+    double myHormoneSensitivity = 0;
+
     /// initialize each point in a random position with random x and y velocities
     void reset()
     {
@@ -74,8 +83,16 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void beginHormoneProd(){
-        Hormone myHormone = Hormone(5, 0.02, 1, 3, 1);
+    void makeHormone(){
+        myRateOfProd = 1;
+    }
+
+    void calcHormoneConcn(){
+        myTotalHormone += myRateOfProd - myTotalHormone*myRateOfDeg;
+    }
+
+    void displayHormone(){
+        glColor4f();
     }
 
 
