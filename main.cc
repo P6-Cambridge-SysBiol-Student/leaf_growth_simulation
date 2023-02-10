@@ -83,7 +83,7 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 }
 
 /// repels/attracts points to each other dependent on relative displacement
-void newCalculateSpringForces(){
+int *newCalculateSpringForces(){
 
     /// number of triangle vertices seems to average at 6 per point, setting to 15 for saftey
     /// NAW = neighbourhood array width
@@ -190,6 +190,7 @@ void newCalculateSpringForces(){
             }
         }
     }
+
 }
 
 void oldCalculateSpringForces(){
@@ -265,6 +266,17 @@ void includeHormone(double inputStartTime){
     else{
     }
 }
+
+/*
+void hormoneDiffuse(){
+    for (int i = 0; i < nbo; i++){
+        /// calculate amount of "incoming" hormone diffusing into point
+        for (int n = 0; n < NAW; n++){
+            if (neighbourhoods[i][n] != -1)
+        }
+    }
+}
+ */
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
