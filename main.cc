@@ -82,8 +82,15 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
     }
 }
 
+/// create a neighbourhood array (seperated out from CalculateSpringForces function)
+
+
+
+
+
+
 /// repels/attracts points to each other dependent on relative displacement
-void newCalculateSpringForces(){
+ void newCalculateSpringForces(){
 
     /// number of triangle vertices seems to average at 6 per point, setting to 15 for saftey
     /// NAW = neighbourhood array width
@@ -430,6 +437,7 @@ void speedTest(int iterationNumber, bool useOldAlgo, int nboDesired){
         {
             create_triangles_list();
             if (useOldAlgo == true){
+                create_array(nbo, NAW)
                 oldCalculateSpringForces();
             }
             else{
