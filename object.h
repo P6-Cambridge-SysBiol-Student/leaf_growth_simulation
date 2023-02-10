@@ -11,7 +11,6 @@ class Point
 {
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
-    int color;
     vector2D disVec = vector2D(double (0.8*xBound*mySrand()), double (0.8*yBound*mySrand())); /// sets x and y values randomly
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
@@ -20,10 +19,12 @@ public:  /// these are attributes that can be called outside of the script
     double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadius;
     double cellMass;
+    int color;
 
     /// members related to hormone function
 
     double myTotalHormone = 0;
+    double myMaxTotalHorm  = 2;  /// NOTE this is max as calculated by numeric integration, need more robust max value
     double myDiffCoeff = 0;
     double myRateOfProd = 0;
     double myRateOfDeg = 0;
@@ -35,7 +36,7 @@ public:  /// these are attributes that can be called outside of the script
     {
       extendedHooks   = 0.3;
       compressedHooks = 3;
-      cellRadius = 1.5 * 100000; /// in micrometers
+      cellRadius = 10 * 100000; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
     }
@@ -83,8 +84,9 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void makeHormone(){
-        myRateOfProd = 1;
+    void startMakeHormone(){
+        myRateOfProd = 0.2;
+        myRateOfDeg = 0.1;
     }
 
     void calcHormoneConcn(){
@@ -92,7 +94,9 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     void displayHormone(){
-        glColor4f();
+        double normHormConc = myTotalHormone / myMaxTotalHorm;
+        glColor4f((normHormConc), 0, 1-normHormConc, 1);
+        glVertex2f(disVec.xx, disVec.yy);
     }
 
 

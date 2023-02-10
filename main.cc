@@ -246,8 +246,9 @@ double trackTime(){
 void includeHormone(double inputStartTime){
     if (currentTime > inputStartTime){
         /// find the point closest to the hormone Origin
+        printf("input start time reached\n");
         int closest_point_index = -1;
-        double min_distance = 1000*xBound;
+        double min_distance = 1000*1000*xBound;
 
         for (int i = 0; i < nbo; i++) {
             double squareDisFromOrigin = pow(pointsArray[i].disVec.xx, 2) + pow(pointsArray[i].disVec.yy, 2);
@@ -257,7 +258,8 @@ void includeHormone(double inputStartTime){
             }
         }
     /// set this point as the hormone producer
-    pointsArray[closest_point_index].makeHormone();
+    printf("closest point to hormone origin is %d\n", closest_point_index);
+    pointsArray[closest_point_index].startMakeHormone();
     pointsArray[closest_point_index].calcHormoneConcn();
     }
     else{
@@ -314,7 +316,7 @@ glEnd();
         for(int k = 0; k < nbo; k += 1) {
             glPointSize(10);
             glBegin(GL_POINTS);
-            pointsArray[k].displayWhite();
+            pointsArray[k].displayHormone();
             glEnd();
         }
     }
@@ -479,9 +481,11 @@ int main(int argc, char *argv[]){
         {
             interationNumber++;
             next += delay/100000;
+            trackTime();
             create_triangles_list();
             newCalculateSpringForces();
             iterateDisplace();
+            includeHormone(0.02);
             drawTrianglesAndPoints();
             printf("This is iteration: %d \n", interationNumber);
             free(triangleIndexList);
