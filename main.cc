@@ -369,6 +369,7 @@ void calcHormConcn(){
         if (pointsArray[i].isHormoneProducer == true){
             pointsArray[i].produceHormone(hormone1ProdRate);
             pointsArray[i].degradeHormone();
+            printf("Point %d has a hormone concn of %f\n", i, pointsArray[i].myTotalHormone);
         }
         else{
             pointsArray[i].degradeHormone();
