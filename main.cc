@@ -340,7 +340,7 @@ double trackTime(){
 }
 
 void startHormone(double inputStartTime){ /// TODO is bugged, needs to select one point as hormone producer only once
-    bool flag = false;
+    static bool flag = false;
     if ((currentTime > inputStartTime) and (flag == false)){
         flag = true;
         /// find the point closest to the hormone Origin
