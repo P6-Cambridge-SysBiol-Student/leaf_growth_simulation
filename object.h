@@ -85,18 +85,18 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void produceHormone(int inputProdRate){
+    void produceHormone(double inputProdRate){
         myRateOfProd = inputProdRate;
         myTotalHormone += myRateOfProd;
     }
 
-    void degradeHormone(){
-        myTotalHormone -= myTotalHormone*myRateOfDeg;
+    void degradeHormone(double inputDegRate){
+        myTotalHormone -= myTotalHormone*inputDegRate;
     }
 
 
     void displayHormone() {
-        double sigmoidHormConc = sigmoid(myTotalHormone-5);
+        double sigmoidHormConc = sigmoid((4*myTotalHormone)-5); /// this shifts curve so that color scales from 0 to 1
         glColor4f((sigmoidHormConc), 0, (1 - sigmoidHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }

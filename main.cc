@@ -368,11 +368,11 @@ void calcHormConcn(){
         /// calculate amount of hormone made by producers
         if (pointsArray[i].isHormoneProducer == true){
             pointsArray[i].produceHormone(hormone1ProdRate);
-            pointsArray[i].degradeHormone();
+            pointsArray[i].degradeHormone(hormone1DegRate);
             printf("Point %d has a hormone concn of %f\n", i, pointsArray[i].myTotalHormone);
         }
         else{
-            pointsArray[i].degradeHormone();
+            pointsArray[i].degradeHormone(hormone1DegRate);
         }
     }
 }
