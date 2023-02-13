@@ -643,7 +643,6 @@ int main(int argc, char *argv[]){
             startHormone(hormone1IntroTime);
             calcHormConcn();
             printf("Cell with Most hormone is %d \n", findMaxHormone());
-            diffuseHorm(neighbourhoods);
 
             drawTrianglesAndPoints();
             printf("This is iteration: %d \n", interationNumber);

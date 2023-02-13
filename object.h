@@ -94,13 +94,10 @@ public:  /// these are attributes that can be called outside of the script
         myTotalHormone -= myTotalHormone*myRateOfDeg;
     }
 
-    void trackMaxHormone(){
-
-    }
 
     void displayHormone() {
-            double sigmoidHormConc = sigmoid(myTotalHormone+5);
-            glColor4f((sigmoidHormConc), 0, (1 - sigmoidHormConc), 1);
+        double sigmoidHormConc = sigmoid(myTotalHormone-5);
+        glColor4f((sigmoidHormConc), 0, (1 - sigmoidHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
 
