@@ -25,7 +25,7 @@ double hormone1ProdRate = 0.5;
 double hormone1DegRate = 0.25;
 double hormone1IntroTime = 0.1;
 vector2D hormone1Origin = vector2D(0.20*xBound,0.24*xBound);
-double hormone1DiffCoeff = 1000;
+double hormone1DiffCoeff = 10 * SCALING_FACTOR;
 
 
 double realTime = 0;     /// time in the simulated world

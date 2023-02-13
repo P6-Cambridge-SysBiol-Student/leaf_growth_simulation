@@ -381,17 +381,22 @@ void diffuseHorm(int** neighbourhoods){
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
         for (int l = 0; l < NAW; l++) {
             if (neighbourhoods[i][l] != -1) {
+
                 /// find the magnitude of distance between the neighbouring point and the central point
-                double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec -
-                                              pointsArray[i].disVec).magnitude();
+                double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec - pointsArray[i].disVec).magnitude();
                 printf("magnitudeOfDistance of %d to %d is %f\n", i , l, magnitudeOfDistance);
-                /// give hormone from centre to neighbour based on Fick's law
+
+                /// find difference in hormone amount between cells
                 double hormoneConcnDiff = pointsArray[i].myTotalHormone - pointsArray[neighbourhoods[i][l]].myTotalHormone;
                 printf("HormoneConcnDiff for %d to %d is %f\n", i, l, hormoneConcnDiff);
-                double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance * SCALING;
-                printf("HormoneConcGrad for above is %f\n\n", hormoneConcnGrad);
-                /// diffuse the hormone from the centre to neighbour
-                pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
+
+                if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is heigher
+                    double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
+                    printf("HormoneConcGrad for above is %f\n", hormoneConcnGrad);
+                    /// diffuse the hormone from the centre to neighbour
+                    pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
+                    printf("amount of hormone lost through this = %f \n\n", pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad);
+                }
 
             }
         }
