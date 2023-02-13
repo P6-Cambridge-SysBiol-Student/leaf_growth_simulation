@@ -384,23 +384,22 @@ void diffuseHorm(int** neighbourhoods){
 
                 /// find the magnitude of distance between the neighbouring point and the central point
                 double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec - pointsArray[i].disVec).magnitude();
-                printf("magnitudeOfDistance of %d to %d is %f\n", i , l, magnitudeOfDistance);
 
                 /// find difference in hormone amount between cells
                 double hormoneConcnDiff = pointsArray[i].myTotalHormone - pointsArray[neighbourhoods[i][l]].myTotalHormone;
-                printf("HormoneConcnDiff for %d to %d is %f\n", i, l, hormoneConcnDiff);
 
                 if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is heigher
                     double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
-                    printf("HormoneConcGrad for above is %f\n", hormoneConcnGrad);
                     /// diffuse the hormone from the centre to neighbour
                     pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
-                    printf("amount of hormone lost through this = %f \n\n", pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad);
+                    printf("amount of hormone %d has lost through this = %f \n", i, pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad);
                 }
 
             }
         }
+    printf("The hormone level of %d is %f\n\n", i, pointsArray[i].myTotalHormone);
     }
+
 }
 
 int findMaxHormone(){
@@ -462,14 +461,14 @@ static void drawTrianglesAndPoints(){
 glEnd();
         /// overlay points on top
         for(int k = 0; k < nbo; k += 1) {
-            glPointSize(20);
+            glPointSize(30);
             glBegin(GL_POINTS);
-            pointsArray[k].displayHormone();
+            pointsArray[k].linearDisplayHormone();
             glEnd();
         }
     }
 
-    printf("draw @ %f\n", realTime);
+    printf("\ndraw @ %f\n", realTime);
     glFlush();
 }
 
@@ -651,12 +650,12 @@ int main(int argc, char *argv[]){
 
             iterateDisplace();
             startHormone(hormone1IntroTime);
-            calcHormConcn();
             diffuseHorm(neighbourhoods);
+            calcHormConcn();
             printf("Cell with Most hormone is %d \n", findMaxHormone());
 
             drawTrianglesAndPoints();
-            printf("This is iteration: %d \n", interationNumber);
+            printf("This is iteration: %d \n\n\n", interationNumber);
 
 
             free(triangleIndexList);

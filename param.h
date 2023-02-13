@@ -12,20 +12,20 @@ double xBound = 50 * SCALING_FACTOR;   /// half-width of box (X) in micrometers.
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 3;    /// number of particles
+int nbo = 100;    /// number of particles
 double delta = 0.00001;   /// currently useless
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 
-double timestep = 0.0007; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
+double timestep = 0.00008; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 1; /// seed for random number generator
 
-double hormone1ProdRate = 0.5;
-double hormone1DegRate = 0.25;
-double hormone1IntroTime = 0.1;
+double hormone1ProdRate = 1;
+double hormone1DegRate = 0.02;
+double hormone1IntroTime = 0.015;
 vector2D hormone1Origin = vector2D(0.20*xBound,0.24*xBound);
-double hormone1DiffCoeff = 10 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.02 * SCALING_FACTOR;
 
 
 double realTime = 0;     /// time in the simulated world

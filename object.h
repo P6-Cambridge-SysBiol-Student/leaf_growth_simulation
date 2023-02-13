@@ -37,7 +37,7 @@ public:  /// these are attributes that can be called outside of the script
     {
       extendedHooks   = 0.3;
       compressedHooks = 3;
-      cellRadius = 10 * 100000; /// in micrometers
+      cellRadius = 8 * SCALING_FACTOR; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
     }
@@ -95,11 +95,18 @@ public:  /// these are attributes that can be called outside of the script
     }
 
 
-    void displayHormone() {
-        double sigmoidHormConc = sigmoid((4*myTotalHormone)-5); /// this shifts curve so that color scales from 0 to 1
+    void sigmoidDisplayHormone() {
+        double sigmoidHormConc = sigmoid((12*myTotalHormone)-5); /// this shifts curve so that color scales from 0 to 1
         glColor4f((sigmoidHormConc), 0, (1 - sigmoidHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
+
+    void linearDisplayHormone() {
+        double linearHormConc = myTotalHormone / 1;
+        glColor4f((linearHormConc), (0.7/linearHormConc), (1 - linearHormConc), 1);
+        glVertex2f(disVec.xx, disVec.yy);
+    }
+
 
 
     /* ignoring mitosis for now, focusing on morphogens
