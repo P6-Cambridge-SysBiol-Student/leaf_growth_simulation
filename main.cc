@@ -393,6 +393,16 @@ void diffuseHorm(int** neighbourhoods){
     }
 }
 
+int findMaxHormone(){
+    int maxPointer = 0;
+    for (int i = 0; i<nbo; i++){
+        if (pointsArray[i].myTotalHormone > pointsArray[maxPointer].myTotalHormone){
+            maxPointer = i;
+        }
+    }
+    return maxPointer;
+}
+
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
@@ -632,6 +642,7 @@ int main(int argc, char *argv[]){
             iterateDisplace();
             startHormone(hormone1IntroTime);
             calcHormConcn();
+            printf("Cell with Most hormone is %d \n", findMaxHormone());
             diffuseHorm(neighbourhoods);
 
             drawTrianglesAndPoints();
