@@ -384,10 +384,15 @@ void diffuseHorm(int** neighbourhoods){
                 /// find the magnitude of distance between the neighbouring point and the central point
                 double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec -
                                               pointsArray[i].disVec).magnitude();
+                printf("magnitudeOfDistance of %d to %d is %f\n", i , l, magnitudeOfDistance);
                 /// give hormone from centre to neighbour based on Fick's law
-                double hormoneConcnDiff = pointsArray[i].myTotalHormone / pointsArray[neighbourhoods[i][l]].myTotalHormone;
-                double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
+                double hormoneConcnDiff = pointsArray[i].myTotalHormone - pointsArray[neighbourhoods[i][l]].myTotalHormone;
+                printf("HormoneConcnDiff for %d to %d is %f\n", i, l, hormoneConcnDiff);
+                double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance * SCALING;
+                printf("HormoneConcGrad for above is %f\n\n", hormoneConcnGrad);
+                /// diffuse the hormone from the centre to neighbour
                 pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
+
             }
         }
     }
@@ -642,6 +647,7 @@ int main(int argc, char *argv[]){
             iterateDisplace();
             startHormone(hormone1IntroTime);
             calcHormConcn();
+            diffuseHorm(neighbourhoods);
             printf("Cell with Most hormone is %d \n", findMaxHormone());
 
             drawTrianglesAndPoints();
