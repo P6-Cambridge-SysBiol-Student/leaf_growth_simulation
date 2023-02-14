@@ -382,18 +382,22 @@ void diffuseHorm(int** neighbourhoods){
         for (int l = 0; l < NAW; l++) {
             Point& neighbour = pointsArray[neighbourhoods[i][l]];
             if (neighbourhoods[i][l] != -1) {
+                /// using squared magnitudes here is computationally faster
+                if ((neighbour.disVec - centre.disVec).magnitude_squared() < (0.2*centre.cellRadius * 0.2*centre.cellRadius)){
+                }
+                else{
+                    /// find the magnitude of distance between the neighbouring point and the central point
+                    double magnitudeOfDistance = (neighbour.disVec - centre.disVec).magnitude();
 
-                /// find the magnitude of distance between the neighbouring point and the central point
-                double magnitudeOfDistance = (neighbour.disVec - centre.disVec).magnitude();
+                    /// find difference in hormone amount between cells
+                    double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
 
-                /// find difference in hormone amount between cells
-                double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
-
-                if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
-                    double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
-                    /// diffuse the hormone from the centre to neighbour
-                    neighbour.myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
-                    centre.myTotalHormone -= hormone1DiffCoeff * hormoneConcnGrad;
+                    if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
+                        double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
+                        /// diffuse the hormone from the centre to neighbour
+                        neighbour.myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
+                        centre.myTotalHormone -= hormone1DiffCoeff * hormoneConcnGrad;
+                    }
                 }
             }
         }
