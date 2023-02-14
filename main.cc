@@ -339,7 +339,7 @@ double trackTime(){
     return currentTime += timestep;
 }
 
-void startHormone(double inputStartTime){ /// TODO is bugged, needs to select one point as hormone producer only once
+void startHormone(double inputStartTime){
     static bool flag = false;
     if ((currentTime > inputStartTime) and (flag == false)){
         flag = true;
@@ -354,7 +354,6 @@ void startHormone(double inputStartTime){ /// TODO is bugged, needs to select on
             }
         }
     /// set this point as the hormone producer
-    printf("closest point to hormone origin is %d\n", closest_point_index);
     pointsArray[closest_point_index].isHormoneProducer = true;
     }
     else{
@@ -369,7 +368,6 @@ void calcHormConcn(){
         if (pointsArray[i].isHormoneProducer == true){
             pointsArray[i].produceHormone(hormone1ProdRate);
             pointsArray[i].degradeHormone(hormone1DegRate);
-            printf("Point %d has a hormone concn of %f\n", i, pointsArray[i].myTotalHormone);
         }
         else{
             pointsArray[i].degradeHormone(hormone1DegRate);
@@ -393,13 +391,11 @@ void diffuseHorm(int** neighbourhoods){
                     /// diffuse the hormone from the centre to neighbour
                     pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
                     pointsArray[i].myTotalHormone -= hormone1DiffCoeff * hormoneConcnGrad;
-                    printf("amount of hormone %d has lost through this = %f \n", i,
-                           pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad);
+                    pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
                 }
 
             }
         }
-    printf("The hormone level of %d is %f\n\n", i, pointsArray[i].myTotalHormone);
     }
 
 }
