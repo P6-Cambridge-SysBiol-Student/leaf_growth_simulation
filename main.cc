@@ -164,14 +164,18 @@ void v3CalcSprings(int** neighbourhoods){
                     /// aka point exists outside of the repulsion radius of neighbour it is attracted
                     centre.springVec += (neighbour.disVec - (centre.disVec))
                                         * (deltaMagnitude/magnitudeOfDistance) * centre.extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
+                    neighbour.springVec -= (neighbour.disVec - (centre.disVec))
+                                           * (deltaMagnitude/magnitudeOfDistance) * centre.extendedHooks;
                 }
                 else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.95*centre.cellRadius)){
                     /// aka point exists just within the radius of the neighbouring point and is repelled
                     centre.springVec -= ((neighbour.disVec) - (centre.disVec)) * centre.compressedHooks;
+                    neighbour.springVec += ((neighbour.disVec) - (centre.disVec)) * centre.compressedHooks;
                 }
                 else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.95*centre.cellRadius)) {
                     /// aka point exists just very far within the radius of the neighbouring point and is repelled strongly
                     centre.springVec -= ((neighbour.disVec) - (centre.disVec)) * centre.innerCompressedHooks;
+                    neighbour.springVec += ((neighbour.disVec) - (centre.disVec)) * centre.innerCompressedHooks;
                 }
             }
         }
