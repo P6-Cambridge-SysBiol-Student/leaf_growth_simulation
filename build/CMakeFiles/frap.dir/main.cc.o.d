@@ -118,6 +118,8 @@ CMakeFiles/frap.dir/main.cc.o: \
  /usr/include/c++/11/bits/range_access.h \
  /usr/include/c++/11/bits/vector.tcc \
  /home/finley/SLCU/frapc_with_triangles/random.h \
+ /home/finley/SLCU/frapc_with_triangles/arrays.h \
+ /home/finley/SLCU/frapc_with_triangles/vector.h \
  /home/finley/SLCU/frapc_with_triangles/param.h \
  /usr/include/c++/11/sstream /usr/include/c++/11/istream \
  /usr/include/c++/11/ios /usr/include/c++/11/iosfwd \
@@ -181,8 +183,9 @@ CMakeFiles/frap.dir/main.cc.o: \
  /usr/include/c++/11/bits/ostream.tcc \
  /usr/include/c++/11/bits/istream.tcc \
  /usr/include/c++/11/bits/sstream.tcc \
- /home/finley/SLCU/frapc_with_triangles/vector.h \
+ /home/finley/SLCU/frapc_with_triangles/hormone.h \
  /home/finley/SLCU/frapc_with_triangles/object.h \
+ /home/finley/SLCU/frapc_with_triangles/sigmoid.h \
  /home/finley/SLCU/frapc_with_triangles/polish.h \
  /home/finley/SLCU/frapc_with_triangles/Clarkson-Delaunay.cpp \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \

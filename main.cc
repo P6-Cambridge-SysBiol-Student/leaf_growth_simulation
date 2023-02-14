@@ -166,10 +166,10 @@ void v3CalcSprings(int** neighbourhoods){
                     /// aka point exists just within the radius of the neighbouring point and is repelled
                     pointsArray[i].springVec -= ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * pointsArray[i].compressedHooks;
                 }
-                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.1*pointsArray[i].cellRadius)) {
+                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.5*pointsArray[i].cellRadius)) {
                     /// aka point exists just very far within the radius of the neighbouring point and is repelled strongly
                     pointsArray[i].springVec -=
-                            ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * 30 *
+                            ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * 50 *
                             pointsArray[i].compressedHooks;
                 }
             }
@@ -388,11 +388,13 @@ void diffuseHorm(int** neighbourhoods){
                 /// find difference in hormone amount between cells
                 double hormoneConcnDiff = pointsArray[i].myTotalHormone - pointsArray[neighbourhoods[i][l]].myTotalHormone;
 
-                if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is heigher
+                if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
                     double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
                     /// diffuse the hormone from the centre to neighbour
                     pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
-                    printf("amount of hormone %d has lost through this = %f \n", i, pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad);
+                    pointsArray[i].myTotalHormone -= hormone1DiffCoeff * hormoneConcnGrad;
+                    printf("amount of hormone %d has lost through this = %f \n", i,
+                           pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad);
                 }
 
             }
@@ -461,7 +463,7 @@ static void drawTrianglesAndPoints(){
 glEnd();
         /// overlay points on top
         for(int k = 0; k < nbo; k += 1) {
-            glPointSize(30);
+            glPointSize(12);
             glBegin(GL_POINTS);
             pointsArray[k].linearDisplayHormone();
             glEnd();
@@ -650,8 +652,8 @@ int main(int argc, char *argv[]){
 
             iterateDisplace();
             startHormone(hormone1IntroTime);
-            diffuseHorm(neighbourhoods);
             calcHormConcn();
+            diffuseHorm(neighbourhoods);
             printf("Cell with Most hormone is %d \n", findMaxHormone());
 
             drawTrianglesAndPoints();

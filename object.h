@@ -36,8 +36,8 @@ public:  /// these are attributes that can be called outside of the script
     void reset()
     {
       extendedHooks   = 0.3;
-      compressedHooks = 3;
-      cellRadius = 8 * SCALING_FACTOR; /// in micrometers
+      compressedHooks = 5;
+      cellRadius = 2 * SCALING_FACTOR; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
     }
