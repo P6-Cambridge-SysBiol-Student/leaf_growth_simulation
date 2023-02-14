@@ -290,9 +290,9 @@ void v2CalcSprings(){
         }
     }
 
-}
+} /// currently deprecated (needs pairwise interactions & aliases)
 
-void v1CalcSprings(){
+void v1CalcSprings(){  /// currently deprecated (needs pairwise interactions & aliases)
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
 
         int pointsConnected[MAX]; /// create an array for the neighbours of a primary point

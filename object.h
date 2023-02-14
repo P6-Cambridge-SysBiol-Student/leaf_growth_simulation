@@ -64,7 +64,6 @@ public:  /// these are attributes that can be called outside of the script
     /// make a step in the given direction
     void step(){
         /// change the velocity depending on the acceleration
-        /// TODO the value given to
         disVec += (timestep/(mobilityCoefficient * cellRadius/100000)) * springVec;
     }
 
