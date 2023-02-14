@@ -165,11 +165,11 @@ void v3CalcSprings(int** neighbourhoods){
                     centre.springVec += (neighbour.disVec - (centre.disVec))
                                         * (deltaMagnitude/magnitudeOfDistance) * centre.extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                 }
-                else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.6*centre.cellRadius)){
+                else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.95*centre.cellRadius)){
                     /// aka point exists just within the radius of the neighbouring point and is repelled
                     centre.springVec -= ((neighbour.disVec) - (centre.disVec)) * centre.compressedHooks;
                 }
-                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.6*centre.cellRadius)) {
+                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.95*centre.cellRadius)) {
                     /// aka point exists just very far within the radius of the neighbouring point and is repelled strongly
                     centre.springVec -= ((neighbour.disVec) - (centre.disVec)) * centre.innerCompressedHooks;
                 }
@@ -413,7 +413,8 @@ int findMaxHormone(){
 
 void hormoneExpandEffect(){
     for (int i = 0; i < nbo; i++){
-
+    Point& centre = pointsArray[i];
+    centre.cellRadius = centre.cellRadiusBase + (hormEfficacy * centre.myTotalHormone * SCALING_FACTOR);
     }
 }
 
@@ -465,7 +466,7 @@ static void drawTrianglesAndPoints(){
 glEnd();
         /// overlay points on top
         for(int k = 0; k < nbo; k += 1) {
-            glPointSize(17);
+            glPointSize(12);
             glBegin(GL_POINTS);
             pointsArray[k].linearDisplayHormone();
             glEnd();
@@ -656,10 +657,10 @@ int main(int argc, char *argv[]){
             startHormone(hormone1IntroTime);
             calcHormConcn();
             diffuseHorm(neighbourhoods);
-            printf("Cell with Most hormone is %d \n", findMaxHormone());
+            hormoneExpandEffect();
 
             drawTrianglesAndPoints();
-            printf("This is iteration: %d \n\n\n", interationNumber);
+            // printf("This is iteration: %d \n\n\n", interationNumber);
 
 
             free(triangleIndexList);
