@@ -36,8 +36,8 @@ public:  /// these are attributes that can be called outside of the script
     void reset()
     {
       extendedHooks   = 0.3;
-      compressedHooks = 5;
-      cellRadius = 2 * SCALING_FACTOR; /// in micrometers
+      compressedHooks = 6;
+      cellRadius = 4 * SCALING_FACTOR; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
     }
@@ -102,7 +102,7 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     void linearDisplayHormone() {
-        double linearHormConc = myTotalHormone / 1;
+        double linearHormConc = myTotalHormone / 1.5;
         glColor4f((linearHormConc), (0.7/linearHormConc), (1 - linearHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }

@@ -154,7 +154,7 @@ void v3CalcSprings(int** neighbourhoods){
 #if DEBUG
                 printf("deltaMag for %d to %d is %f \n", i, (neighbourhoods[i][l]), magnitudeOfDistance);
 #endif
-                if ((deltaMagnitude > 3*pointsArray[i].cellRadius)) {
+                if ((deltaMagnitude > breakSpringCoeff*pointsArray[i].cellRadius)) {
                     /// do nothing, the connection is ignored (need to show this in graphics somehow)
                 }
                 else if ((deltaMagnitude > 0)){
@@ -162,14 +162,14 @@ void v3CalcSprings(int** neighbourhoods){
                     pointsArray[i].springVec += (pointsArray[neighbourhoods[i][l]].disVec - (pointsArray[i].disVec))
                                                 * (deltaMagnitude/magnitudeOfDistance) * pointsArray[i].extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                 }
-                else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.5*pointsArray[i].cellRadius)){
+                else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.7*pointsArray[i].cellRadius)){
                     /// aka point exists just within the radius of the neighbouring point and is repelled
                     pointsArray[i].springVec -= ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * pointsArray[i].compressedHooks;
                 }
-                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.5*pointsArray[i].cellRadius)) {
+                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.7*pointsArray[i].cellRadius)) {
                     /// aka point exists just very far within the radius of the neighbouring point and is repelled strongly
                     pointsArray[i].springVec -=
-                            ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * 50 *
+                            ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * 30 *
                             pointsArray[i].compressedHooks;
                 }
             }
@@ -345,11 +345,11 @@ void startHormone(double inputStartTime){
         flag = true;
         /// find the point closest to the hormone Origin
         int closest_point_index = -1;
-        double min_distance = 1000*1000*xBound;
+        double squareMinDist = 1000*1000*xBound;
         for (int i = 0; i < nbo; i++) {
             double squareDisFromOrigin = (pointsArray[i].disVec - hormone1Origin).magnitude_squared();
-            if (squareDisFromOrigin < min_distance) {
-                min_distance = squareDisFromOrigin;
+            if (squareDisFromOrigin < squareMinDist) {
+                squareMinDist = squareDisFromOrigin;
                 closest_point_index = i;
             }
         }
@@ -459,7 +459,7 @@ static void drawTrianglesAndPoints(){
 glEnd();
         /// overlay points on top
         for(int k = 0; k < nbo; k += 1) {
-            glPointSize(12);
+            glPointSize(17);
             glBegin(GL_POINTS);
             pointsArray[k].linearDisplayHormone();
             glEnd();
