@@ -141,20 +141,16 @@ void fill2DArrayNeighbourhoods(int** neighbourhoods, int* total, int rows){
 #endif
 }
 
-void hormoneImpact(){
-    for (int i = 0; i < nbo; i++){
-
-    }
-}
-
+/// repels/attracts points to each other dependent on relative displacement
+/// currently only v3 has aliases
 void v3CalcSprings(int** neighbourhoods){
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
-        Point& centre = pointsArray[i]; // alias for pointsArray[i]
+        Point& centre = pointsArray[i]; /// alias for pointsArray[i]
         pointsArray[i].springVec.setZeros(); /// set spring forces to 0
 
         for (int l = 0; l < NAW; l++) {
             if (neighbourhoods[i][l] != -1){
-                Point& neighbour = pointsArray[neighbourhoods[i][l]]; // alias for pointsArray[neighbourhoods[i][l]]
+                Point& neighbour = pointsArray[neighbourhoods[i][l]]; /// alias for pointsArray[neighbourhoods[i][l]]
                 /// find the magnitude of distance between the neighbouring point and the central point
                 double magnitudeOfDistance = (neighbour.disVec - centre.disVec).magnitude();
                 double deltaMagnitude = magnitudeOfDistance - centre.cellRadius;
@@ -169,21 +165,19 @@ void v3CalcSprings(int** neighbourhoods){
                     centre.springVec += (neighbour.disVec - (centre.disVec))
                                         * (deltaMagnitude/magnitudeOfDistance) * centre.extendedHooks;  /// deltaMag/Mag is needed to scale the x component to only that outside the radius of equilibrium
                 }
-                else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.7*centre.cellRadius)){
+                else if ((deltaMagnitude < 0) and (deltaMagnitude > -0.6*centre.cellRadius)){
                     /// aka point exists just within the radius of the neighbouring point and is repelled
                     centre.springVec -= ((neighbour.disVec) - (centre.disVec)) * centre.compressedHooks;
                 }
-                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.7*centre.cellRadius)) {
+                else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.6*centre.cellRadius)) {
                     /// aka point exists just very far within the radius of the neighbouring point and is repelled strongly
-                    centre.springVec -= ((neighbour.disVec) - (centre.disVec)) * 30 * centre.compressedHooks;
+                    centre.springVec -= ((neighbour.disVec) - (centre.disVec)) * centre.innerCompressedHooks;
                 }
             }
         }
     }
 }
 
-
-/// repels/attracts points to each other dependent on relative displacement
 void v2CalcSprings(){
 
     /// number of triangle vertices seems to average at 6 per point, setting to 15 for saftey
@@ -285,7 +279,7 @@ void v2CalcSprings(){
                 else if ((deltaMagnitude < 0) and (deltaMagnitude < -0.1*pointsArray[i].cellRadius)) {
                     /// aka point exists just very far within the radius of the neighbouring point and is repelled strongly
                     pointsArray[i].springVec -=
-                            ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * 30 *
+                            ((pointsArray[neighbourhoods[i][l]].disVec) - (pointsArray[i].disVec)) * 20 *
                             pointsArray[i].compressedHooks;
                 }
             }
@@ -383,23 +377,24 @@ void calcHormConcn(){
 
 void diffuseHorm(int** neighbourhoods){
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
+        Point& centre = pointsArray[i]; /// alias for pointsArray[i]
+
         for (int l = 0; l < NAW; l++) {
+            Point& neighbour = pointsArray[neighbourhoods[i][l]];
             if (neighbourhoods[i][l] != -1) {
 
                 /// find the magnitude of distance between the neighbouring point and the central point
-                double magnitudeOfDistance = (pointsArray[neighbourhoods[i][l]].disVec - pointsArray[i].disVec).magnitude();
+                double magnitudeOfDistance = (neighbour.disVec - centre.disVec).magnitude();
 
                 /// find difference in hormone amount between cells
-                double hormoneConcnDiff = pointsArray[i].myTotalHormone - pointsArray[neighbourhoods[i][l]].myTotalHormone;
+                double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
 
                 if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
                     double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
                     /// diffuse the hormone from the centre to neighbour
-                    pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
-                    pointsArray[i].myTotalHormone -= hormone1DiffCoeff * hormoneConcnGrad;
-                    pointsArray[neighbourhoods[i][l]].myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
+                    neighbour.myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
+                    centre.myTotalHormone -= hormone1DiffCoeff * hormoneConcnGrad;
                 }
-
             }
         }
     }
@@ -416,6 +411,11 @@ int findMaxHormone(){
     return maxPointer;
 }
 
+void hormoneExpandEffect(){
+    for (int i = 0; i < nbo; i++){
+
+    }
+}
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){

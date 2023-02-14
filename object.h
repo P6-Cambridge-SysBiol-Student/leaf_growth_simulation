@@ -17,7 +17,7 @@ public:  /// these are attributes that can be called outside of the script
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     vector2D mitosisOrient = vector2D(1, 1);
 
-    double extendedHooks, compressedHooks;  /// hooks constant for attracting points back to the centre
+    double extendedHooks, compressedHooks, innerCompressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadius;
     double cellMass;
     int color;
@@ -37,6 +37,7 @@ public:  /// these are attributes that can be called outside of the script
     {
       extendedHooks   = 0.3;
       compressedHooks = 6;
+      innerCompressedHooks = 40 * compressedHooks;
       cellRadius = 4 * SCALING_FACTOR; /// in micrometers
       cellMass = 1; /// in nanograms
       color = 1;
