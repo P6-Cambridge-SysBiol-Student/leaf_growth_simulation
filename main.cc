@@ -149,7 +149,7 @@ void v3CalcSprings(int** neighbourhoods){
         pointsArray[i].springVec.setZeros(); /// set spring forces to 0
 
         for (int l = 0; l < NAW; l++) {
-            if (neighbourhoods[i][l] != -1){
+            while (neighbourhoods[i][l] != -1){
                 Point& neighbour = pointsArray[neighbourhoods[i][l]]; /// alias for pointsArray[neighbourhoods[i][l]]
                 /// find the magnitude of distance between the neighbouring point and the central point
                 double magnitudeOfDistance = (neighbour.disVec - centre.disVec).magnitude();
