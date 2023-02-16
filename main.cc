@@ -368,13 +368,14 @@ void startHormone(double inputStartTime){
 /// this calculates the amount of production / degredation within cells
 void calcHormConcn(){
     for (int i = 0; i < nbo; i++){
+        Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
-        if (pointsArray[i].isHormoneProducer == true){
-            pointsArray[i].produceHormone(hormone1ProdRate);
-            pointsArray[i].degradeHormone(hormone1DegRate);
+        if (cell.isHormoneProducer == true){
+            cell.produceHormone(hormone1ProdRate);
+            cell.degradeHormone(hormone1DegRate);
         }
         else{
-            pointsArray[i].degradeHormone(hormone1DegRate);
+            cell.degradeHormone(hormone1DegRate);
         }
     }
 }
@@ -387,11 +388,11 @@ void diffuseHorm(int** neighbourhoods){
             Point& neighbour = pointsArray[neighbourhoods[i][l]];
             if (neighbourhoods[i][l] != -1) {
                 /// using squared magnitudes here is computationally faster
-                if ((neighbour.disVec - centre.disVec).magnitude_squared() < (0.05*centre.cellRadius * 0.2*centre.cellRadius)){
-                }
+                if ((neighbour.disVec - centre.disVec).magnitude_squared() < (0.2*centre.cellRadius * 0.2*centre.cellRadius)){
+                } /// stops diffusion if points overlap
                 else{
                     /// find the magnitude of distance between the neighbouring point and the central point
-                    double magnitudeOfDistance = (neighbour.disVec - centre.disVec).magnitude();
+                    double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude();
 
                     /// find difference in hormone amount between cells
                     double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
@@ -669,8 +670,8 @@ int main(int argc, char *argv[]){
 
             iterateDisplace();
             startHormone(hormone1IntroTime);
-            calcHormConcn();
             diffuseHorm(neighbourhoods);
+            calcHormConcn();
             //hormoneExpandEffect();
 
             drawTrianglesAndPoints();
