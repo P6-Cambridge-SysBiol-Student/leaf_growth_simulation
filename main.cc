@@ -406,9 +406,12 @@ void diffuseHorm(int** neighbourhoods){
             }
         }
     }
-    for(int j = 0; j <nbo; j++){
-        Point& centre = pointsArray[j];
+    for(int j = 0; j <nbo; j++) {
+        Point &centre = pointsArray[j];
         centre.myTotalHormone += centre.myDeltaHormone;
+        if (centre.myTotalHormone < 0){
+            centre.myTotalHormone = 0;
+        }
     }
 }
 

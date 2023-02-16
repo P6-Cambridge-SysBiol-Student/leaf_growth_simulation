@@ -22,8 +22,8 @@ double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 2; /// seed for random number generator
 
-double hormone1ProdRate = 1;
-double hormone1DegRate = 0.002;
+double hormone1ProdRate = 3;
+double hormone1DegRate = 0.2;
 double hormone1IntroTime = 0.005;
 vector2D hormone1Origin = vector2D(0.25*xBound,0.15*xBound);
 double hormone1DiffCoeff = 0.01 * SCALING_FACTOR;
