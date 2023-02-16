@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define DEBUG false
+#define DEBUG true
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define GLAD_GL_IMPLEMENTATION
@@ -85,22 +85,23 @@ bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
 
 /// create a neighbourhood array (seperated out from CalculateSpringForces function)
 void fill2DArrayNeighbourhoods(int** neighbourhoods, int* total, int rows){
-    for (int v = 0; v < numTriangleVertices; v+=3){
+    for (int v = 0; v < numTriangleVertices; v+=3) {
         /// add neighbours of the first value of the triangle to its row in the neighbourhood array
         total[triangleIndexList[v]]++;
-        neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+1];
+        neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v + 1];
         total[triangleIndexList[v]]++;
-        neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v+2];
+        neighbourhoods[triangleIndexList[v]][total[triangleIndexList[v]]] = triangleIndexList[v + 2];
         /// add neighbours of the second value in triangleIndex List to its row in the neighbour array
-        total[triangleIndexList[v+1]]++;
-        neighbourhoods[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v];
-        total[triangleIndexList[v+1]]++;
-        neighbourhoods[triangleIndexList[v+1]][total[triangleIndexList[v+1]]] = triangleIndexList[v+2];
+        total[triangleIndexList[v + 1]]++;
+        neighbourhoods[triangleIndexList[v + 1]][total[triangleIndexList[v + 1]]] = triangleIndexList[v];
+        total[triangleIndexList[v + 1]]++;
+        neighbourhoods[triangleIndexList[v + 1]][total[triangleIndexList[v + 1]]] = triangleIndexList[v + 2];
         /// add neighbours of the third value
-        total[triangleIndexList[v+2]]++;
-        neighbourhoods[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v];
-        total[triangleIndexList[v+2]]++;
-        neighbourhoods[triangleIndexList[v+2]][total[triangleIndexList[v+2]]] = triangleIndexList[v+1];
+        total[triangleIndexList[v + 2]]++;
+        neighbourhoods[triangleIndexList[v + 2]][total[triangleIndexList[v + 2]]] = triangleIndexList[v];
+        total[triangleIndexList[v + 2]]++;
+        neighbourhoods[triangleIndexList[v + 2]][total[triangleIndexList[v + 2]]] = triangleIndexList[v + 1];
+    }
 #if DEBUG
         printf("Neighbourhood array BEFORE cleaning: \n");
     for (int n = 0; n < nbo; n++){
@@ -127,7 +128,6 @@ void fill2DArrayNeighbourhoods(int** neighbourhoods, int* total, int rows){
                 }
             }
         }
-    }
 #if DEBUG
     printf("Neighbourhood array AFTER cleaning: \n");
     for (int n = 0; n < nbo; n++){
@@ -381,9 +381,13 @@ void calcHormConcn(){
 }
 
 void diffuseHorm(int** neighbourhoods){
+
+    for(int n = 0; n < nbo; n++) {
+        pointsArray[n].myDeltaHormone = 0;
+    }
+
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
         Point& centre = pointsArray[i]; /// alias for pointsArray[i]
-        centre.myDeltaHormone = 0;
         for (int l = 0; l < NAW; l++) {
             Point& neighbour = pointsArray[neighbourhoods[i][l]];
             if (neighbourhoods[i][l] != -1) {

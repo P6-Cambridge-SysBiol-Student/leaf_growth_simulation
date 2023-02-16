@@ -12,7 +12,7 @@ double xBound = 50 * SCALING_FACTOR;   /// half-width of box (X) in micrometers.
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 2000;    /// number of particles
+int nbo = 20;    /// number of particles
 double delta = 0.00001;   /// currently useless
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
@@ -23,10 +23,10 @@ int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 2; /// seed for random number generator
 
 double hormone1ProdRate = 2;
-double hormone1DegRate = 0.2;
+double hormone1DegRate = 0.008;
 double hormone1IntroTime = 0.005;
 vector2D hormone1Origin = vector2D(0.25*xBound,0.15*xBound);
-double hormone1DiffCoeff = 1 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.3 * SCALING_FACTOR;
 double hormEfficacy = 0.3;
 
 
