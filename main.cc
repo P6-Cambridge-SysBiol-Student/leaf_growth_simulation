@@ -383,7 +383,7 @@ void calcHormConcn(){
 void diffuseHorm(int** neighbourhoods){
     for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
         Point& centre = pointsArray[i]; /// alias for pointsArray[i]
-
+        centre.myDeltaHormone = 0;
         for (int l = 0; l < NAW; l++) {
             Point& neighbour = pointsArray[neighbourhoods[i][l]];
             if (neighbourhoods[i][l] != -1) {
