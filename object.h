@@ -12,7 +12,7 @@ class Point
 {
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
-    vector2D disVec = vector2D(double (0.8*xBound*mySrand()), double (0.8*yBound*mySrand())); /// sets x and y values randomly
+    vector2D disVec = vector2D(double (0.6*xBound*mySrand()), double (0.6*yBound*mySrand())); /// sets x and y values randomly
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     vector2D mitosisOrient = vector2D(1, 1);
@@ -39,7 +39,7 @@ public:  /// these are attributes that can be called outside of the script
       compressedHooks = 30;
       innerMultiplier = 2;
       innerCompressedHooks = innerMultiplier * compressedHooks;
-      cellRadiusBase = 4 * SCALING_FACTOR; /// in micrometers
+      cellRadiusBase = 2 * SCALING_FACTOR; /// in micrometers
       cellRadius = cellRadiusBase;
       cellMass = 1; /// in nanograms
       color = 1;
@@ -64,7 +64,7 @@ public:  /// these are attributes that can be called outside of the script
     /// make a step in the given direction
     void step(){
         /// change the velocity depending on the acceleration
-        disVec += (timestep/(mobilityCoefficient * cellRadius/100000)) * springVec;
+        disVec += (timestep/(mobilityCoefficient * cellRadius/SCALING_FACTOR)) * springVec;
     }
 
     /// partial display: this needs to be called between glBegin() and glEnd()
@@ -105,7 +105,7 @@ public:  /// these are attributes that can be called outside of the script
 
     void linearDisplayHormone() {
         double linearHormConc = myTotalHormone / 1.5;
-        glColor4f((linearHormConc), (0.7/linearHormConc), (1 - linearHormConc), 1);
+        glColor4f((linearHormConc), (0.5 - 0.5*linearHormConc), (1 - linearHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
 

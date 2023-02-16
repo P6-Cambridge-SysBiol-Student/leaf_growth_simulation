@@ -665,7 +665,7 @@ int main(int argc, char *argv[]){
             startHormone(hormone1IntroTime);
             calcHormConcn();
             diffuseHorm(neighbourhoods);
-            hormoneExpandEffect();
+            //hormoneExpandEffect();
 
             drawTrianglesAndPoints();
             // printf("This is iteration: %d \n\n\n", interationNumber);
