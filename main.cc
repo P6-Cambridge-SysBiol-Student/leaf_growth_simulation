@@ -401,7 +401,7 @@ void diffuseHorm(int** neighbourhoods){
                     /// find difference in hormone amount between cells
                     double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
 
-                    if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
+                    // if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
                         double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
                         /// diffuse the hormone from the centre to neighbour
                         neighbour.myDeltaHormone += hormone1DiffCoeff * hormoneConcnGrad;
@@ -411,13 +411,19 @@ void diffuseHorm(int** neighbourhoods){
             }
         }
     }
+    
+    double sum = 0;
+    
+    
     for(int j = 0; j <nbo; j++) {
         Point &centre = pointsArray[j];
         centre.myTotalHormone += centre.myDeltaHormone;
-        if (centre.myTotalHormone < 0){
-            centre.myTotalHormone = 0;
-        }
-    }
+        sum += centre.myTotalHormone;
+        
+        //if (centre.myTotalHormone < 0){
+        //    centre.myTotalHormone = 0;
+        //}
+    } printf("The sum of myTotalHormone is %f\n", sum); /// test conservation of hormone
 }
 
 int findMaxHormone(){
