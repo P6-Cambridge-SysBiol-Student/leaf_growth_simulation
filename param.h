@@ -24,9 +24,9 @@ unsigned long seed = 2; /// seed for random number generator
 
 double hormone1ProdRate = 1;
 double hormone1DegRate = 0.002;
-double hormone1IntroTime = 0.014;
+double hormone1IntroTime = 0.005;
 vector2D hormone1Origin = vector2D(0.25*xBound,0.15*xBound);
-double hormone1DiffCoeff = 0.1 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.01 * SCALING_FACTOR;
 double hormEfficacy = 0.3;
 
 

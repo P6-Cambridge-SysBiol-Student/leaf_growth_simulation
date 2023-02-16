@@ -387,7 +387,7 @@ void diffuseHorm(int** neighbourhoods){
             Point& neighbour = pointsArray[neighbourhoods[i][l]];
             if (neighbourhoods[i][l] != -1) {
                 /// using squared magnitudes here is computationally faster
-                if ((neighbour.disVec - centre.disVec).magnitude_squared() < (0.2*centre.cellRadius * 0.2*centre.cellRadius)){
+                if ((neighbour.disVec - centre.disVec).magnitude_squared() < (0.05*centre.cellRadius * 0.2*centre.cellRadius)){
                 }
                 else{
                     /// find the magnitude of distance between the neighbouring point and the central point
@@ -399,14 +399,17 @@ void diffuseHorm(int** neighbourhoods){
                     if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
                         double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
                         /// diffuse the hormone from the centre to neighbour
-                        neighbour.myTotalHormone += hormone1DiffCoeff * hormoneConcnGrad;
-                        centre.myTotalHormone -= hormone1DiffCoeff * hormoneConcnGrad;
+                        neighbour.myDeltaHormone += hormone1DiffCoeff * hormoneConcnGrad;
+                        centre.myDeltaHormone -= hormone1DiffCoeff * hormoneConcnGrad;
                     }
                 }
             }
         }
     }
-
+    for(int j = 0; j <nbo; j++){
+        Point& centre = pointsArray[j];
+        centre.myTotalHormone += centre.myDeltaHormone;
+    }
 }
 
 int findMaxHormone(){
