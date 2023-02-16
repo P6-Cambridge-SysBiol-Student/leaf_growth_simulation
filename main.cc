@@ -705,6 +705,7 @@ int main(int argc, char *argv[]){
 #endif
 
 #if DISPLAY
+    printf("live\n");
     double next = 0;
     while( !glfwWindowShouldClose(win) )
     {
@@ -712,6 +713,7 @@ int main(int argc, char *argv[]){
         double now = glfwGetTime();
         if ( now > next)
         {
+            printf("This is iteration: %d\n", interationNumber);
             interationNumber++;
             next += delay/100000;
             trackTime();
@@ -733,7 +735,6 @@ int main(int argc, char *argv[]){
             //hormoneExpandEffect();
 
             drawTrianglesAndPoints();
-            // printf("This is iteration: %d \n\n\n", interationNumber);
 
 
             free(triangleIndexList);
