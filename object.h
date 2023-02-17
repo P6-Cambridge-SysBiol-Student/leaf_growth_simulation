@@ -34,17 +34,23 @@ public:  /// these are attributes that can be called outside of the script
     double myExpandEffect = 0;
     double myHormoneSensitivity = 0;
 
+    /// members related to cell division
+    bool wasMotherCell = true;
+    bool newDaughterCell = false;
+
     /// initialize each point in a random position with random x and y velocities
     void reset()
     {
-      extendedHooks   = 10;
-      compressedHooks = 30;
-      innerMultiplier = 2;
-      innerCompressedHooks = innerMultiplier * compressedHooks;
-      cellRadiusBase = 1.5 * SCALING_FACTOR; /// in micrometers
-      cellRadius = cellRadiusBase;
-      cellMass = 1; /// in nanograms
-      color = 1;
+        extendedHooks = 10;
+        compressedHooks = 30;
+        innerMultiplier = 2;
+        innerCompressedHooks = innerMultiplier * compressedHooks;
+        cellRadiusBase = 4 * SCALING_FACTOR; /// in micrometers
+        cellRadius = cellRadiusBase;
+        cellMass = 1; /// in nanograms
+        color = 1;
+
+
     }
     
     /// call initialize
@@ -112,7 +118,7 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     double divisionProb(double maxProbOfDiv, int numCurrentCells, int finalTotCells) { /// each cell has a p(mitosis) varied by number of existing points, cell size etc.
-        double divisionProb = (maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv; /// just a linear equation
+        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv; /// just a linear equation
         return divisionProb;
     }
 

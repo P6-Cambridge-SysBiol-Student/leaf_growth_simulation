@@ -342,7 +342,6 @@ void iterateDisplace(){
 double trackTime(){
     return currentTime += timestep;
 }
-// TODO figure out why sum of hormone is not constant when no input/death
 // TODO include myHormConcn, scaling amount to volume of cell
 void startHormone(double inputStartTime){
     static bool flag = false;
@@ -469,17 +468,17 @@ void hormoneExpandEffect(){
     centre.cellRadius = centre.cellRadiusBase + (hormEfficacy * centre.myTotalHormone * SCALING_FACTOR);
     }
 }
-/*
+
 void calcMitosis(){
-    int newPoints = 0;
     for (int i = 0; i < nbo; i++){
     Point &cell = pointsArray[i];
-    if (myPrand() < cell.divisionProb()){
-
-    }
+        if (myPrand() < cell.divisionProb(maxProbOfDiv, nbo, desiredTotalCells)){
+            nbo++;
+        }
     }
 }
-*/
+
+
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
@@ -708,6 +707,7 @@ int main(int argc, char *argv[]){
             next += delay/100000;
             trackTime();
 
+            printf("nbo is %d\n", nbo);
             create_triangles_list();
             int** neighbourhoods = create2Darray(nbo, NAW);
             init2DArray(neighbourhoods, nbo, NAW, -1);
@@ -720,6 +720,7 @@ int main(int argc, char *argv[]){
             startHormone(hormone1IntroTime);
             v1DiffuseHorm(neighbourhoods);
             calcHormConcn(hormone1IntroTime);
+            calcMitosis();
             //hormoneExpandEffect();
 
             drawTrianglesAndPoints();

@@ -12,7 +12,7 @@ double xBound = 50 * SCALING_FACTOR;   /// half-width of box (X) in micrometers.
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 800;    /// number of particles
+int nbo = 5;    /// number of particles
 double delta = 0.00001;   /// currently useless
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
@@ -30,7 +30,8 @@ double hormone1DiffCoeff = 0.03 * SCALING_FACTOR;
 double hormone1DiffPro = 0.06; /// this is made up i think,
 double hormEfficacy = 0.3;
 
-double desiredTotalCells = 1000; /// used to calculate mitsosi probabilites
+double maxProbOfDiv = 0.005; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double desiredTotalCells = 100; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
