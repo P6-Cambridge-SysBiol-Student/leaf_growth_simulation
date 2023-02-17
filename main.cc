@@ -367,16 +367,17 @@ void startHormone(double inputStartTime){
 
 /// every cell degrades hormone, only produces produce it
 /// this calculates the amount of production / degredation within cells
-void calcHormConcn(){
+void calcHormConcn(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
-        if (cell.isHormoneProducer == true){
+        if ((cell.isHormoneProducer == true) and (currentTime < 2*inputStartTime)){
+            printf("Hormone is being produced!\n");
             cell.produceHormone(hormone1ProdRate);
-            cell.degradeHormone(hormone1DegRate);
+            cell.degradeHormone(0);
         }
         else{
-            cell.degradeHormone(hormone1DegRate);
+            cell.degradeHormone(0);
         }
     }
 }
@@ -718,7 +719,7 @@ int main(int argc, char *argv[]){
             iterateDisplace();
             startHormone(hormone1IntroTime);
             v1DiffuseHorm(neighbourhoods);
-            calcHormConcn();
+            calcHormConcn(hormone1IntroTime);
             //hormoneExpandEffect();
 
             drawTrianglesAndPoints();
