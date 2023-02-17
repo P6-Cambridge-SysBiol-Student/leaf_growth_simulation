@@ -30,8 +30,8 @@ double hormone1DiffCoeff = 0.03 * SCALING_FACTOR;
 double hormone1DiffPro = 0.06; /// this is made up i think,
 double hormEfficacy = 0.3;
 
-double maxProbOfDiv = 0.005; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
-double desiredTotalCells = 100; /// used to calculate mitosis probabilites
+double maxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double desiredTotalCells = 500; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world

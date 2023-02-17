@@ -12,7 +12,7 @@ class Point
 {
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
-    vector2D disVec = vector2D(double (0.6*xBound*mySrand()), double (0.6*yBound*mySrand())); /// sets x and y values randomly
+    vector2D disVec = vector2D(double (0.1*xBound*mySrand()), double (0.1*yBound*mySrand())); /// sets x and y values randomly
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     vector2D mitosisOrient = vector2D(1, 1);
@@ -49,7 +49,6 @@ public:  /// these are attributes that can be called outside of the script
         cellRadius = cellRadiusBase;
         cellMass = 1; /// in nanograms
         color = 1;
-
 
     }
     

@@ -471,9 +471,15 @@ void hormoneExpandEffect(){
 
 void calcMitosis(){
     for (int i = 0; i < nbo; i++){
-    Point &cell = pointsArray[i];
-        if (myPrand() < cell.divisionProb(maxProbOfDiv, nbo, desiredTotalCells)){
+    Point &motherCell = pointsArray[i];
+        if (myPrand() < motherCell.divisionProb(maxProbOfDiv, nbo, desiredTotalCells)){
             nbo++;
+            Point& daughterCell = pointsArray[nbo-1];
+            vector2D comboOrient = vector2D(mySrand(), mySrand());
+
+            vector2D displaceVec = 0.15 * motherCell.cellRadius * comboOrient.normalise();
+            daughterCell.disVec = motherCell.disVec + displaceVec;
+            motherCell.disVec -= displaceVec;
         }
     }
 }

@@ -20,11 +20,8 @@ public:
     vector2D(elem_type inputX, elem_type inputY) : xx(inputX), yy(inputY) {} /// constructor, sets x and y to the specified values if desired
 
     /// overload the + operator to add two vectors (done twice to allow for commutivity)
-    friend vector2D operator+(const vector2D& vec, double scalar){
-        return vector2D(scalar + vec.xx, scalar + vec.yy);
-    }
-    friend vector2D operator+(double scalar, const vector2D& vec){
-        return vector2D(scalar + vec.xx, scalar + vec.yy);
+    vector2D operator+(const vector2D& vec) {
+        return vector2D(xx + vec.xx, yy + vec.yy);
     }
 
     /// overload the += operator to increment on a vector
@@ -85,11 +82,12 @@ public:
     }
 
     /// normalises the vector, i.e. scales it to have a magnitude of 1
-    void normalise()
+    vector2D normalise()
     {
         double mag = magnitude();
         xx /= mag;
         yy /= mag;
+        return *this;
     }
 
     /// set values to 0
