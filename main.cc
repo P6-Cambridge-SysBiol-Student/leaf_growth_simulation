@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define DEBUG true
+#define DEBUG false
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define GLAD_GL_IMPLEMENTATION
@@ -342,7 +342,8 @@ void iterateDisplace(){
 double trackTime(){
     return currentTime += timestep;
 }
-
+// TODO figure out why sum of hormone is not constant when no input/death
+// TODO include myHormConcn, scaling amount to volume of cell
 void startHormone(double inputStartTime){
     static bool flag = false;
     if ((currentTime > inputStartTime) and (flag == false)){
@@ -380,21 +381,38 @@ void calcHormConcn(){
     }
 }
 
-void diffuseHorm(int** neighbourhoods){
+/// a "weighted diffusion" model
+void v2DiffuseHorm(int** neighbourhoods, int* totalArray){
+    for(int i = 0; i < nbo; i++){
+        Point &centre = pointsArray[i];
+        centre.myDeltaHormone = hormone1DiffPro * centre.myTotalHormone; /// a proportion of myTotalHorm
+        for(int l = 0; l <= totalArray[i]; l++){
+            Point &neighbour = pointsArray[neighbourhoods[i][l]];
+            neighbour.myDeltaHormone += centre.myDeltaHormone / totalArray[i];
+        }
+    }
+    for(int k = 0; k < nbo; k++){
+        Point &centre = pointsArray[k];
+        centre.myTotalHormone -= centre.myDeltaHormone;
+    }
+}
 
-    for(int n = 0; n < nbo; n++) {
+void v1DiffuseHorm(int** neighbourhoods) {
+
+    for (int n = 0; n < nbo; n++) {
         pointsArray[n].myDeltaHormone = 0;
     }
 
-    for(int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
-        Point& centre = pointsArray[i]; /// alias for pointsArray[i]
+    for (int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
+        Point &centre = pointsArray[i]; /// alias for pointsArray[i]
         for (int l = 0; l < NAW; l++) {
-            Point& neighbour = pointsArray[neighbourhoods[i][l]];
+            Point &neighbour = pointsArray[neighbourhoods[i][l]];
             if (neighbourhoods[i][l] != -1) {
                 /// using squared magnitudes here is computationally faster
-                if ((neighbour.disVec - centre.disVec).magnitude_squared() < (0.2*centre.cellRadius * 0.2*centre.cellRadius)){
+                if ((neighbour.disVec - centre.disVec).magnitude_squared() <
+                    (0.2 * centre.cellRadius * 0.2 * centre.cellRadius)) {
                 } /// stops diffusion if points overlap
-                else{
+                else {
                     /// find the magnitude of distance between the neighbouring point and the central point
                     double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude();
 
@@ -402,28 +420,28 @@ void diffuseHorm(int** neighbourhoods){
                     double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
 
                     // if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
-                        double hormoneConcnGrad = hormoneConcnDiff/magnitudeOfDistance;
-                        /// diffuse the hormone from the centre to neighbour
-                        neighbour.myDeltaHormone += hormone1DiffCoeff * hormoneConcnGrad;
-                        centre.myDeltaHormone -= hormone1DiffCoeff * hormoneConcnGrad;
-                    }
+                    double hormoneConcnGrad = hormoneConcnDiff / magnitudeOfDistance;
+                    /// diffuse the hormone from the centre to neighbour
+                    neighbour.myDeltaHormone += 1; //hormone1DiffCoeff * hormoneConcnGrad;
+                    centre.myDeltaHormone -= 1; //hormone1DiffCoeff * hormoneConcnGrad;
                 }
             }
         }
     }
-    
+
+
     double sum = 0;
-    
-    
-    for(int j = 0; j <nbo; j++) {
-        Point &centre = pointsArray[j];
-        centre.myTotalHormone += centre.myDeltaHormone;
-        sum += centre.myTotalHormone;
-        
-        //if (centre.myTotalHormone < 0){
-        //    centre.myTotalHormone = 0;
-        //}
-    } printf("The sum of myTotalHormone is %f\n", sum); /// test conservation of hormone
+/// TODO implement better flux w/ method Carlos mentioned, symmetric flux between points
+    for (int j = 0; j < nbo; j++) {
+    Point &cell = pointsArray[j];
+    cell.myTotalHormone += cell.myDeltaHormone;
+    sum += cell.myTotalHormone;
+    }
+    //if (centre.myTotalHormone < 0){
+    //    centre.myTotalHormone = 0;
+    //}
+printf("The sum of myTotalHormone is %f\n", sum); /// test conservation of hormone
+
 }
 
 int findMaxHormone(){
@@ -680,7 +698,7 @@ int main(int argc, char *argv[]){
 
             iterateDisplace();
             startHormone(hormone1IntroTime);
-            diffuseHorm(neighbourhoods);
+            v2DiffuseHorm(neighbourhoods, totalArray);
             calcHormConcn();
             //hormoneExpandEffect();
 

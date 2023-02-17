@@ -26,6 +26,7 @@ public:  /// these are attributes that can be called outside of the script
 
     bool isHormoneProducer = false;
     double myTotalHormone = 0;
+    double myHormConc = 0; // TODO add function to find concentration, check units in diff equation
     double myDeltaHormone = 0; /// keeps track of amount of hormone gained/lost
     double myDiffCoeff = 0;
     double myRateOfProd = 0;
