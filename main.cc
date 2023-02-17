@@ -381,19 +381,29 @@ void calcHormConcn(){
     }
 }
 
-/// a "weighted diffusion" model
+
+/// a "weighted diffusion" model (side-lined for now)
 void v2DiffuseHorm(int** neighbourhoods, int* totalArray){
     for(int i = 0; i < nbo; i++){
+
         Point &centre = pointsArray[i];
+        printf("For point i = %d\n", i);
         centre.myDeltaHormone = hormone1DiffPro * centre.myTotalHormone; /// a proportion of myTotalHorm
+        printf("Out of %f hormone, %f percent will be lost, totaling %f\n", centre.myTotalHormone, 100*hormone1DiffPro, centre.myDeltaHormone);
+
         for(int l = 0; l <= totalArray[i]; l++){
             Point &neighbour = pointsArray[neighbourhoods[i][l]];
-            neighbour.myDeltaHormone += centre.myDeltaHormone / totalArray[i];
+            neighbour.myDeltaHormone -= centre.myDeltaHormone / totalArray[i]; /// weight hormone loss
+            printf("Neighbour %d will gain %f\n", l, centre.myDeltaHormone / totalArray[i]);
+
         }
+    printf("\n");
     }
+    /// loop through all points and change myTotalHorm
     for(int k = 0; k < nbo; k++){
         Point &centre = pointsArray[k];
         centre.myTotalHormone -= centre.myDeltaHormone;
+        printf("point %d has %f hormone\n", k, centre.myTotalHormone);
     }
 }
 
@@ -419,11 +429,10 @@ void v1DiffuseHorm(int** neighbourhoods) {
                     /// find difference in hormone amount between cells
                     double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
 
-                    // if (hormoneConcnDiff > 0){  /// diffuse from central to neighbour only if centre is higher
                     double hormoneConcnGrad = hormoneConcnDiff / magnitudeOfDistance;
                     /// diffuse the hormone from the centre to neighbour
-                    neighbour.myDeltaHormone += 1; //hormone1DiffCoeff * hormoneConcnGrad;
-                    centre.myDeltaHormone -= 1; //hormone1DiffCoeff * hormoneConcnGrad;
+                    neighbour.myDeltaHormone += hormone1DiffCoeff * hormoneConcnGrad;
+                    centre.myDeltaHormone -= hormone1DiffCoeff * hormoneConcnGrad;
                 }
             }
         }
@@ -433,15 +442,14 @@ void v1DiffuseHorm(int** neighbourhoods) {
     double sum = 0;
 /// TODO implement better flux w/ method Carlos mentioned, symmetric flux between points
     for (int j = 0; j < nbo; j++) {
-    Point &cell = pointsArray[j];
-    cell.myTotalHormone += cell.myDeltaHormone;
-    sum += cell.myTotalHormone;
+        Point &cell = pointsArray[j];
+        cell.myTotalHormone += cell.myDeltaHormone;
+        sum += cell.myTotalHormone;
+        if (cell.myTotalHormone < 0) {
+            cell.myTotalHormone = 0;
+        }
     }
-    //if (centre.myTotalHormone < 0){
-    //    centre.myTotalHormone = 0;
-    //}
 printf("The sum of myTotalHormone is %f\n", sum); /// test conservation of hormone
-
 }
 
 int findMaxHormone(){
@@ -460,6 +468,17 @@ void hormoneExpandEffect(){
     centre.cellRadius = centre.cellRadiusBase + (hormEfficacy * centre.myTotalHormone * SCALING_FACTOR);
     }
 }
+/*
+void calcMitosis(){
+    int newPoints = 0;
+    for (int i = 0; i < nbo; i++){
+    Point &cell = pointsArray[i];
+    if (myPrand() < cell.divisionProb()){
+
+    }
+    }
+}
+*/
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
@@ -698,7 +717,7 @@ int main(int argc, char *argv[]){
 
             iterateDisplace();
             startHormone(hormone1IntroTime);
-            v2DiffuseHorm(neighbourhoods, totalArray);
+            v1DiffuseHorm(neighbourhoods);
             calcHormConcn();
             //hormoneExpandEffect();
 

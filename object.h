@@ -20,10 +20,10 @@ public:  /// these are attributes that can be called outside of the script
     double extendedHooks, compressedHooks, innerMultiplier, innerCompressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadiusBase, cellRadius;
     double cellMass;
+    double probOfDividing;
     int color;
 
     /// members related to hormone function
-
     bool isHormoneProducer = false;
     double myTotalHormone = 0;
     double myHormConc = 0; // TODO add function to find concentration, check units in diff equation
@@ -111,7 +111,10 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-
+    double divisionProb(double maxProbOfDiv, int numCurrentCells, int finalTotCells) { /// each cell has a p(mitosis) varied by number of existing points, cell size etc.
+        double divisionProb = (maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv; /// just a linear equation
+        return divisionProb;
+    }
 
     /* ignoring mitosis for now, focusing on morphogens
     void wasMotherMitosisDisplace(){
