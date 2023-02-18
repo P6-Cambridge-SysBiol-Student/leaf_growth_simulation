@@ -45,7 +45,7 @@ public:  /// these are attributes that can be called outside of the script
         compressedHooks = 30;
         innerMultiplier = 2;
         innerCompressedHooks = innerMultiplier * compressedHooks;
-        cellRadiusBase = 4 * SCALING_FACTOR; /// in micrometers
+        cellRadiusBase = 3 * SCALING_FACTOR; /// in micrometers
         cellRadius = cellRadiusBase;
         cellMass = 1; /// in nanograms
         color = 1;
@@ -117,7 +117,7 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     double divisionProb(double maxProbOfDiv, int numCurrentCells, int finalTotCells) { /// each cell has a p(mitosis) varied by number of existing points, cell size etc.
-        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv; /// just a linear equation
+        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv + myTotalHormone * hormEfficacy; /// just a linear equation
         return divisionProb;
     }
 

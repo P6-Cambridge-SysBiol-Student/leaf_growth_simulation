@@ -12,26 +12,26 @@ double xBound = 50 * SCALING_FACTOR;   /// half-width of box (X) in micrometers.
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-int nbo = 5;    /// number of particles
+int nbo = 20;    /// number of particles
 double delta = 0.00001;   /// currently useless
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
-const double breakSpringCoeff = 5;
+const double breakSpringCoeff = 1.5;
 
 double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 unsigned long seed = 2; /// seed for random number generator
 
-double hormone1ProdRate = 10;
+double hormone1ProdRate = 2;
 double hormone1DegRate = 0.008;
-double hormone1IntroTime = 0.005;
-vector2D hormone1Origin = vector2D(0.25*xBound,0.15*xBound);
+double hormone1IntroTime = 0.05;
+vector2D hormone1Origin = vector2D(0.2*xBound,0*xBound);
 double hormone1DiffCoeff = 0.03 * SCALING_FACTOR;
 double hormone1DiffPro = 0.06; /// this is made up i think,
-double hormEfficacy = 0.3;
+double hormEfficacy = 0.0002;
 
-double maxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
-double desiredTotalCells = 500; /// used to calculate mitosis probabilites
+double baseMaxProbOfDiv = 0.0001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseDesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world

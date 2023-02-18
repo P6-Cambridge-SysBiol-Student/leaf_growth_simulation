@@ -370,13 +370,13 @@ void calcHormConcn(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
-        if ((cell.isHormoneProducer == true) and (currentTime < 2*inputStartTime)){
+        if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
             printf("Hormone is being produced!\n");
             cell.produceHormone(hormone1ProdRate);
-            cell.degradeHormone(0);
+            cell.degradeHormone(0.02);
         }
         else{
-            cell.degradeHormone(0);
+            cell.degradeHormone(0.02);
         }
     }
 }
@@ -469,17 +469,22 @@ void hormoneExpandEffect(){
     }
 }
 
+// TODO add a check so that cells cannot divide immediately after dividing again
 void calcMitosis(){
     for (int i = 0; i < nbo; i++){
     Point &motherCell = pointsArray[i];
-        if (myPrand() < motherCell.divisionProb(maxProbOfDiv, nbo, desiredTotalCells)){
-            nbo++;
-            Point& daughterCell = pointsArray[nbo-1];
-            vector2D comboOrient = vector2D(mySrand(), mySrand());
+        if (myPrand() < motherCell.divisionProb(baseMaxProbOfDiv, nbo, baseDesiredTotalCells)){
 
-            vector2D displaceVec = 0.15 * motherCell.cellRadius * comboOrient.normalise();
-            daughterCell.disVec = motherCell.disVec + displaceVec;
-            motherCell.disVec -= displaceVec;
+            nbo++; /// MAX points already exist, need to increase pointer by one to access new cell
+
+            Point& daughterCell = pointsArray[nbo-1];
+            vector2D normOrient = vector2D(mySrand(), mySrand()).normalise();
+
+            vector2D displaceVec = 0.15 * motherCell.cellRadius * normOrient;
+            daughterCell.disVec = motherCell.disVec + displaceVec; /// change daughter cell to inherit mother cell position + random orientation
+            motherCell.disVec -= displaceVec;  /// mother cell displaced in opposite direction
+            // TODO add something that can alter orientation of division
+            // TODO maybe add something at causes orientation of division to align with tension
         }
     }
 }
