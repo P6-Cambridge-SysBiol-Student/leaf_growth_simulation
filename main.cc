@@ -424,15 +424,15 @@ void v1DiffuseHorm(int** neighbourhoods) {
                 } /// stops diffusion if points overlap
                 else {
                     /// find the magnitude of distance between the neighbouring point and the central point
-                    double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude();
+                    double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude(); // m
 
                     /// find difference in hormone amount between cells
-                    double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;
+                    double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;  //n / m
 
-                    double hormoneConcnGrad = hormoneConcnDiff / magnitudeOfDistance;
+                    double hormoneConcnGrad = hormoneConcnDiff / magnitudeOfDistance; //n / m^2
                     /// diffuse the hormone from the centre to neighbour
-                    neighbour.myDeltaHormone += hormone1DiffCoeff * hormoneConcnGrad;
-                    centre.myDeltaHormone -= hormone1DiffCoeff * hormoneConcnGrad;
+                    neighbour.myDeltaHormone += timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius);///  n = t * (m^2/t * n/m * m)
+                    centre.myDeltaHormone -= timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius);
                 }
             }
         }

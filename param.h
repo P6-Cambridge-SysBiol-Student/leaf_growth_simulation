@@ -30,9 +30,9 @@ unsigned long seed = 2; /// seed for random number generator
 const int numHormones = 1;
 double hormone1ProdRate = 2;
 double hormone1DegRate = 0.008;
-double hormone1IntroTime = 0.05;
+double hormone1IntroTime = 0.01;
 vector2D hormone1Origin = vector2D(0.2*xBound,0*xBound);
-double hormone1DiffCoeff = 0.03 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.0003 * SCALING_FACTOR;
 double hormone1DiffPro = 0.06; /// this is made up i think,
 double hormEfficacy = 0.0002;
 
