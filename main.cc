@@ -26,8 +26,8 @@
 #include "polish.h"
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together
 
-/// TODO cleanup graphics and all GLFW into graphics file, allows easier ifdef removal
-/// TODO Hormones simulation (simple & reaciton-diffusion)
+/// TODO cleanup graphics and all GLFW into graphics file, allows easier ifdreacitonef removal
+/// TODO Hormones simulation (simple & reaction-diffusion)
 /// TODO fourier series for fitness function
 
 ///-----------------------------------------------------------------------------
@@ -342,7 +342,7 @@ void iterateDisplace(){
 double trackTime(){
     return currentTime += timestep;
 }
-// TODO include myHormConcn, scaling amount to volume of cell
+
 void startHormone(double inputStartTime){
     static bool flag = false;
     if ((currentTime > inputStartTime) and (flag == false)){
@@ -437,10 +437,8 @@ void v1DiffuseHorm(int** neighbourhoods) {
             }
         }
     }
-
-
     double sum = 0;
-/// TODO implement better flux w/ method Carlos mentioned, symmetric flux between points
+
     for (int j = 0; j < nbo; j++) {
         Point &cell = pointsArray[j];
         cell.myTotalHormone += cell.myDeltaHormone;

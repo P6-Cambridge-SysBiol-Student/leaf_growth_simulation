@@ -11,15 +11,28 @@
 class Hormone{
 public:
     /// member variables
-    double DiffCoeff, rateOfProd, rateOfDeg, expandEffect, efficacy, currentConcn;
+    double myDiffCoeff, myRateOfProd, myRateOfDeg, myExpandEffect, myEfficacy, myMitosisRateEffect, myMitosisOrientEffect;
 
-    /// constructor
-    Hormone(double inputDiffCoeff, double inputProdRate, double inputExpansion, double inputEfficacy, double inputDegRate) :
-            DiffCoeff(inputDiffCoeff),
-            rateOfProd(inputProdRate),
-            rateOfDeg(inputDegRate),
-            expandEffect(inputExpansion),
-            efficacy(inputEfficacy)
-            {}
+    /// default constructor
+    Hormone() :
+            myDiffCoeff(0.0),
+            myRateOfProd(0.0),
+            myRateOfDeg(0.0),
+            myExpandEffect(0.0),
+            myMitosisRateEffect(0.0),
+            myMitosisOrientEffect(0.0),
+            myEfficacy(0.0)
+    {}
+
+    /// constructor with arguments
+    Hormone(double inputDiffCoeff, double inputProdRate, double inputExpansion, double inputEfficacy,
+            double inputDegRate, double inputMitosisRateEffect, double inputMitosisOrientEffect) :
+            myDiffCoeff(inputDiffCoeff),
+            myRateOfProd(inputProdRate),
+            myRateOfDeg(inputDegRate),
+            myExpandEffect(inputExpansion),
+            myMitosisRateEffect(inputMitosisRateEffect),
+            myMitosisOrientEffect(inputMitosisOrientEffect),
+            myEfficacy(inputEfficacy)
+    {}
 };
-

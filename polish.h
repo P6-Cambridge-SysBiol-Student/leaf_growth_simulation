@@ -20,6 +20,7 @@ const bool debugStatus = 1;
 /// need to initialise the triangleIndexList pointer before delaunay triangulation
 
 Point pointsArray[MAX];
+Hormone hormoneArray[numHormones];
 int numTriangleVertices = 0;
 WORD* triangleIndexList;
 const int NAW = 50;  /// neighbourhood array width

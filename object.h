@@ -5,9 +5,11 @@ This file contains information about Object which contains
  */
 #include <math.h>
 #include "sigmoid.h"
-/// for the compiler this doesn't slow down the programme
+#include "vector.h"
+#include "param.h"
+#include "random.h"
+#include "hormone.h"
 
-///Points class, contains info about xy displacement, velocity, and acceleration towards centre
 class Point
 {
 public:  /// these are attributes that can be called outside of the script
@@ -16,6 +18,9 @@ public:  /// these are attributes that can be called outside of the script
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     vector2D mitosisOrient = vector2D(1, 1);
+
+    Hormone hormArray[100]; /// initialise hormone array of size 100 but I won't use all of these
+    /// TODO add parameter reading function like in param to select variables
 
     double extendedHooks, compressedHooks, innerMultiplier, innerCompressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadiusBase, cellRadius;
@@ -34,6 +39,7 @@ public:  /// these are attributes that can be called outside of the script
     double myExpandEffect = 0;
     double myHormoneSensitivity = 0;
 
+
     /// members related to cell division
     bool wasMotherCell = true;
     bool newDaughterCell = false;
@@ -49,7 +55,6 @@ public:  /// these are attributes that can be called outside of the script
         cellRadius = cellRadiusBase;
         cellMass = 1; /// in nanograms
         color = 1;
-
     }
     
     /// call initialize
@@ -117,17 +122,7 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     double divisionProb(double maxProbOfDiv, int numCurrentCells, int finalTotCells) { /// each cell has a p(mitosis) varied by number of existing points, cell size etc.
-        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv + myTotalHormone * hormEfficacy; /// just a linear equation
+        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv + (myTotalHormone * hormEfficacy); /// just a linear equation
         return divisionProb;
     }
-
-    /* ignoring mitosis for now, focusing on morphogens
-    void wasMotherMitosisDisplace(){
-        mitosisOrient.normalise();
-        disVec += 0.25*cellRadius*mitosisOrient; /// the cell that inherits mothers indexing
-    }
-
-    void isNewCellMitosisDisplace(){ /// is called when definiting position of newly created cell
-        mitosisOrient.normalise();
-    } */
 };
