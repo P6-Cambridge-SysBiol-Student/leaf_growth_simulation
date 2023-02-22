@@ -5,10 +5,7 @@ This file contains information about Object which contains
  */
 #include <math.h>
 #include "sigmoid.h"
-#include "vector.h"
-#include "param.h"
-#include "random.h"
-#include "hormone.h"
+/// for the compiler this doesn't slow down the programme
 
 class Point
 {
@@ -38,7 +35,6 @@ public:  /// these are attributes that can be called outside of the script
     double myRateOfDeg = 0.1;
     double myExpandEffect = 0;
     double myHormoneSensitivity = 0;
-
 
     /// members related to cell division
     bool wasMotherCell = true;

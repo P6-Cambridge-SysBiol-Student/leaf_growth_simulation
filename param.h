@@ -65,7 +65,7 @@ int readOption(const char arg[])
     if ( readParameter(arg, "seed=",  seed) )   return 1;
     if ( readParameter(arg, "delay=", delay) )  return 1;
     if ( readParameter(arg, "bounds=", xBound) )  return 1;
-    if ( readParameter(arg, "timestep=", &timestep) ) return 1;
+    //if ( readParameter(arg, "timestep=", &timestep) ) return 1;
 
     return 0;
 }
