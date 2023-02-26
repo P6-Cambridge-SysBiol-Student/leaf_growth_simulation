@@ -463,7 +463,36 @@ void calcMitosis(){
 }
 
 void computerDiscreteFourierCoeffs(){
-    
+    float xx[nbo], yy[nbo];
+
+    for ( int i = 0; i < nbo; i++){
+        xx[i] = pointsArray[i].disVec.xx;
+        yy[i] = pointsArray[i].disVec.yy;
+    }
+
+    double t = 1.0; /// period length
+
+    double fourierCoeffs[nbo][2]; /// array of real-valued Fourier coefficients, a read and imaginary component per Coeff
+
+    /// Compute DFT
+    for (int k = 0; k < nbo; k++) {
+        double sum_re = 0, sum_im = 0;
+        for (int n = 0; n < nbo; n++) {
+            double angle = 2 * M_PI * k * n / nbo;  /// M_PI is math.h definition of PI to high precision
+            sum_re += xx[n] * cos(angle) + yy[n] * sin(angle);
+            sum_im += yy[n] * cos(angle) - xx[n] * sin(angle);
+        }
+        fourierCoeffs[k][0] = sum_re / nbo;
+        fourierCoeffs[k][1] = sum_im / nbo;
+    }
+
+    // Print coefficients
+    for (int k = 0; k < nbo; k++) {
+        double re = fourierCoeffs[k][0];
+        double im = fourierCoeffs[k][1];
+        printf("c[%d] = %f + %fi\n", k, re, im);
+    }
+
 };
 
 
@@ -566,7 +595,7 @@ int main(int argc, char *argv[]){
 
             drawTrianglesAndPoints();
             // printf("This is iteration: %d \n\n\n", interationNumber);
-
+            computerDiscreteFourierCoeffs();
 
             free(triangleIndexList);
             free(neighbourhoods);
