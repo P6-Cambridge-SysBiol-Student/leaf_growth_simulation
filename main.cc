@@ -70,9 +70,7 @@ void initRegularTriangularLattice() {
     else{
         printf("NBO DOES NOT EQUAL numPointsX * numPointsY\n");
     }
-
 }
-
 
 /// creates an array of xy co-ords for the delaunay triangulation function, then execute it
 void create_triangles_list(){
@@ -392,6 +390,7 @@ void startHormone(double inputStartTime){
         }
     /// set this point as the hormone producer
     pointsArray[closest_point_index].isHormoneProducer = true;
+        printf("Closest point is point %d\n", closest_point_index);
     }
     else{
     }
@@ -412,6 +411,21 @@ void hormBirthDeath(double inputStartTime){
             cell.degradeHormone1(hormone1DegRate);
         }
 
+    }
+}
+
+void calcHormConcn(double inputStartTime){
+    for (int i = 0; i < nbo; i++){
+        Point& cell = pointsArray[i]; /// alias for pointsArray[i]
+        /// calculate amount of hormone made by producers
+        if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
+            cell.produceHormone1(hormone1ProdRate);
+            cell.degradeHormone1(hormone1DegRate);
+            printf("Globally, Cell %d has a myDeltaHormone1 value of %f\n", i, cell.myDeltaHormone1);
+        }
+        else{
+            cell.degradeHormone1(hormone1DegRate);
+        }
     }
 }
 
@@ -482,7 +496,7 @@ void v1DiffuseHorm(int** neighbourhoods) {
             cell.myTotalHormone1 = 0;
         }
     }
-printf("The sum of hormone1 is %f\n The sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
+printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
 }
 
 int findMaxHormone(){
@@ -498,7 +512,9 @@ int findMaxHormone(){
 void updateTotalHormone(){
     for (int i = 0; i<nbo; i++){
         pointsArray[i].myTotalHormone1 += pointsArray[i].myDeltaHormone1;
+        pointsArray[i].myDeltaHormone1 = 0;
         pointsArray[i].myTotalHormone2 += pointsArray[i].myDeltaHormone2;
+        pointsArray[i].myDeltaHormone2 = 0;
     }
 }
 
@@ -688,7 +704,7 @@ int main(int argc, char *argv[]){
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
-    GLFWwindow* win = glfwCreateWindow(winW, winH, "FRAP", NULL, NULL);
+    GLFWwindow* win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
     if (!win)
     {
         fprintf(stderr, "Failed to open GLFW window\n");
@@ -740,9 +756,10 @@ int main(int argc, char *argv[]){
                 iterateDisplace();
                 startHormone(hormone1IntroTime);
                 v1DiffuseHorm(neighbourhoods);
-                hormBirthDeath(hormone1IntroTime);
+                calcHormConcn(hormone1IntroTime);
+                //hormBirthDeath(hormone1IntroTime);
                 //hormReactDiffuse(hormone1IntroTime);
-                calcMitosis();
+                //calcMitosis();
                 updateTotalHormone();
                 //hormoneExpandEffect();
 

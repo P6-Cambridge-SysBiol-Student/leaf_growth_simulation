@@ -104,6 +104,7 @@ public:  /// these are attributes that can be called outside of the script
     void produceHormone1(double inputProdRate){
         myRateOfProd1 = inputProdRate;
         myDeltaHormone1 = timestep*(myRateOfProd1);
+        printf("Locally myDeltaHormone1 is %f\n", myDeltaHormone1);
     }
 
     void produceHormone2(double inputProdRate){
@@ -123,6 +124,11 @@ public:  /// these are attributes that can be called outside of the script
         double deltaHormoneReaction = timestep*(input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
         myDeltaHormone1 -= deltaHormoneReaction;
         myDeltaHormone2 += deltaHormoneReaction;
+    }
+
+    void updateTotalHormone(){
+        myTotalHormone1 += myDeltaHormone1;
+        myTotalHormone2 += myDeltaHormone2;
     }
 
     void sigmoidDisplayHormone() {
