@@ -373,37 +373,11 @@ void calcHormConcn(double inputStartTime){
         if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
             printf("Hormone is being produced!\n");
             cell.produceHormone(hormone1ProdRate);
-            cell.degradeHormone(0.02);
+            cell.degradeHormone(hormone1DegRate);
         }
         else{
-            cell.degradeHormone(0.02);
+            cell.degradeHormone(hormone1DegRate);
         }
-    }
-}
-
-
-/// a "weighted diffusion" model (side-lined for now)
-void v2DiffuseHorm(int** neighbourhoods, int* totalArray){
-    for(int i = 0; i < nbo; i++){
-
-        Point &centre = pointsArray[i];
-        printf("For point i = %d\n", i);
-        centre.myDeltaHormone = hormone1DiffPro * centre.myTotalHormone; /// a proportion of myTotalHorm
-        printf("Out of %f hormone, %f percent will be lost, totaling %f\n", centre.myTotalHormone, 100*hormone1DiffPro, centre.myDeltaHormone);
-
-        for(int l = 0; l <= totalArray[i]; l++){
-            Point &neighbour = pointsArray[neighbourhoods[i][l]];
-            neighbour.myDeltaHormone -= centre.myDeltaHormone / totalArray[i]; /// weight hormone loss
-            printf("Neighbour %d will gain %f\n", l, centre.myDeltaHormone / totalArray[i]);
-
-        }
-    printf("\n");
-    }
-    /// loop through all points and change myTotalHorm
-    for(int k = 0; k < nbo; k++){
-        Point &centre = pointsArray[k];
-        centre.myTotalHormone -= centre.myDeltaHormone;
-        printf("point %d has %f hormone\n", k, centre.myTotalHormone);
     }
 }
 
@@ -431,7 +405,7 @@ void v1DiffuseHorm(int** neighbourhoods) {
 
                     double hormoneConcnGrad = hormoneConcnDiff / magnitudeOfDistance; //n / m^2
                     /// diffuse the hormone from the centre to neighbour
-                    neighbour.myDeltaHormone += timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius);///  n = t * (m^2/t * n/m * m)
+                    neighbour.myDeltaHormone += timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
                     centre.myDeltaHormone -= timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius);
                 }
             }
@@ -487,7 +461,9 @@ void calcMitosis(){
     }
 }
 
-
+void computerDiscreteFourierCoeffs(){
+    
+};
 
 /// draws the square in the window that contains the poinst
 void drawSquare(float w, float h){
@@ -567,6 +543,8 @@ static void drawTriangles(){
     printf("draw @ %f\n", realTime);
     glFlush();
 }
+
+
 
 /// some more graphics stuff
 /* change view angle, exit upon ESC */

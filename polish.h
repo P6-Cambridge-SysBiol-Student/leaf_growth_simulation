@@ -11,6 +11,7 @@
 /// hard-coded limit to the number of particles
 /// size_t = size in bytes,  const means MAX is immutable
 
+const double PI = 3.14159265358979323846;
 const size_t MAX = 16384;
 const bool debugStatus = 1;
 
