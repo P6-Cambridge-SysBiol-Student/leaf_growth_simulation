@@ -499,11 +499,57 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
     }
 };
 
-void findAlphaShape(){
+int* findAlphaShapePoints(int** neighbourhoods){
+
+#if DEBUG
     vector2D testVecA = vector2D(1, 1);
-    vector2D testVecB = vector2D(-1,1);
+    vector2D testVecB = vector2D(-1,-1);
     double testAngle = angleBetweenVecs(testVecA, testVecB);
     printf("Angle between test A and test B is: %f radians \n", testAngle);
+#endif
+
+    /// find the point with most negative x co-ord
+    static int firstPointIndex = -1;
+    double startMinX = xBound;
+    static double currentMinX = xBound;
+    for(int i = 0; i < nbo; i++){
+        Point& centre = pointsArray[i];
+        if(centre.disVec.xx < startMinX){
+            currentMinX = centre.disVec.xx;
+            firstPointIndex = i;
+        }
+    }
+
+    /// find the number of points involved in the concave hull
+    int concaveHullPoints[nbo]; /// set to all points but concave hull probably won't use all the array
+    int currentHullArrayPointer = 0;
+    Point& firstPoint = pointsArray[firstPointIndex];
+
+    /// find next point in concave hull for initial point
+    concaveHullPoints[0] = firstPointIndex;
+    currentHullArrayPointer++;
+
+    vector2D initialComparisonVector = vector2D(0, 1);
+    for (int l = 0; l < NAW; l++) {
+        double currentMinAngle = -1; /// a value below 0
+        int nextHullPoint = -1;
+        Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][l]];
+        if (neighbourhoods[firstPointIndex][l] != -1) { // TODO need to add if clause checking neighbour is not outisde spring break distance
+            vector2D vectorToNeighbour = neighbour.disVec - firstPoint.disVec;
+            double angleToNeighbour = angleBetweenVecs(initialComparisonVector, vectorToNeighbour);
+            if (angleToNeighbour < currentMinAngle){
+                nextHullPoint = neighbour;
+
+            }
+        }
+    }
+
+    /// then, loop around find next point, set that point to centre, repeat until back to the starting point
+
+
+    /// malloc and array to contain all the indices for the points which form the convex hull
+    /// to feed to graphics / fourier (ignore the fact the sampling is not even
+
 }
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){

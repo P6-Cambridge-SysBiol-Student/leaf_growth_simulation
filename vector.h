@@ -109,14 +109,11 @@ double angleBetweenVecs(vector2D vecA, vector2D vecB){  /// computer in Counter-
     double cross = crossProd(vecA, vecB);
     double dot = dotProd(vecA, vecB);
     double angle = atan2(cross, dot);  /// compute angle clockwise
-    /*angle = fmod(angle, 2*M_PI); /// restricts output to 2pi maximum
-    if(cross < 0){
-        angle += M_PI; /// if cross < 0 angle between vectors is reflex, need to add pi radians
-    }
+    angle = fmod(angle, 2*M_PI); /// restricts output to 2pi maximum
     if(angle < 0){
         angle += 2*M_PI;  /// shift negative angles to the range [0, 2π]
-    }*/
-    return (angle * 180/M_PI); /// converting to degrees for debugging
+    }
+    return angle;
 }
 
 
