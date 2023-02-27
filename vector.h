@@ -96,3 +96,30 @@ public:
         yy = 0;
     }
 };
+
+double crossProd(vector2D vecA, vector2D vecB){
+    return vecA.xx * vecB.yy - vecB.xx * vecA.yy;
+}
+
+double dotProd(vector2D vecA, vector2D vecB){
+    return vecA.xx * vecB.xx + vecB.yy * vecA.yy;
+}
+
+double angleBetweenVecs(vector2D vecA, vector2D vecB){  /// computer in Counter-clockwise direction
+    double cross = crossProd(vecA, vecB);
+    double dot = dotProd(vecA, vecB);
+    double angle = atan2(cross, dot);  /// compute angle
+    angle = fmod(angle, 2*M_PI); /// restricts output to 2pi maximum
+    if(cross < 0){
+        angle += M_PI; /// if cross < 0 angle between vectors is reflex, need to add pi radians
+    }
+    if(angle < 0){
+        angle += 2*M_PI;  /// shift negative angles to the range [0, 2π]
+    }
+    return angle;
+}
+
+
+
+
+
