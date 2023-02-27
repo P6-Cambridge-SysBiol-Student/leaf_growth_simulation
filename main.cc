@@ -471,23 +471,25 @@ void computerDiscreteFourierCoeffs(){
     }
 
     double t = 1.0; /// period length
+    double sampleFreq = nbo / t;
+    double nyquistLim = sampleFreq / 2; /// coefficients representing sample distances greater than 2 per period result in aliasing
 
     double fourierCoeffs[nbo][2]; /// array of real-valued Fourier coefficients, a read and imaginary component per Coeff
 
     /// Compute DFT
-    for (int k = 0; k < nbo; k++) {
+    for (int k = 0; k < nyquistLim; k++) {
         double sum_re = 0, sum_im = 0;
         for (int n = 0; n < nbo; n++) {
             double angle = 2 * M_PI * k * n / nbo;  /// M_PI is math.h definition of PI to high precision
-            sum_re += xx[n] * cos(angle) + yy[n] * sin(angle);
-            sum_im += yy[n] * cos(angle) - xx[n] * sin(angle);
+            sum_re += 2*(xx[n] * cos(angle) + yy[n] * sin(angle)); /// multiplied by 2 to account for nyquist lim
+            sum_im += 2*(yy[n] * cos(angle) - xx[n] * sin(angle));
         }
         fourierCoeffs[k][0] = sum_re / nbo;
         fourierCoeffs[k][1] = sum_im / nbo;
     }
 
     // Print coefficients
-    for (int k = 0; k < nbo; k++) {
+    for (int k = 0; k < nyquistLim; k++) {
         double re = fourierCoeffs[k][0];
         double im = fourierCoeffs[k][1];
         printf("c[%d] = %f + %fi\n", k, re, im);
