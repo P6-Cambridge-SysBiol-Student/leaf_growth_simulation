@@ -499,6 +499,12 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
     }
 };
 
+void findAlphaShape(){
+    vector2D testVecA = vector2D(1, 1);
+    vector2D testVecB = vector2D(-1,1);
+    double testAngle = angleBetweenVecs(testVecA, testVecB);
+    printf("Angle between test A and test B is: %f radians \n", testAngle);
+}
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
@@ -601,6 +607,8 @@ int main(int argc, char *argv[]){
                 drawTrianglesAndPoints();
                 // printf("This is iteration: %d \n\n\n", interationNumber);
                 computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
+                findAlphaShape();
+
 
                 free(triangleIndexList);
                 free(neighbourhoods);
