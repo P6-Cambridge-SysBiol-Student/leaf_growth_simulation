@@ -462,39 +462,41 @@ void calcMitosis(){
     }
 }
 
-void computerDiscreteFourierCoeffs(){
-    float xx[nbo], yy[nbo];
+void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
 
-    for ( int i = 0; i < nbo; i++){
-        xx[i] = pointsArray[i].disVec.xx;
-        yy[i] = pointsArray[i].disVec.yy;
-    }
+    if(iteration == finalIterationInput){
+        float xx[nbo], yy[nbo];
 
-    double t = 1.0; /// period length
-    double sampleFreq = nbo / t;
-    double nyquistLim = sampleFreq / 2; /// coefficients representing sample distances greater than 2 per period result in aliasing
-
-    double fourierCoeffs[nbo][2]; /// array of real-valued Fourier coefficients, a read and imaginary component per Coeff
-
-    /// Compute DFT
-    for (int k = 0; k < nyquistLim; k++) {
-        double sum_re = 0, sum_im = 0;
-        for (int n = 0; n < nbo; n++) {
-            double angle = 2 * M_PI * k * n / nbo;  /// M_PI is math.h definition of PI to high precision
-            sum_re += 2*(xx[n] * cos(angle) + yy[n] * sin(angle)); /// multiplied by 2 to account for nyquist lim
-            sum_im += 2*(yy[n] * cos(angle) - xx[n] * sin(angle));
+        for ( int i = 0; i < nbo; i++){
+            xx[i] = pointsArray[i].disVec.xx;
+            yy[i] = pointsArray[i].disVec.yy;
         }
-        fourierCoeffs[k][0] = sum_re / nbo;
-        fourierCoeffs[k][1] = sum_im / nbo;
-    }
 
-    // Print coefficients
-    for (int k = 0; k < nyquistLim; k++) {
-        double re = fourierCoeffs[k][0];
-        double im = fourierCoeffs[k][1];
-        printf("c[%d] = %f + %fi\n", k, re, im);
-    }
+        double t = 1.0; /// period length
+        double sampleFreq = nbo / t;
+        double nyquistLim = sampleFreq / 2; /// coefficients representing sample distances greater than 2 per period result in aliasing
 
+        double fourierCoeffs[nbo][2]; /// array of real-valued Fourier coefficients, a read and imaginary component per Coeff
+
+        /// Compute DFT
+        for (int k = 0; k < nyquistLim; k++) {
+            double sum_re = 0, sum_im = 0;
+            for (int n = 0; n < nbo; n++) {
+                double angle = 2 * M_PI * k * n / nbo;  /// M_PI is math.h definition of PI to high precision
+                sum_re += 2*(xx[n] * cos(angle) + yy[n] * sin(angle)); /// multiplied by 2 to account for nyquist lim
+                sum_im += 2*(yy[n] * cos(angle) - xx[n] * sin(angle));
+            }
+            fourierCoeffs[k][0] = sum_re / nbo;
+            fourierCoeffs[k][1] = sum_im / nbo;
+        }
+
+        // Print coefficients
+        for (int k = 0; k < nyquistLim; k++) {
+            double re = fourierCoeffs[k][0];
+            double im = fourierCoeffs[k][1];
+            printf("c[%d] = %f + %fi\n", k, re, im);
+        }
+    }
 };
 
 
@@ -571,38 +573,40 @@ int main(int argc, char *argv[]){
     double next = 0;
     while( !glfwWindowShouldClose(win) )
     {
-        static int interationNumber = 1;
+        static int iterationNumber = 1;
         double now = glfwGetTime();
         if ( now > next)
         {
-            interationNumber++;
-            next += delay/100000;
-            trackTime();
+            while (iterationNumber <= finalIterationNumber){
+                iterationNumber++;
+                next += delay/100000;
+                trackTime();
 
-            printf("nbo is %d\n", nbo);
-            create_triangles_list();
-            int** neighbourhoods = create2Darray(nbo, NAW);
-            init2DArray(neighbourhoods, nbo, NAW, -1);
-            int* totalArray = create1Darray(nbo);
-            init1DArray(totalArray, nbo, -1);
-            fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
-            v3CalcSprings(neighbourhoods);
+                printf("nbo is %d\n", nbo);
+                create_triangles_list();
+                int** neighbourhoods = create2Darray(nbo, NAW);
+                init2DArray(neighbourhoods, nbo, NAW, -1);
+                int* totalArray = create1Darray(nbo);
+                init1DArray(totalArray, nbo, -1);
+                fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
+                v3CalcSprings(neighbourhoods);
 
-            iterateDisplace();
-            startHormone(hormone1IntroTime);
-            v1DiffuseHorm(neighbourhoods);
-            calcHormConcn(hormone1IntroTime);
-            calcMitosis();
-            //hormoneExpandEffect();
+                iterateDisplace();
+                startHormone(hormone1IntroTime);
+                v1DiffuseHorm(neighbourhoods);
+                calcHormConcn(hormone1IntroTime);
+                calcMitosis();
+                //hormoneExpandEffect();
 
-            drawTrianglesAndPoints();
-            // printf("This is iteration: %d \n\n\n", interationNumber);
-            computerDiscreteFourierCoeffs();
+                drawTrianglesAndPoints();
+                // printf("This is iteration: %d \n\n\n", interationNumber);
+                computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
 
-            free(triangleIndexList);
-            free(neighbourhoods);
-            free(totalArray);
-            glfwSwapBuffers(win);
+                free(triangleIndexList);
+                free(neighbourhoods);
+                free(totalArray);
+                glfwSwapBuffers(win);
+            }
         }
         glfwPollEvents();
     }
