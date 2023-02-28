@@ -13,7 +13,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 100;    /// initial number of objects (points)
+int nbo = 200;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius

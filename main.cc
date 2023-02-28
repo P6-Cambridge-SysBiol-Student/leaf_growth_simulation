@@ -503,9 +503,10 @@ int* findAlphaShapePoints(int** neighbourhoods){
 
     int* concaveHullPointsIndices = create1Darray(nbo);
     init1DArray(concaveHullPointsIndices, nbo, -1);
+    int currentHullArrayPointer = 0;
 
 
-    /// find the point with most negative x co-ord
+    /// find the point with most negative y co-ord
     int firstPointIndex = -1;
     double currentMinY = yBound;
     for(int i = 0; i < nbo; i++){
@@ -517,9 +518,7 @@ int* findAlphaShapePoints(int** neighbourhoods){
         }
     }
 
-
     /// fill the array of concaveHullPoints with the initial point's index
-    int currentHullArrayPointer = 0;
     concaveHullPointsIndices[0] = firstPointIndex;
     currentHullArrayPointer++;
 
@@ -530,17 +529,18 @@ int* findAlphaShapePoints(int** neighbourhoods){
     int nextCentreIndex = -1;
     double currentMinAngle = 10; /// above max possible value of 2pi
 
+    /// finds next central point in the concave hull
     for(int k =0; k<NAW; k++){
-        if (neighbourhoods[firstPointIndex][k] != -1){Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][k]]; /// alias for neighbour
+        if (neighbourhoods[firstPointIndex][k] != -1){
+            Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][k]]; /// alias for neighbour
             double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
-            if (squareMagDistance > (central.cellRadius*breakSpringCoeff*central.cellRadius*breakSpringCoeff)){
+            if (squareMagDistance < (central.cellRadius*breakSpringCoeff*central.cellRadius*breakSpringCoeff)){
                 double angBetweenInitVecAndNeighbour = angleBetweenVecs(initialComparisonVector,
                                                                         (neighbour.disVec - central.disVec));
                 if (angBetweenInitVecAndNeighbour < currentMinAngle){
                     nextCentreIndex = neighbourhoods[firstPointIndex][k];
                     currentMinAngle = angBetweenInitVecAndNeighbour;
                 }
-
             }
         }
     }
@@ -548,6 +548,7 @@ int* findAlphaShapePoints(int** neighbourhoods){
     /// change reference points for the new current centre and track the old centre
     int previousCentreIndex = currentCentreIndex;
     currentCentreIndex = nextCentreIndex;
+    nextCentreIndex = -1;
 
     /// fill the concave hull indices array
     concaveHullPointsIndices[currentHullArrayPointer] = neighbourhoods[firstPointIndex][currentCentreIndex];
@@ -555,10 +556,9 @@ int* findAlphaShapePoints(int** neighbourhoods){
 
 
     /// carry on finding next point in concave hull
-
-    while(concaveHullPointsIndices[currentHullArrayPointer] != firstPointIndex){
-        // check if the next point in the concave hull has already been found
-        if (nextCentreIndex == previousCentreIndex) {
+    while(concaveHullPointsIndices[currentHullArrayPointer-1] != firstPointIndex){
+        /// check if the last central point was the same as the first, if so the concave hull has been found
+        if (previousCentreIndex == firstPointIndex) {
             break;
         }
         currentMinAngle = 10;
@@ -569,20 +569,18 @@ int* findAlphaShapePoints(int** neighbourhoods){
             double squareMagDistance = (currentCentre.disVec - neighbour.disVec).magnitude_squared();
             vector2D vectorFromPrevPoint = (currentCentre.disVec - previousCentre.disVec);
             if (neighbourhoods[currentCentreIndex][m] != -1){
-                if (squareMagDistance > (currentCentre.cellRadius * breakSpringCoeff * currentCentre.cellRadius * breakSpringCoeff)) {
+                if (squareMagDistance < (currentCentre.cellRadius * breakSpringCoeff * currentCentre.cellRadius * breakSpringCoeff)) {
                     double angBetweenPrevPointAndNeighbour = angleBetweenVecs(vectorFromPrevPoint,
                                                                               (neighbour.disVec - currentCentre.disVec));
                     if (angBetweenPrevPointAndNeighbour < currentMinAngle) {
-                        nextCentreIndex = neighbourhoods[currentCentreIndex][m];
                         previousCentreIndex = currentCentreIndex;
+                        currentCentreIndex = neighbourhoods[currentCentreIndex][m];
                         currentMinAngle = angBetweenPrevPointAndNeighbour; // update the value of currentMinAngle
                     }
                 }
             }
-
         }
-        currentCentreIndex = nextCentreIndex;
-        concaveHullPointsIndices[currentHullArrayPointer] = neighbourhoods[firstPointIndex][currentCentreIndex];
+        concaveHullPointsIndices[currentHullArrayPointer] = currentCentreIndex;
         currentHullArrayPointer++;
     }
 
