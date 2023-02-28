@@ -507,11 +507,11 @@ int* findAlphaShapePoints(int** neighbourhoods){
 
     /// find the point with most negative x co-ord
     int firstPointIndex = -1;
-    double currentMinX = yBound;
+    double currentMinY = yBound;
     for(int i = 0; i < nbo; i++){
         Point& centre = pointsArray[i];
-        if(centre.disVec.xx < currentMinX){
-            currentMinX = centre.disVec.xx;
+        if(centre.disVec.yy < currentMinY){
+            currentMinY = centre.disVec.yy;
             firstPointIndex = i;
             printf("Current Minimum Point is %d with a Y co-ord of %f\n", firstPointIndex, centre.disVec.yy);
         }
