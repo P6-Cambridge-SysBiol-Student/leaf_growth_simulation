@@ -498,7 +498,7 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
         }
     }
 };
-/*
+
 int* findAlphaShapePoints(int** neighbourhoods){
 
     int* concaveHullPoints = create1Darray(nbo);
@@ -506,9 +506,9 @@ int* findAlphaShapePoints(int** neighbourhoods){
 
 
     /// find the point with most negative x co-ord
-    static int firstPointIndex = -1;
+    int firstPointIndex = -1;
     double startMinX = xBound;
-    static double currentMinX = xBound;
+    double currentMinX = xBound;
     for(int i = 0; i < nbo; i++){
         Point& centre = pointsArray[i];
         if(centre.disVec.xx < startMinX){
@@ -549,7 +549,7 @@ int* findAlphaShapePoints(int** neighbourhoods){
 
     /// carry on finding next point in concave hull
 
-    while(nextCentre != firstPointIndex){
+    while(concaveHullPoints[currentHullArrayPointer--] != firstPointIndex){
         for (int m = 0; m<NAW; m++) {
             Point &neighbour = pointsArray[neighbourhoods[nextCentre][m]];
             Point &previousCentre = pointsArray[previousCentreIndex];
@@ -567,9 +567,19 @@ int* findAlphaShapePoints(int** neighbourhoods){
         previousCentreIndex = nextCentre; // update the previousCentreIndex
     }
 
+    /*
+    printf("Concave Hull is made of points:");
+    for(int ii = 0; ii<nbo; ii++){
+        while(ii != -1){
+            printf("%d", concaveHullPoints[ii]);
+        }
+    }
+    printf("\n");
+    */
+
     return concaveHullPoints;
 }
-*/
+
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
     for (int i = 0; i < iterationNumber; i++)
@@ -669,16 +679,16 @@ int main(int argc, char *argv[]){
                 //hormoneExpandEffect();
 
                 drawTrianglesAndPoints();
-                // printf("This is iteration: %d \n\n\n", interationNumber);
+                printf("This is iteration: %d \n\n\n", iterationNumber);
                 computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
-                //int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
+                 int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
                 //drawConcaveHull(alphaShapePoints);
 
 
                 free(triangleIndexList);
                 free(neighbourhoods);
                 free(totalArray);
-                //free(alphaShapePoints);
+                free(alphaShapePoints);
                 glfwSwapBuffers(win);
             }
         }
