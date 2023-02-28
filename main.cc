@@ -501,70 +501,89 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
 
 int* findAlphaShapePoints(int** neighbourhoods){
 
-    int* concaveHullPoints = create1Darray(nbo);
-    init1DArray(concaveHullPoints, nbo, -1);
+    int* concaveHullPointsIndices = create1Darray(nbo);
+    init1DArray(concaveHullPointsIndices, nbo, -1);
 
 
     /// find the point with most negative x co-ord
     int firstPointIndex = -1;
-    double startMinX = xBound;
-    double currentMinX = xBound;
+    double currentMinX = yBound;
     for(int i = 0; i < nbo; i++){
         Point& centre = pointsArray[i];
-        if(centre.disVec.xx < startMinX){
+        if(centre.disVec.xx < currentMinX){
             currentMinX = centre.disVec.xx;
             firstPointIndex = i;
+            printf("Current Minimum Point is %d with a Y co-ord of %f\n", firstPointIndex, centre.disVec.yy);
         }
     }
 
-    /// find the number of points involved in the concave hull
+
+    /// fill the array of concaveHullPoints with the initial point's index
     int currentHullArrayPointer = 0;
-    concaveHullPoints[0] = firstPointIndex;
+    concaveHullPointsIndices[0] = firstPointIndex;
     currentHullArrayPointer++;
 
-    /// a value for the point that is searching neighbours for next value
-    Point &central = pointsArray[firstPointIndex];
-
-    /// find next point in concave hull for initial point
+    /// init alias and the vector used for the first comparison
+    int currentCentreIndex = firstPointIndex;
+    Point &central = pointsArray[currentCentreIndex];
     vector2D initialComparisonVector = vector2D(0, -1);
-    int nextCentre = -1;
+    int nextCentreIndex = -1;
     double currentMinAngle = 10; /// above max possible value of 2pi
+
     for(int k =0; k<NAW; k++){
-        Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][k]]; /// alias for neighbour
-        double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
-        if (squareMagDistance > (central.cellRadius*breakSpringCoeff*central.cellRadius*breakSpringCoeff)){
-            double angBetweenInitVecAndNeighbour = angleBetweenVecs(initialComparisonVector,
-                                                                    (neighbour.disVec - central.disVec));
-            if (angBetweenInitVecAndNeighbour < currentMinAngle){
-                nextCentre = neighbourhoods[firstPointIndex][k];
-                currentMinAngle = angBetweenInitVecAndNeighbour;
+        if (neighbourhoods[firstPointIndex][k] != -1){Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][k]]; /// alias for neighbour
+            double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
+            if (squareMagDistance > (central.cellRadius*breakSpringCoeff*central.cellRadius*breakSpringCoeff)){
+                double angBetweenInitVecAndNeighbour = angleBetweenVecs(initialComparisonVector,
+                                                                        (neighbour.disVec - central.disVec));
+                if (angBetweenInitVecAndNeighbour < currentMinAngle){
+                    nextCentreIndex = neighbourhoods[firstPointIndex][k];
+                    currentMinAngle = angBetweenInitVecAndNeighbour;
+                }
+
             }
         }
     }
 
-    concaveHullPoints[currentHullArrayPointer] = neighbourhoods[firstPointIndex][nextCentre];
+    /// change reference points for the new current centre and track the old centre
+    int previousCentreIndex = currentCentreIndex;
+    currentCentreIndex = nextCentreIndex;
+
+    /// fill the concave hull indices array
+    concaveHullPointsIndices[currentHullArrayPointer] = neighbourhoods[firstPointIndex][currentCentreIndex];
     currentHullArrayPointer++;
-    int previousCentreIndex = concaveHullPoints[currentHullArrayPointer-2];
 
 
     /// carry on finding next point in concave hull
 
-    while(concaveHullPoints[currentHullArrayPointer--] != firstPointIndex){
+    while(concaveHullPointsIndices[currentHullArrayPointer] != firstPointIndex){
+        // check if the next point in the concave hull has already been found
+        if (nextCentreIndex == previousCentreIndex) {
+            break;
+        }
+        currentMinAngle = 10;
         for (int m = 0; m<NAW; m++) {
-            Point &neighbour = pointsArray[neighbourhoods[nextCentre][m]];
+            Point &neighbour = pointsArray[neighbourhoods[currentCentreIndex][m]];
             Point &previousCentre = pointsArray[previousCentreIndex];
-            double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
-            vector2D vectorFromPrevPoint = (central.disVec - previousCentre.disVec);
-            if (squareMagDistance > (central.cellRadius * breakSpringCoeff * central.cellRadius * breakSpringCoeff)) {
-                double angBetweenPrevPointAndNeighbour = angleBetweenVecs(vectorFromPrevPoint,
-                                                                          (neighbour.disVec - central.disVec));
-                if (angBetweenPrevPointAndNeighbour < currentMinAngle) {
-                    nextCentre = neighbourhoods[firstPointIndex][m];
-                    currentMinAngle = angBetweenPrevPointAndNeighbour; // update the value of currentMinAngle
+            Point &currentCentre = pointsArray[currentCentreIndex];
+            double squareMagDistance = (currentCentre.disVec - neighbour.disVec).magnitude_squared();
+            vector2D vectorFromPrevPoint = (currentCentre.disVec - previousCentre.disVec);
+            if (neighbourhoods[currentCentreIndex][m] != -1){
+                if (squareMagDistance > (currentCentre.cellRadius * breakSpringCoeff * currentCentre.cellRadius * breakSpringCoeff)) {
+                    double angBetweenPrevPointAndNeighbour = angleBetweenVecs(vectorFromPrevPoint,
+                                                                              (neighbour.disVec - currentCentre.disVec));
+                    if (angBetweenPrevPointAndNeighbour < currentMinAngle) {
+                        nextCentreIndex = neighbourhoods[currentCentreIndex][m];
+                        previousCentreIndex = currentCentreIndex;
+                        currentMinAngle = angBetweenPrevPointAndNeighbour; // update the value of currentMinAngle
+                    }
                 }
             }
+
         }
-        previousCentreIndex = nextCentre; // update the previousCentreIndex
+        currentCentreIndex = nextCentreIndex;
+        concaveHullPointsIndices[currentHullArrayPointer] = neighbourhoods[firstPointIndex][currentCentreIndex];
+        currentHullArrayPointer++;
     }
 
     /*
@@ -577,7 +596,7 @@ int* findAlphaShapePoints(int** neighbourhoods){
     printf("\n");
     */
 
-    return concaveHullPoints;
+    return concaveHullPointsIndices;
 }
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
