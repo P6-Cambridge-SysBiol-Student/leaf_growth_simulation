@@ -698,8 +698,8 @@ int main(int argc, char *argv[]){
                 drawTrianglesAndPoints();
                 printf("This is iteration: %d \n\n\n", iterationNumber);
                 computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
-                 int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
-                //drawConcaveHull(alphaShapePoints);
+                int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
+                drawConcaveHull(alphaShapePoints);
 
 
                 free(triangleIndexList);

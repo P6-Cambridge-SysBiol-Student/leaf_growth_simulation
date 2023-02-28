@@ -92,6 +92,9 @@ static void drawConcaveHull(int* inputConcaveHullArray){
         Point& p = pointsArray[inputConcaveHullArray[i]];
         p.displayGreen(); // call displayGreen() using an object of the Point class
     }
+    glEnd();
+
+    glFlush();
 }
 
 
