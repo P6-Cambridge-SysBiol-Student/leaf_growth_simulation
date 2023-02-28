@@ -501,12 +501,9 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
 
 int* findAlphaShapePoints(int** neighbourhoods){
 
-#if DEBUG
-    vector2D testVecA = vector2D(1, 1);
-    vector2D testVecB = vector2D(-1,-1);
-    double testAngle = angleBetweenVecs(testVecA, testVecB);
-    printf("Angle between test A and test B is: %f radians \n", testAngle);
-#endif
+    int* concaveHullPoints = create1Darray(nbo);
+    init1DArray(concaveHullPoints, nbo, -1);
+
 
     /// find the point with most negative x co-ord
     static int firstPointIndex = -1;
@@ -521,35 +518,56 @@ int* findAlphaShapePoints(int** neighbourhoods){
     }
 
     /// find the number of points involved in the concave hull
-    int concaveHullPoints[nbo]; /// set to all points but concave hull probably won't use all the array
     int currentHullArrayPointer = 0;
-    Point& firstPoint = pointsArray[firstPointIndex];
-
-    /// find next point in concave hull for initial point
     concaveHullPoints[0] = firstPointIndex;
     currentHullArrayPointer++;
 
-    vector2D initialComparisonVector = vector2D(0, 1);
-    for (int l = 0; l < NAW; l++) {
-        double currentMinAngle = -1; /// a value below 0
-        int nextHullPoint = -1;
-        Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][l]];
-        if (neighbourhoods[firstPointIndex][l] != -1) { // TODO need to add if clause checking neighbour is not outisde spring break distance
-            vector2D vectorToNeighbour = neighbour.disVec - firstPoint.disVec;
-            double angleToNeighbour = angleBetweenVecs(initialComparisonVector, vectorToNeighbour);
-            if (angleToNeighbour < currentMinAngle){
-                nextHullPoint = neighbour;
+    /// a value for the point that is searching neighbours for next value
+    Point &central = pointsArray[firstPointIndex];
 
+    /// find next point in concave hull for initial point
+    vector2D initialComparisonVector = vector2D(0, -1);
+    int nextCentre = -1;
+    double currentMinAngle = 10; /// above max possible value of 2pi
+    for(int k =0; k<NAW; k++){
+        Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][k]]; /// alias for neighbour
+        double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
+        if (squareMagDistance > (central.cellRadius*breakSpringCoeff*central.cellRadius*breakSpringCoeff)){
+            double angBetweenInitVecAndNeighbour = angleBetweenVecs(initialComparisonVector,
+                                                                    (neighbour.disVec - central.disVec));
+            if (angBetweenInitVecAndNeighbour < currentMinAngle){
+                nextCentre = neighbourhoods[firstPointIndex][k];
+                currentMinAngle = angBetweenInitVecAndNeighbour;
             }
         }
     }
 
-    /// then, loop around find next point, set that point to centre, repeat until back to the starting point
+    concaveHullPoints[currentHullArrayPointer] = neighbourhoods[firstPointIndex][nextCentre];
+    currentHullArrayPointer++;
+    int previousCentreIndex = concaveHullPoints[currentHullArrayPointer-2];
 
 
-    /// malloc and array to contain all the indices for the points which form the convex hull
-    /// to feed to graphics / fourier (ignore the fact the sampling is not even
+    /// carry on finding next point in concave hull
 
+    while(nextCentre != firstPointIndex){
+        for (int m = 0; m<NAW; m++) {
+            Point &neighbour = pointsArray[neighbourhoods[nextCentre][m]];
+            Point &previousCentre = pointsArray[previousCentreIndex];
+            double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
+            vector2D vectorFromPrevPoint = (central.disVec - previousCentre.disVec);
+            if (squareMagDistance > (central.cellRadius * breakSpringCoeff * central.cellRadius * breakSpringCoeff)) {
+                double angBetweenPrevPointAndNeighbour = angleBetweenVecs(vectorFromPrevPoint,
+                                                                          (neighbour.disVec - central.disVec));
+                if (angBetweenPrevPointAndNeighbour < currentMinAngle) {
+                    nextCentre = neighbourhoods[firstPointIndex][m];
+                    currentMinAngle = angBetweenPrevPointAndNeighbour; // update the value of currentMinAngle
+                }
+            }
+        }
+        previousCentreIndex = nextCentre; // update the previousCentreIndex
+    }
+
+    return concaveHullPoints;
 }
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
@@ -653,12 +671,13 @@ int main(int argc, char *argv[]){
                 drawTrianglesAndPoints();
                 // printf("This is iteration: %d \n\n\n", interationNumber);
                 computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
-                findAlphaShape();
+                int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
 
 
                 free(triangleIndexList);
                 free(neighbourhoods);
                 free(totalArray);
+                free(alphaShapePoints);
                 glfwSwapBuffers(win);
             }
         }

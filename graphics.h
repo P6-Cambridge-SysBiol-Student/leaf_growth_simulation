@@ -86,6 +86,10 @@ static void drawTriangles(){
     glFlush();
 }
 
+static void drawConcaveHull(int* inputConcaveHullArray, ){
+    for(int i = 0; i < )
+
+}
 
 
 /// some more graphics stuff
