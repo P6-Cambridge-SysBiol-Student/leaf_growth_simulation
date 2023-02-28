@@ -498,7 +498,7 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
         }
     }
 };
-
+/*
 int* findAlphaShapePoints(int** neighbourhoods){
 
     int* concaveHullPoints = create1Darray(nbo);
@@ -569,7 +569,7 @@ int* findAlphaShapePoints(int** neighbourhoods){
 
     return concaveHullPoints;
 }
-
+*/
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
     for (int i = 0; i < iterationNumber; i++)
@@ -671,13 +671,14 @@ int main(int argc, char *argv[]){
                 drawTrianglesAndPoints();
                 // printf("This is iteration: %d \n\n\n", interationNumber);
                 computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
-                int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
+                //int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
+                //drawConcaveHull(alphaShapePoints);
 
 
                 free(triangleIndexList);
                 free(neighbourhoods);
                 free(totalArray);
-                free(alphaShapePoints);
+                //free(alphaShapePoints);
                 glfwSwapBuffers(win);
             }
         }

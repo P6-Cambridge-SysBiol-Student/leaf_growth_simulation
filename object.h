@@ -95,6 +95,14 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
+    void displayGreen(){
+        if (color == 1)
+            glColor4f(0, 1, 0, 1);
+        else
+            glColor4f(0, 1, 0, 1);
+        glVertex2f(disVec.xx, disVec.yy);
+    }
+
     void produceHormone(double inputProdRate){
         myRateOfProd = inputProdRate;
         myTotalHormone += myRateOfProd;

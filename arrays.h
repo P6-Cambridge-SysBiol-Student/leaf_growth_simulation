@@ -35,4 +35,3 @@ void init1DArray(int* input1DArrayPointer, int size, int inputFillValue){
     memset(input1DArrayPointer, inputFillValue, size * sizeof(int));
 }
 
-

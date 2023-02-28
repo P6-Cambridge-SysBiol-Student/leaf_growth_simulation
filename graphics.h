@@ -86,9 +86,12 @@ static void drawTriangles(){
     glFlush();
 }
 
-static void drawConcaveHull(int* inputConcaveHullArray, ){
-    for(int i = 0; i < )
-
+static void drawConcaveHull(int* inputConcaveHullArray){
+    for(int i = 0; i < nbo; i++){
+        glBegin(GL_LINE_LOOP);
+        Point& p = pointsArray[inputConcaveHullArray[i]];
+        p.displayGreen(); // call displayGreen() using an object of the Point class
+    }
 }
 
 
