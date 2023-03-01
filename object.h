@@ -11,7 +11,7 @@ class Point
 {
 public:  /// these are attributes that can be called outside of the script
     /// member variables:
-    vector2D disVec = vector2D(double (0.4*xBound*mySrand()), double (0.4*yBound*mySrand())); /// sets x and y values randomly
+    vector2D disVec = vector2D(double (0.7*xBound*mySrand()), double (0.7*yBound*mySrand())); /// sets x and y values randomly
     vector2D velVec = vector2D(0.0001, 0.0001); /// initial velocities set to very small, prevents bugs
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     vector2D mitosisOrient = vector2D(1, 1);
@@ -120,9 +120,9 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     void react1With2(double input1and2ReactRate){
-
+        myTotalHormone1 += timestep*(-input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
+        myTotalHormone2 += timestep*(input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
     }
-
 
     void sigmoidDisplayHormone() {
         double sigmoidHormConc = sigmoid((12*myTotalHormone1)-5); /// this shifts curve so that color scales from 0 to 1
