@@ -27,8 +27,6 @@
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together
 #include "graphics.h"
 
-/// TODO Hormones simulation (simple & reaction-diffusion)
-
 
 ///-----------------------------------------------------------------------------
 
