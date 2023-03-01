@@ -101,13 +101,26 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void produceHormone(double inputProdRate){
+    void produceHormone1(double inputProdRate){
         myRateOfProd1 = inputProdRate;
-        myTotalHormone1 += myRateOfProd1;
+        myTotalHormone1 += timestep*(myRateOfProd1);
     }
 
-    void degradeHormone(double inputDegRate){
-        myTotalHormone1 -= myTotalHormone1*inputDegRate;
+    void produceHormone2(double inputProdRate){
+        myRateOfProd2 = inputProdRate;
+        myTotalHormone2 += timestep*(myRateOfProd2);
+    }
+
+    void degradeHormone1(double inputDegRate){
+        myTotalHormone1 -= timestep*(myTotalHormone1*inputDegRate);
+    }
+
+    void degradeHormone2(double inputDegRate){
+        myTotalHormone2 -= timestep*(myDeltaHormone2*inputDegRate);
+    }
+
+    void react1With2(double input1and2ReactRate){
+
     }
 
 

@@ -27,16 +27,20 @@ double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
 
 // hormone parameters
-const int numHormones = 1;
-double hormone1ProdRate = 2;
-double hormone1DegRate = 0.040;
-double hormone1IntroTime = 0.018;
+
+double hormone1ProdRate = 33333;
+double hormone1DegRate = 666; /// not used if reaction-diffusion used
+double hormone1IntroTime = 0.006;
 vector2D hormone1Origin = vector2D(0.6*xBound,0.6*xBound);
 double hormone1DiffCoeff = 0.01 * SCALING_FACTOR;
 double hormone1DiffPro = 0.6; /// this is made up i think,
 double horm1Efficacy = 0.0000;
 
+double hormone2ProdRate = 0.04;
 double hormone2DegRate = 0.04;
+
+double reactRate1to2 = 0.02;
+
 
 // mitosis parameters
 double baseMaxProbOfDiv = 0.0001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable

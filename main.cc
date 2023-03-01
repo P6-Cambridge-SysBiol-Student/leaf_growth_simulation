@@ -366,23 +366,39 @@ void startHormone(double inputStartTime){
 
 /// every cell degrades hormone, only produces produce it
 /// this calculates the amount of production / degredation within cells
-void calcHormConcn(double inputStartTime){
+void hormBirthDeath(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
         if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
             printf("Hormone is being produced!\n");
-            cell.produceHormone(hormone1ProdRate);
-            cell.degradeHormone(hormone1DegRate);
+            cell.produceHormone1(hormone1ProdRate);
+            cell.degradeHormone1(hormone1DegRate);
         }
         else{
-            cell.degradeHormone(hormone1DegRate);
+            cell.degradeHormone1(hormone1DegRate);
         }
 
     }
 }
 
-void grayScottDiff(double inputStartTime){}
+void hormReactDiffuse(double inputStartTime){
+    for (int i = 0; i < nbo; i++){
+        Point& cell = pointsArray[i]; /// alias for pointsArray[i]
+        /// calculate amount of hormone made by producers
+        if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
+            printf("Hormone is being produced!\n");
+            cell.produceHormone1(hormone1ProdRate);
+            cell.produceHormone2(hormone2ProdRate);
+            cell.degradeHormone2(hormone2DegRate);
+            //cell.react1With2(); /// TODO write member function for this
+        }
+        else{
+            cell.degradeHormone2(hormone2DegRate);
+        }
+
+    }
+}
 
 void v1DiffuseHorm(int** neighbourhoods) {
 
@@ -666,7 +682,7 @@ int main(int argc, char *argv[]){
                 iterateDisplace();
                 startHormone(hormone1IntroTime);
                 v1DiffuseHorm(neighbourhoods);
-                calcHormConcn(hormone1IntroTime);
+                hormBirthDeath(hormone1IntroTime);
                 calcMitosis();
                 //hormoneExpandEffect();
 
