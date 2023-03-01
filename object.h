@@ -16,9 +16,6 @@ public:  /// these are attributes that can be called outside of the script
     vector2D springVec = vector2D(0, 0);  /// would be set (0, 0) by default but just in case
     vector2D mitosisOrient = vector2D(1, 1);
 
-    Hormone hormArray[100]; /// initialise hormone array of size 100 but I won't use all of these
-    /// TODO add parameter reading function like in param to select variables
-
     double extendedHooks, compressedHooks, innerMultiplier, innerCompressedHooks;  /// hooks constant for attracting points back to the centre
     double cellRadiusBase, cellRadius;
     double cellMass;
@@ -27,14 +24,15 @@ public:  /// these are attributes that can be called outside of the script
 
     /// members related to hormone function
     bool isHormoneProducer = false;
-    double myTotalHormone = 0;
-    double myHormConc = 0; // TODO add function to find concentration, check units in diff equation
-    double myDeltaHormone = 0; /// keeps track of amount of hormone gained/lost
-    double myDiffCoeff = 0;
-    double myRateOfProd = 0;
-    double myRateOfDeg = 0.1;
+    double myTotalHormone1 = 0;
+    double myDeltaHormone1 = 0; /// keeps track of amount of hormone gained/lost
+    double myRateOfProd1 = 0;
     double myExpandEffect = 0;
     double myHormoneSensitivity = 0;
+
+    double myTotalHormone2 = 0;
+    double myDeltaHormone2 = 0;
+    double myRateOfProd2 = 0;
 
     /// members related to cell division
     bool wasMotherCell = true;
@@ -104,29 +102,29 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     void produceHormone(double inputProdRate){
-        myRateOfProd = inputProdRate;
-        myTotalHormone += myRateOfProd;
+        myRateOfProd1 = inputProdRate;
+        myTotalHormone1 += myRateOfProd1;
     }
 
     void degradeHormone(double inputDegRate){
-        myTotalHormone -= myTotalHormone*inputDegRate;
+        myTotalHormone1 -= myTotalHormone1*inputDegRate;
     }
 
 
     void sigmoidDisplayHormone() {
-        double sigmoidHormConc = sigmoid((12*myTotalHormone)-5); /// this shifts curve so that color scales from 0 to 1
+        double sigmoidHormConc = sigmoid((12*myTotalHormone1)-5); /// this shifts curve so that color scales from 0 to 1
         glColor4f((sigmoidHormConc), 0, (1 - sigmoidHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
 
     void linearDisplayHormone() {
-        double linearHormConc = myTotalHormone / 1.5;
+        double linearHormConc = myTotalHormone1 / 1.5;
         glColor4f((linearHormConc), (0.5 - 0.5*linearHormConc), (1 - linearHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
 
     double divisionProb(double maxProbOfDiv, int numCurrentCells, int finalTotCells) { /// each cell has a p(mitosis) varied by number of existing points, cell size etc.
-        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv + (myTotalHormone * hormEfficacy); /// just a linear equation
+        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv + (myTotalHormone1 * horm1Efficacy); /// just a linear equation
         return divisionProb;
     }
 };

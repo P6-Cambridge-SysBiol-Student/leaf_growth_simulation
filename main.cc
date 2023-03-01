@@ -378,13 +378,16 @@ void calcHormConcn(double inputStartTime){
         else{
             cell.degradeHormone(hormone1DegRate);
         }
+
     }
 }
+
+void grayScottDiff(double inputStartTime){}
 
 void v1DiffuseHorm(int** neighbourhoods) {
 
     for (int n = 0; n < nbo; n++) {
-        pointsArray[n].myDeltaHormone = 0;
+        pointsArray[n].myDeltaHormone1 = 0;
     }
 
     for (int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
@@ -401,12 +404,12 @@ void v1DiffuseHorm(int** neighbourhoods) {
                     double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude(); // m
 
                     /// find difference in hormone amount between cells
-                    double hormoneConcnDiff = centre.myTotalHormone - neighbour.myTotalHormone;  //n / m
+                    double hormoneConcnDiff = centre.myTotalHormone1 - neighbour.myTotalHormone1;  //n / m
 
                     double hormoneConcnGrad = hormoneConcnDiff / magnitudeOfDistance; //n / m^2
                     /// diffuse the hormone from the centre to neighbour
-                    neighbour.myDeltaHormone += timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
-                    centre.myDeltaHormone -= timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius);
+                    neighbour.myDeltaHormone1 += timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
+                    centre.myDeltaHormone1 -= timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius);
                 }
             }
         }
@@ -415,10 +418,10 @@ void v1DiffuseHorm(int** neighbourhoods) {
 
     for (int j = 0; j < nbo; j++) {
         Point &cell = pointsArray[j];
-        cell.myTotalHormone += cell.myDeltaHormone;
-        sum += cell.myTotalHormone;
-        if (cell.myTotalHormone < 0) {
-            cell.myTotalHormone = 0;
+        cell.myTotalHormone1 += cell.myDeltaHormone1;
+        sum += cell.myTotalHormone1;
+        if (cell.myTotalHormone1 < 0) {
+            cell.myTotalHormone1 = 0;
         }
     }
 printf("The sum of myTotalHormone is %f\n", sum); /// test conservation of hormone
@@ -427,7 +430,7 @@ printf("The sum of myTotalHormone is %f\n", sum); /// test conservation of hormo
 int findMaxHormone(){
     int maxPointer = 0;
     for (int i = 0; i<nbo; i++){
-        if (pointsArray[i].myTotalHormone > pointsArray[maxPointer].myTotalHormone){
+        if (pointsArray[i].myTotalHormone1 > pointsArray[maxPointer].myTotalHormone1){
             maxPointer = i;
         }
     }
@@ -437,7 +440,7 @@ int findMaxHormone(){
 void hormoneExpandEffect(){
     for (int i = 0; i < nbo; i++){
     Point& centre = pointsArray[i];
-    centre.cellRadius = centre.cellRadiusBase + (hormEfficacy * centre.myTotalHormone * SCALING_FACTOR);
+    centre.cellRadius = centre.cellRadiusBase + (horm1Efficacy * centre.myTotalHormone1 * SCALING_FACTOR);
     }
 }
 
