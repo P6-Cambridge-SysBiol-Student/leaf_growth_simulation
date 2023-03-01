@@ -391,10 +391,11 @@ void hormReactDiffuse(double inputStartTime){
             cell.produceHormone1(hormone1ProdRate);
             cell.produceHormone2(hormone2ProdRate);
             cell.degradeHormone2(hormone2DegRate);
-            //cell.react1With2(); /// TODO write member function for this
+            cell.react1With2(reactRate1to2);
         }
         else{
             cell.degradeHormone2(hormone2DegRate);
+            cell.react1With2(reactRate1to2);
         }
 
     }
@@ -420,27 +421,38 @@ void v1DiffuseHorm(int** neighbourhoods) {
                     double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude(); // m
 
                     /// find difference in hormone amount between cells
-                    double hormoneConcnDiff = centre.myTotalHormone1 - neighbour.myTotalHormone1;  //n / m
+                    double hormone1ConcnDiff = centre.myTotalHormone1 - neighbour.myTotalHormone1;  //n / m
+                    double hormone2ConcnDiff = centre.myTotalHormone2 - neighbour.myTotalHormone2;
 
-                    double hormoneConcnGrad = hormoneConcnDiff / magnitudeOfDistance; //n / m^2
+                    double hormone1ConcnGrad = hormone1ConcnDiff / magnitudeOfDistance; //n / m^2
+                    double hormone2ConcnGrad = hormone2ConcnDiff / magnitudeOfDistance;
                     /// diffuse the hormone from the centre to neighbour
-                    neighbour.myDeltaHormone1 += timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
-                    centre.myDeltaHormone1 -= timestep*(hormone1DiffCoeff * hormoneConcnGrad * centre.cellRadius);
+                    neighbour.myDeltaHormone1 += timestep*(hormone1DiffCoeff * hormone1ConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
+                    centre.myDeltaHormone1 -= timestep*(hormone1DiffCoeff * hormone1ConcnGrad * centre.cellRadius);
+
+                    neighbour.myDeltaHormone2 += timestep*(hormone2DiffCoeff * hormone2ConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
+                    centre.myDeltaHormone2 -= timestep*(hormone2DiffCoeff * hormone2ConcnGrad * centre.cellRadius);
                 }
             }
         }
     }
-    double sum = 0;
+    double sumHorm1 = 0;
+    double sumHorm2 = 0;
 
     for (int j = 0; j < nbo; j++) {
+
         Point &cell = pointsArray[j];
         cell.myTotalHormone1 += cell.myDeltaHormone1;
-        sum += cell.myTotalHormone1;
+        cell.myTotalHormone2 += cell.myDeltaHormone1;
+
+        sumHorm1 += cell.myTotalHormone1;
+        sumHorm2 += cell.myTotalHormone2;
+
         if (cell.myTotalHormone1 < 0) {
             cell.myTotalHormone1 = 0;
         }
     }
-printf("The sum of myTotalHormone is %f\n", sum); /// test conservation of hormone
+printf("The sum of hormone1 is %f\n The sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
 }
 
 int findMaxHormone(){
@@ -683,6 +695,7 @@ int main(int argc, char *argv[]){
                 startHormone(hormone1IntroTime);
                 v1DiffuseHorm(neighbourhoods);
                 hormBirthDeath(hormone1IntroTime);
+                //hormReactDiffuse(hormone1IntroTime);
                 calcMitosis();
                 //hormoneExpandEffect();
 
