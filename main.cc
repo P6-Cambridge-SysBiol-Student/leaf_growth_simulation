@@ -27,9 +27,8 @@
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together
 #include "graphics.h"
 
-/// TODO cleanup graphics and all GLFW into graphics file, allows easier ifdreacitonef removal
 /// TODO Hormones simulation (simple & reaction-diffusion)
-/// TODO fourier series for fitness function
+
 
 ///-----------------------------------------------------------------------------
 
