@@ -13,7 +13,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 200;    /// initial number of objects (points)
+int nbo = 100;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -34,7 +34,9 @@ double hormone1IntroTime = 0.018;
 vector2D hormone1Origin = vector2D(0.6*xBound,0.6*xBound);
 double hormone1DiffCoeff = 0.01 * SCALING_FACTOR;
 double hormone1DiffPro = 0.6; /// this is made up i think,
-double hormEfficacy = 0.0000;
+double horm1Efficacy = 0.0000;
+
+double hormone2DegRate = 0.04;
 
 // mitosis parameters
 double baseMaxProbOfDiv = 0.0001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
@@ -42,7 +44,7 @@ double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
-int finalIterationNumber = 5000;  /// iterations before final frame
+int finalIterationNumber = 2000;  /// iterations before final frame
 
 
 
