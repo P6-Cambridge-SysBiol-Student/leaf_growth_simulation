@@ -11,6 +11,7 @@
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
+#define INCLUDE_SPRINGS false
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -418,9 +419,8 @@ void calcHormConcn(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
-        if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
+        if ((cell.isHormoneProducer == true)){
             cell.produceHormone1BD(hormone1ProdRate);
-            printf("Globally: Cell %d has a myDeltaHormone1 value of %f\n", i, cell.myDeltaHormone1);
             cell.degradeHormone1BD(hormone1DegRate);
         }
         else{
@@ -506,9 +506,7 @@ int findMaxHormone(){
 }
 void updateTotalHormone(){
     for (int i = 0; i<nbo; i++){
-        printf("[i]: myDeltaHormone is %f \nmyTotalHorm1 was %f ", pointsArray[i].myDeltaHormone1, pointsArray[i].myTotalHormone1);
         pointsArray[i].myTotalHormone1 += pointsArray[i].myDeltaHormone1;
-        printf("now it is %f\n", pointsArray[i].myTotalHormone1);
         pointsArray[i].myDeltaHormone1 = 0;
         pointsArray[i].myTotalHormone2 += pointsArray[i].myDeltaHormone2;
         pointsArray[i].myDeltaHormone2 = 0;
@@ -743,7 +741,9 @@ int main(int argc, char *argv[]){
                 int* totalArray = create1Darray(nbo);
                 init1DArray(totalArray, nbo, -1);
                 fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
+#if INCLUDE_SPRINGS
                 v3CalcSprings(neighbourhoods);
+#endif
 #if REGULAR_LATTICE
                 for (int i=0; i<nbo; i++){
                     pointsArray[i].springVec = vector2D(0, 0);

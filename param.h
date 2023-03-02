@@ -13,7 +13,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 20*20;    /// initial number of objects (points)
+int nbo = 30*30;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -29,7 +29,7 @@ unsigned long seed = 2; /// seed for random number generator
 // hormone parameters
 
 double hormone1ProdRate = 5000;
-double hormone1DegRate = 5; /// not used if reaction-diffusion used
+double hormone1DegRate = 50; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00006;
 vector2D hormone1Origin = vector2D(0.1*xBound,0.1*xBound);
 double hormone1DiffCoeff = 0.001 * SCALING_FACTOR;
