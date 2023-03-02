@@ -32,7 +32,7 @@ double hormone1ProdRate = 5000;
 double hormone1DegRate = 5; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00006;
 vector2D hormone1Origin = vector2D(0.1*xBound,0.1*xBound);
-double hormone1DiffCoeff = 0.004 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.001 * SCALING_FACTOR;
 double hormone1DiffPro = 0.6; /// this is made up i think,
 double horm1Efficacy = 0.0000;
 
