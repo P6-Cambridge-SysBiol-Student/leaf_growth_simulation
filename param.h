@@ -42,7 +42,7 @@ double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
-int finalIterationNumber = 200;  /// iterations before final frame
+int finalIterationNumber = 5000;  /// iterations before final frame
 
 
 
