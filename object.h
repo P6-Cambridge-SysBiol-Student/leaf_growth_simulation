@@ -103,25 +103,26 @@ public:  /// these are attributes that can be called outside of the script
 
     void produceHormone1(double inputProdRate){
         myRateOfProd1 = inputProdRate;
-        myTotalHormone1 += timestep*(myRateOfProd1);
+        myDeltaHormone1 = timestep*(myRateOfProd1);
     }
 
     void produceHormone2(double inputProdRate){
         myRateOfProd2 = inputProdRate;
-        myTotalHormone2 += timestep*(myRateOfProd2);
+        myDeltaHormone2 = timestep*(myRateOfProd2);
     }
 
     void degradeHormone1(double inputDegRate){
-        myTotalHormone1 -= timestep*(myTotalHormone1*inputDegRate);
+        myDeltaHormone1 = -timestep*(myTotalHormone1*inputDegRate);
     }
 
     void degradeHormone2(double inputDegRate){
-        myTotalHormone2 -= timestep*(myDeltaHormone2*inputDegRate);
+        myDeltaHormone2 = -timestep*(myDeltaHormone2*inputDegRate);
     }
 
     void react1With2(double input1and2ReactRate){
-        myTotalHormone1 += timestep*(-input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
-        myTotalHormone2 += timestep*(input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
+        double deltaHormoneReaction = timestep*(input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
+        myDeltaHormone1 -= deltaHormoneReaction;
+        myDeltaHormone2 += deltaHormoneReaction;
     }
 
     void sigmoidDisplayHormone() {

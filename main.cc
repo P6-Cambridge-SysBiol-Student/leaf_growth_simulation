@@ -438,10 +438,7 @@ void v1DiffuseHorm(int** neighbourhoods) {
     double sumHorm2 = 0;
 
     for (int j = 0; j < nbo; j++) {
-
         Point &cell = pointsArray[j];
-        cell.myTotalHormone1 += cell.myDeltaHormone1;
-        cell.myTotalHormone2 += cell.myDeltaHormone1;
 
         sumHorm1 += cell.myTotalHormone1;
         sumHorm2 += cell.myTotalHormone2;
@@ -461,6 +458,13 @@ int findMaxHormone(){
         }
     }
     return maxPointer;
+}
+
+void updateTotalHormone(){
+    for (int i = 0; i<nbo; i++){
+        pointsArray[i].myTotalHormone1 += pointsArray[i].myDeltaHormone1;
+        pointsArray[i].myTotalHormone2 += pointsArray[i].myDeltaHormone2;
+    }
 }
 
 void hormoneExpandEffect(){
