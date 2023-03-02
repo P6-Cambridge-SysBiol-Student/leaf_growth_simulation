@@ -27,6 +27,7 @@ public:  /// these are attributes that can be called outside of the script
     double myTotalHormone1 = 0;
     double myDeltaHormone1 = 0; /// keeps track of amount of hormone gained/lost
     double myRateOfProd1 = 0;
+    double myRateOfDeg1 = 0;
     double myExpandEffect = 0;
     double myHormoneSensitivity = 0;
 
@@ -100,11 +101,16 @@ public:  /// these are attributes that can be called outside of the script
             glColor4f(0, 1, 0, 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
-
-    void produceHormone1(double inputProdRate){
+/// BD here represents Birth-death process, need new functions for reaction-diffusion
+    void produceHormone1BD(double inputProdRate){
         myRateOfProd1 = inputProdRate;
-        myDeltaHormone1 = timestep*(myRateOfProd1);
-        printf("Locally myDeltaHormone1 is %f\n", myDeltaHormone1);
+        myDeltaHormone1 += timestep*(myRateOfProd1);
+        printf("\nLocally: myDeltaHormone1 is %f\n", myDeltaHormone1);
+    }
+
+    void degradeHormone1BD(double inputDegRate){
+        myRateOfDeg1 = inputDegRate;
+        myDeltaHormone1 += -timestep*(myRateOfDeg1*myTotalHormone1);
     }
 
     void produceHormone2(double inputProdRate){
@@ -112,12 +118,9 @@ public:  /// these are attributes that can be called outside of the script
         myDeltaHormone2 = timestep*(myRateOfProd2);
     }
 
-    void degradeHormone1(double inputDegRate){
-        myDeltaHormone1 = -timestep*(myTotalHormone1*inputDegRate);
-    }
 
     void degradeHormone2(double inputDegRate){
-        myDeltaHormone2 = -timestep*(myDeltaHormone2*inputDegRate);
+        myDeltaHormone2 = -timestep*(myDeltaHormone2*inputDegRate*myTotalHormone2);
     }
 
     void react1With2(double input1and2ReactRate){
