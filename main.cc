@@ -713,6 +713,7 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 }
 
 
+
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]){
@@ -720,8 +721,6 @@ int main(int argc, char *argv[]){
        if ( 0 == readOption(argv[i]) )
            printf("Argument '%s' was ignored\n", argv[i]);
     }
-    limitNbo();
-
     if ( !glfwInit() )
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
@@ -806,7 +805,8 @@ int main(int argc, char *argv[]){
                 glfwSwapBuffers(win);
             }
         }
-        glfwPollEvents();
+        if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(win, GLFW_TRUE);
     }
 
     glfwDestroyWindow(win);

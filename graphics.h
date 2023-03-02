@@ -97,7 +97,6 @@ static void drawConcaveHull(int* inputConcaveHullArray){
     glFlush();
 }
 
-
 /// some more graphics stuff
 /* change view angle, exit upon ESC */
 void key(GLFWwindow* win, int k, int s, int action, int mods){
