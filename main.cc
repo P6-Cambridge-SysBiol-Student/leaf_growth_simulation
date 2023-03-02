@@ -743,6 +743,7 @@ int main(int argc, char *argv[]){
                 hormBirthDeath(hormone1IntroTime);
                 //hormReactDiffuse(hormone1IntroTime);
                 calcMitosis();
+                updateTotalHormone();
                 //hormoneExpandEffect();
 
                 drawTrianglesAndPoints();
