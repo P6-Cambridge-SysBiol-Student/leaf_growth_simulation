@@ -10,6 +10,7 @@
 #define DEBUG false
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
+#define REGULAR_LATTICE true
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -38,6 +39,40 @@ static void animate(){
         pointsArray[i].step();
     }
 }
+
+void initRegularTriangularLattice() {
+    int index = 0;
+    bool isSqrtNBOWhole = !fmod(sqrt(nbo), 1);
+
+    int numPointsX = sqrt(nbo);
+    int numPointsY = sqrt(nbo);
+    double spacing = pointsArray[0].cellRadius;
+    double xSum = 0.0, ySum = 0.0;
+    int numPoints = numPointsX * numPointsY;
+    if (isSqrtNBOWhole){
+        for (int i = 0; i < numPointsX; i++) {
+            for (int j = 0; j < numPointsY; j++) {
+                double x = i * spacing + ((j % 2 == 0) ? 0 : spacing / 2.0);
+                double y = j * spacing * sin(M_PI / 3.0);
+                Point& p = pointsArray[index];
+                p.disVec = vector2D(x, y);
+                xSum += x;
+                ySum += y;
+                index++;
+            }
+        }
+        double xCenter = xSum / numPoints;
+        double yCenter = ySum / numPoints;
+            for (int i = 0; i < numPoints; i++) {
+                pointsArray[i].disVec -= vector2D(xCenter, yCenter);
+            }
+        }
+    else{
+        printf("NBO DOES NOT EQUAL numPointsX * numPointsY\n");
+    }
+
+}
+
 
 /// creates an array of xy co-ords for the delaunay triangulation function, then execute it
 void create_triangles_list(){
@@ -712,6 +747,11 @@ int main(int argc, char *argv[]){
         if ( now > next)
         {
             while (iterationNumber <= finalIterationNumber){
+#if REGULAR_LATTICE
+                if (iterationNumber == 1){
+                    initRegularTriangularLattice();
+                }
+#endif
                 iterationNumber++;
                 next += delay/100000;
                 trackTime();
@@ -724,7 +764,11 @@ int main(int argc, char *argv[]){
                 init1DArray(totalArray, nbo, -1);
                 fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
                 v3CalcSprings(neighbourhoods);
-
+#if REGULAR_LATTICE
+                for (int i=0; i<nbo; i++){
+                    pointsArray[i].springVec = vector2D(0, 0);
+                }
+#endif
                 iterateDisplace();
                 startHormone(hormone1IntroTime);
                 v1DiffuseHorm(neighbourhoods);
