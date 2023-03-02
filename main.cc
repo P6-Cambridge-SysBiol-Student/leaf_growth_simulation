@@ -402,13 +402,13 @@ void hormBirthDeath(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
-        if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
+        if ((cell.isHormoneProducer == true) and (currentTime < 100000*inputStartTime)){
             printf("Hormone is being produced!\n");
-            cell.produceHormone1(hormone1ProdRate);
-            cell.degradeHormone1(hormone1DegRate);
+            cell.produceHormone1BD(hormone1ProdRate);
+            cell.degradeHormone1BD(hormone1DegRate);
         }
         else{
-            cell.degradeHormone1(hormone1DegRate);
+            cell.degradeHormone1BD(hormone1DegRate);
         }
 
     }
@@ -419,16 +419,16 @@ void calcHormConcn(double inputStartTime){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
         if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
-            cell.produceHormone1(hormone1ProdRate);
-            cell.degradeHormone1(hormone1DegRate);
-            printf("Globally, Cell %d has a myDeltaHormone1 value of %f\n", i, cell.myDeltaHormone1);
+            cell.produceHormone1BD(hormone1ProdRate);
+            printf("Globally: Cell %d has a myDeltaHormone1 value of %f\n", i, cell.myDeltaHormone1);
+            cell.degradeHormone1BD(hormone1DegRate);
         }
         else{
-            cell.degradeHormone1(hormone1DegRate);
+            cell.degradeHormone1BD(hormone1DegRate);
         }
     }
 }
-
+/*
 void hormReactDiffuse(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
@@ -447,12 +447,8 @@ void hormReactDiffuse(double inputStartTime){
 
     }
 }
-
+*/
 void v1DiffuseHorm(int** neighbourhoods) {
-
-    for (int n = 0; n < nbo; n++) {
-        pointsArray[n].myDeltaHormone1 = 0;
-    }
 
     for (int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
         Point &centre = pointsArray[i]; /// alias for pointsArray[i]
@@ -508,10 +504,11 @@ int findMaxHormone(){
     }
     return maxPointer;
 }
-
 void updateTotalHormone(){
     for (int i = 0; i<nbo; i++){
+        printf("[i]: myDeltaHormone is %f \nmyTotalHorm1 was %f ", pointsArray[i].myDeltaHormone1, pointsArray[i].myTotalHormone1);
         pointsArray[i].myTotalHormone1 += pointsArray[i].myDeltaHormone1;
+        printf("now it is %f\n", pointsArray[i].myTotalHormone1);
         pointsArray[i].myDeltaHormone1 = 0;
         pointsArray[i].myTotalHormone2 += pointsArray[i].myDeltaHormone2;
         pointsArray[i].myDeltaHormone2 = 0;
