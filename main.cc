@@ -553,7 +553,8 @@ int* findAlphaShapePoints(int** neighbourhoods){
     currentCentreIndex = nextCentreIndex;
 
     /// carry on finding next point in concave hull
-    while(currentCentreIndex != firstPointIndex){
+    while(true){
+
         /// check if the last central point was the same as the first, if so the concave hull has been found
         if (currentCentreIndex == firstPointIndex) {
             printf("Hull finding algorithm has gotten back to the first point\n");
