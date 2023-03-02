@@ -105,7 +105,6 @@ public:  /// these are attributes that can be called outside of the script
     void produceHormone1BD(double inputProdRate){
         myRateOfProd1 = inputProdRate;
         myDeltaHormone1 += timestep*(myRateOfProd1);
-        printf("\nLocally: myDeltaHormone1 is %f\n", myDeltaHormone1);
     }
 
     void degradeHormone1BD(double inputDegRate){
