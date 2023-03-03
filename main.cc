@@ -48,7 +48,7 @@ void initRegularTriangularLattice() {
 
     int numPointsX = sqrt(nbo);
     int numPointsY = sqrt(nbo);
-    double spacing = pointsArray[0].cellRadius;
+    double spacing = pointsArray[0].cellRadius*0.5;
     double xSum = 0.0, ySum = 0.0;
     int numPoints = numPointsX * numPointsY;
     if (isSqrtNBOWhole){
@@ -202,25 +202,14 @@ void calcHormBirthDeath(double inputStartTime){
 
 // TODO add function to create noise and allow the pattern to form
 
-void hormReactDiffuse(double inputStartTime, double desiredTimeActive){
+void hormReactDiffuse(double inputStartTime){
     static bool flag = false;
-    static int currentTimeActive = 0;
     if ((currentTime > inputStartTime) and (flag == false)){ /// TODO is selecting point, need to add code to make some noise
         flag = true;
-        currentTimeActive += timestep;
-        /// find the point closest to the hormone Origin
-        int closest_point_index = -1;
-        double squareMinDist = 1000*1000*xBound;
-        for (int i = 0; i < nbo; i++) {
-            double squareDisFromOrigin = (pointsArray[i].disVec - hormone1Origin).magnitude_squared();
-            if (squareDisFromOrigin < squareMinDist) {
-                squareMinDist = squareDisFromOrigin;
-                closest_point_index = i;
-            }
+        /// introduce noise
+        for (int k = 0; k<nbo; k++){
+            pointsArray[k].produceHormone1ReactD(10*RDfeedRate*myPrand());
         }
-        /// set this point as the hormone producer
-        pointsArray[closest_point_index].produceHormone1ReactD(5*RDfeedRate); // small noise caused by one cell producing 2x as much
-        printf("Closest point is point %d\n", closest_point_index);
     }
     else{
     }
@@ -469,7 +458,7 @@ int main(int argc, char *argv[]){
                 iterateDisplace();
                 v1DiffuseHorm(neighbourhoods);
                 calcHormBirthDeath(hormone1IntroTime);
-                hormReactDiffuse(hormone1IntroTime, 50*timestep);
+                hormReactDiffuse(hormone1IntroTime);
                 //calcMitosis();
                 updateTotalHormone();
                 //hormoneExpandEffect();
