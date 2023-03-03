@@ -112,14 +112,12 @@ public:  /// these are attributes that can be called outside of the script
         myDeltaHormone1 += -timestep*(myRateOfDeg1*myTotalHormone1);
     }
 
-    void produceHormone2(double inputProdRate){
-        myRateOfProd2 = inputProdRate;
-        myDeltaHormone2 = timestep*(myRateOfProd2);
+    void produceHormone1ReactD(double inputFeedRate){
+        myDeltaHormone1 += inputFeedRate*(1-myTotalHormone1);
     }
 
-
-    void degradeHormone2(double inputDegRate){
-        myDeltaHormone2 = -timestep*(myDeltaHormone2*inputDegRate*myTotalHormone2);
+    void degradeHormone2ReactD(double inputKillRate, double inputFeedRate){
+        myDeltaHormone2 += -(inputFeedRate + inputKillRate)*myTotalHormone2;
     }
 
     void react1With2(double input1and2ReactRate){
