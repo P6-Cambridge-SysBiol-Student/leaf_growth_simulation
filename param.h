@@ -21,7 +21,7 @@ const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 const double breakSpringCoeff = 1.5;
 
 // timestep parameters
-double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
+double timestep = 0.00003; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
@@ -49,7 +49,7 @@ double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
-int finalIterationNumber = 2000;  /// iterations before final frame
+int finalIterationNumber = 10000;  /// iterations before final frame
 
 
 
