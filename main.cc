@@ -209,7 +209,7 @@ void hormReactDiffuse(double inputStartTime){
         /// introduce noise
         for (int k = 0; k<nbo; k++){
             pointsArray[k].produceHormone1ReactD(10*RDfeedRate*myPrand());
-            pointsArray[k].produceHormone1ForInit(10*RDfeedRate*myPrand());
+            pointsArray[k].produceHormone2ForInit(10*RDfeedRate*myPrand());
         }
     }
     else{

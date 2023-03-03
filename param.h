@@ -13,7 +13,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 40*40;    /// initial number of objects (points)
+int nbo = 30*30;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -32,17 +32,17 @@ double hormone1ProdRate = 5000;
 double hormone1DegRate = 50; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00006;
 vector2D hormone1Origin = vector2D(0.1*xBound,0.1*xBound);
-double hormone1DiffCoeff = 0.0004 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.00001 * SCALING_FACTOR;
 double hormone1DiffPro = 0.6; /// this is made up i think,
 double horm1Efficacy = 0.0000;
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 0.0002 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double hormone2DiffCoeff = 0.000005 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 
-double RDfeedRate = 0.067;
-double RDkillRate = 0.060;
-double reactRate1to2 = 1    ;
+double RDfeedRate = 0.037;
+double RDkillRate = 0.00;
+double reactRate1to2 = 1;
 
 
 // mitosis parameters

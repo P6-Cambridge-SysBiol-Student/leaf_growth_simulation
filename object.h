@@ -116,12 +116,13 @@ public:  /// these are attributes that can be called outside of the script
         myDeltaHormone1 += inputFeedRate*(1-myTotalHormone1);
     }
 
-    void produceHormone1ForInit(double inputFeedRate){
+    void produceHormone2ForInit(double inputFeedRate){
         myDeltaHormone2 += inputFeedRate;
     }
 
-    void degradeHormone2ReactD(double inputKillRate, double inputFeedRate){
-        myDeltaHormone2 += -(inputFeedRate + inputKillRate)*myTotalHormone2;
+    void degradeHormone2ReactD(double inputKillRate, double inputFeedRate) {
+        myDeltaHormone2 += -(inputFeedRate + inputKillRate) * myTotalHormone2;
+        /// TODO definitely a bug here, when killrate pf horm2 is 0 it still degrades to 0
     }
 
     void react1With2(double input1and2ReactRate){
