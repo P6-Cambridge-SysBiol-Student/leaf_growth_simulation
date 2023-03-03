@@ -11,7 +11,7 @@
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
-#define INCLUDE_SPRINGS false
+#define MOVING_POINTS false
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -209,6 +209,7 @@ void hormReactDiffuse(double inputStartTime){
         /// introduce noise
         for (int k = 0; k<nbo; k++){
             pointsArray[k].produceHormone1ReactD(10*RDfeedRate*myPrand());
+            pointsArray[k].produceHormone1ForInit(10*RDfeedRate*myPrand());
         }
     }
     else{
@@ -447,14 +448,11 @@ int main(int argc, char *argv[]){
                 int* totalArray = create1Darray(nbo);
                 init1DArray(totalArray, nbo, -1);
                 fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
-#if INCLUDE_SPRINGS
+
+#if MOVING_POINTS
                 v3CalcSprings(neighbourhoods);
 #endif
-#if REGULAR_LATTICE
-                for (int i=0; i<nbo; i++){
-                    pointsArray[i].springVec = vector2D(0, 0);
-                }
-#endif
+
                 iterateDisplace();
                 v1DiffuseHorm(neighbourhoods);
                 calcHormBirthDeath(hormone1IntroTime);

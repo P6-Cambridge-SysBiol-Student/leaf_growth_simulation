@@ -116,6 +116,10 @@ public:  /// these are attributes that can be called outside of the script
         myDeltaHormone1 += inputFeedRate*(1-myTotalHormone1);
     }
 
+    void produceHormone1ForInit(double inputFeedRate){
+        myDeltaHormone2 += inputFeedRate;
+    }
+
     void degradeHormone2ReactD(double inputKillRate, double inputFeedRate){
         myDeltaHormone2 += -(inputFeedRate + inputKillRate)*myTotalHormone2;
     }
