@@ -375,7 +375,7 @@ double trackTime(){
     return currentTime += timestep;
 }
 
-void startHormone(double inputStartTime){
+void startHormoneBD(double inputStartTime){
     static bool flag = false;
     if ((currentTime > inputStartTime) and (flag == false)){
         flag = true;
@@ -397,25 +397,7 @@ void startHormone(double inputStartTime){
     }
 }
 
-/// every cell degrades hormone, only produces produce it
-/// this calculates the amount of production / degredation within cells
-void hormBirthDeath(double inputStartTime){
-    for (int i = 0; i < nbo; i++){
-        Point& cell = pointsArray[i]; /// alias for pointsArray[i]
-        /// calculate amount of hormone made by producers
-        if ((cell.isHormoneProducer == true) and (currentTime < 100000*inputStartTime)){
-            printf("Hormone is being produced!\n");
-            cell.produceHormone1BD(hormone1ProdRate);
-            cell.degradeHormone1BD(hormone1DegRate);
-        }
-        else{
-            cell.degradeHormone1BD(hormone1DegRate);
-        }
-
-    }
-}
-
-void calcHormConcn(double inputStartTime){
+void calcHormBirthDeath(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
@@ -428,7 +410,7 @@ void calcHormConcn(double inputStartTime){
         }
     }
 }
-/*
+
 void hormReactDiffuse(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
@@ -447,7 +429,7 @@ void hormReactDiffuse(double inputStartTime){
 
     }
 }
-*/
+
 void v1DiffuseHorm(int** neighbourhoods) {
 
     for (int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
@@ -576,78 +558,7 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
         }
     }
 };
-/*
-int* findAlphaShapePoints(int** neighbourhoods){
 
-    int* concaveHullPoints = create1Darray(nbo);
-    init1DArray(concaveHullPoints, nbo, -1);
-
-
-    /// find the point with most negative x co-ord
-    static int firstPointIndex = -1;
-    double startMinX = xBound;
-    static double currentMinX = xBound;
-    for(int i = 0; i < nbo; i++){
-        Point& centre = pointsArray[i];
-        if(centre.disVec.xx < startMinX){
-            currentMinX = centre.disVec.xx;
-            firstPointIndex = i;
-        }
-    }
-
-    /// find the number of points involved in the concave hull
-    int currentHullArrayPointer = 0;
-    concaveHullPoints[0] = firstPointIndex;
-    currentHullArrayPointer++;
-
-    /// a value for the point that is searching neighbours for next value
-    Point &central = pointsArray[firstPointIndex];
-
-    /// find next point in concave hull for initial point
-    vector2D initialComparisonVector = vector2D(0, -1);
-    int nextCentre = -1;
-    double currentMinAngle = 10; /// above max possible value of 2pi
-    for(int k =0; k<NAW; k++){
-        Point &neighbour = pointsArray[neighbourhoods[firstPointIndex][k]]; /// alias for neighbour
-        double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
-        if (squareMagDistance > (central.cellRadius*breakSpringCoeff*central.cellRadius*breakSpringCoeff)){
-            double angBetweenInitVecAndNeighbour = angleBetweenVecs(initialComparisonVector,
-                                                                    (neighbour.disVec - central.disVec));
-            if (angBetweenInitVecAndNeighbour < currentMinAngle){
-                nextCentre = neighbourhoods[firstPointIndex][k];
-                currentMinAngle = angBetweenInitVecAndNeighbour;
-            }
-        }
-    }
-
-    concaveHullPoints[currentHullArrayPointer] = neighbourhoods[firstPointIndex][nextCentre];
-    currentHullArrayPointer++;
-    int previousCentreIndex = concaveHullPoints[currentHullArrayPointer-2];
-
-
-    /// carry on finding next point in concave hull
-
-    while(nextCentre != firstPointIndex){
-        for (int m = 0; m<NAW; m++) {
-            Point &neighbour = pointsArray[neighbourhoods[nextCentre][m]];
-            Point &previousCentre = pointsArray[previousCentreIndex];
-            double squareMagDistance = (central.disVec - neighbour.disVec).magnitude_squared();
-            vector2D vectorFromPrevPoint = (central.disVec - previousCentre.disVec);
-            if (squareMagDistance > (central.cellRadius * breakSpringCoeff * central.cellRadius * breakSpringCoeff)) {
-                double angBetweenPrevPointAndNeighbour = angleBetweenVecs(vectorFromPrevPoint,
-                                                                          (neighbour.disVec - central.disVec));
-                if (angBetweenPrevPointAndNeighbour < currentMinAngle) {
-                    nextCentre = neighbourhoods[firstPointIndex][m];
-                    currentMinAngle = angBetweenPrevPointAndNeighbour; // update the value of currentMinAngle
-                }
-            }
-        }
-        previousCentreIndex = nextCentre; // update the previousCentreIndex
-    }
-
-    return concaveHullPoints;
-}
-*/
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
     for (int i = 0; i < iterationNumber; i++)
@@ -750,9 +661,9 @@ int main(int argc, char *argv[]){
                 }
 #endif
                 iterateDisplace();
-                startHormone(hormone1IntroTime);
+                startHormoneBD(hormone1IntroTime);
                 v1DiffuseHorm(neighbourhoods);
-                calcHormConcn(hormone1IntroTime);
+                calcHormBirthDeath(hormone1IntroTime);
                 //hormBirthDeath(hormone1IntroTime);
                 //hormReactDiffuse(hormone1IntroTime);
                 //calcMitosis();
