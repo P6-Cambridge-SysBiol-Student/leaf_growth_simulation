@@ -32,15 +32,6 @@
 ///
 ///-----------------------------------------------------------------------------
 
-
-/// evolves system, stepping points forward and accelerating velocity
-static void animate(){
-    realTime += delta;
-    for ( int i = 0; i < nbo; ++i ) {
-        pointsArray[i].step();
-    }
-}
-
 void initRegularTriangularLattice() {
     int index = 0;
     bool isSqrtNBOWhole = !fmod(sqrt(nbo), 1);
@@ -95,24 +86,6 @@ void create_triangles_list(){
 #endif ///DEBUG
 
 
-}
-
-/// checks through the pointsConnected array to see if secondary point is present
-bool noDuplicateCheck(int indexValueToCheck, int arrayToCheck[], int max){
-    static bool unique = true;
-
-    for (int i = 0; i <= max; i++) {  /// going up to total instead of over all the array is faster
-        if (arrayToCheck[i] == indexValueToCheck) {
-            unique = false;
-        }
-    }
-
-    if ((unique = true)){
-        return true;
-    }
-    else{
-        return false;
-    }
 }
 
 /// create a neighbourhood array (seperated out from CalculateSpringForces function)
@@ -414,21 +387,13 @@ void calcHormBirthDeath(double inputStartTime){
 void hormReactDiffuse(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
-        /// calculate amount of hormone made by producers
-        if ((cell.isHormoneProducer == true) and (currentTime < 1000*inputStartTime)){
-            printf("Hormone is being produced!\n");
-            cell.produceHormone1(hormone1ProdRate);
-            cell.produceHormone2(hormone2ProdRate);
-            cell.degradeHormone2(hormone2DegRate);
-            cell.react1With2(reactRate1to2);
+        /// in reaction diffusion all cells produce horm1
+        cell.produceHormone1ReactD(RDfeedRate);
+        cell.degradeHormone2ReactD(RDkillRate, RDfeedRate);
+        cell.react1With2(reactRate1to2);
         }
-        else{
-            cell.degradeHormone2(hormone2DegRate);
-            cell.react1With2(reactRate1to2);
-        }
-
-    }
 }
+
 
 void v1DiffuseHorm(int** neighbourhoods) {
 
@@ -661,11 +626,9 @@ int main(int argc, char *argv[]){
                 }
 #endif
                 iterateDisplace();
-                startHormoneBD(hormone1IntroTime);
                 v1DiffuseHorm(neighbourhoods);
                 calcHormBirthDeath(hormone1IntroTime);
-                //hormBirthDeath(hormone1IntroTime);
-                //hormReactDiffuse(hormone1IntroTime);
+                hormReactDiffuse(hormone1IntroTime);
                 //calcMitosis();
                 updateTotalHormone();
                 //hormoneExpandEffect();

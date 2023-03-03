@@ -38,9 +38,11 @@ double horm1Efficacy = 0.0000;
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 0.003 *SCALING_FACTOR;
+double hormone2DiffCoeff = 0.0005 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 
-double reactRate1to2 = 33333;
+double RDfeedRate = 0.037;
+double RDkillRate = 0.060;
+double reactRate1to2 = 1;
 
 
 // mitosis parameters
