@@ -32,13 +32,13 @@ double hormone1ProdRate = 5000;
 double hormone1DegRate = 50; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00006;
 vector2D hormone1Origin = vector2D(0.1*xBound,0.1*xBound);
-double hormone1DiffCoeff = 0.004 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.0004 * SCALING_FACTOR;
 double hormone1DiffPro = 0.6; /// this is made up i think,
 double horm1Efficacy = 0.0000;
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 0.002 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double hormone2DiffCoeff = 0.0002 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 
 double RDfeedRate = 0.067;
 double RDkillRate = 0.060;
