@@ -228,8 +228,12 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   ../polish.h \
   ../Clarkson-Delaunay.cpp \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
-  ../Clarkson-Delaunay.h
+  ../Clarkson-Delaunay.h \
+  ../graphics.h \
+  ../springs.h
 
+
+../graphics.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
 
@@ -374,6 +378,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
+
+../springs.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
