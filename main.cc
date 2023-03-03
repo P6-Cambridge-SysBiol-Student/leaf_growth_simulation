@@ -200,7 +200,31 @@ void calcHormBirthDeath(double inputStartTime){
     }
 }
 
-void hormReactDiffuse(double inputStartTime){
+// TODO add function to create noise and allow the pattern to form
+
+void hormReactDiffuse(double inputStartTime, double desiredTimeActive){
+    static bool flag = false;
+    static int currentTimeActive = 0;
+    if ((currentTime > inputStartTime) and (flag == false)){ /// TODO is selecting point, need to add code to make some noise
+        flag = true;
+        currentTimeActive += timestep;
+        /// find the point closest to the hormone Origin
+        int closest_point_index = -1;
+        double squareMinDist = 1000*1000*xBound;
+        for (int i = 0; i < nbo; i++) {
+            double squareDisFromOrigin = (pointsArray[i].disVec - hormone1Origin).magnitude_squared();
+            if (squareDisFromOrigin < squareMinDist) {
+                squareMinDist = squareDisFromOrigin;
+                closest_point_index = i;
+            }
+        }
+        /// set this point as the hormone producer
+        pointsArray[closest_point_index].produceHormone1ReactD(5*RDfeedRate); // small noise caused by one cell producing 2x as much
+        printf("Closest point is point %d\n", closest_point_index);
+    }
+    else{
+    }
+
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// in reaction diffusion all cells produce horm1
@@ -445,7 +469,7 @@ int main(int argc, char *argv[]){
                 iterateDisplace();
                 v1DiffuseHorm(neighbourhoods);
                 calcHormBirthDeath(hormone1IntroTime);
-                hormReactDiffuse(hormone1IntroTime);
+                hormReactDiffuse(hormone1IntroTime, 50*timestep);
                 //calcMitosis();
                 updateTotalHormone();
                 //hormoneExpandEffect();
