@@ -224,7 +224,6 @@ void hormReactDiffuse(double inputStartTime){
         }
 }
 
-
 void v1DiffuseHorm(int** neighbourhoods) {
 
     for (int i = 0; i < nbo; i++) { ///for each primary point in pointsArray (iterates through each point using i)
@@ -288,7 +287,7 @@ void updateTotalHormone(){
         if (pointsArray[i].myTotalHormone1 < 0) {
             pointsArray[i].myTotalHormone1 = 0;
         }
-        
+
         if (pointsArray[i].myTotalHormone2 < 0) {
             pointsArray[i].myTotalHormone2 = 0;
         }
