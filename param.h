@@ -40,8 +40,8 @@ double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
 double hormone2DiffCoeff = 0.00025 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 
-double RDfeedRate = 0.037;
-double RDkillRate = 0.06;
+double RDfeedRate = 0.028;
+double RDkillRate = 0.062;
 double reactRate1to2 = 66000;
 
 
