@@ -264,10 +264,6 @@ void v1DiffuseHorm(int** neighbourhoods) {
 
         sumHorm1 += cell.myTotalHormone1;
         sumHorm2 += cell.myTotalHormone2;
-
-        if (cell.myTotalHormone1 < 0) {
-            cell.myTotalHormone1 = 0;
-        }
     }
 printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
 }
@@ -288,6 +284,14 @@ void updateTotalHormone(){
         pointsArray[i].myDeltaHormone1 = 0;
         pointsArray[i].myTotalHormone2 += pointsArray[i].myDeltaHormone2;
         pointsArray[i].myDeltaHormone2 = 0;
+
+        if (pointsArray[i].myTotalHormone1 < 0) {
+            pointsArray[i].myTotalHormone1 = 0;
+        }
+        
+        if (pointsArray[i].myTotalHormone2 < 0) {
+            pointsArray[i].myTotalHormone2 = 0;
+        }
     }
 }
 
