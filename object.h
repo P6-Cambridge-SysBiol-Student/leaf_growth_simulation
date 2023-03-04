@@ -23,7 +23,7 @@ public:  /// these are attributes that can be called outside of the script
     int color;
 
     /// members related to hormone function
-    bool isHormoneProducer = false;
+    bool isHormone1Producer = false;
     double myTotalHormone1 = 0;
     double myDeltaHormone1 = 0; /// keeps track of amount of hormone gained/lost
     double myRateOfProd1 = 0;
@@ -31,13 +31,12 @@ public:  /// these are attributes that can be called outside of the script
     double myExpandEffect = 0;
     double myHormoneSensitivity = 0;
 
+    bool isHormone2Producer = false;
     double myTotalHormone2 = 0;
     double myDeltaHormone2 = 0;
     double myRateOfProd2 = 0;
 
     /// members related to cell division
-    bool wasMotherCell = true;
-    bool newDaughterCell = false;
 
     /// initialize each point in a random position with random x and y velocities
     void reset()
@@ -122,7 +121,7 @@ public:  /// these are attributes that can be called outside of the script
 
     void degradeHormone2ReactD(double inputKillRate, double inputFeedRate) {
         myDeltaHormone2 += -(inputFeedRate + inputKillRate) * myTotalHormone2;
-        /// TODO definitely a bug here, when killrate pf horm2 is 0 it still degrades to 0
+        /// feedrate added to killrate so killrate is never < feedrate
     }
 
     void react1With2(double input1and2ReactRate){

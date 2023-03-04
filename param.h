@@ -21,7 +21,7 @@ const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 const double breakSpringCoeff = 1.5;
 
 // timestep parameters
-double timestep = 0.00003; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
+double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
@@ -32,17 +32,18 @@ double hormone1ProdRate = 5000;
 double hormone1DegRate = 50; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00006;
 vector2D hormone1Origin = vector2D(0.1*xBound,0.1*xBound);
-double hormone1DiffCoeff = 0.000125 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.005 * SCALING_FACTOR;
 double hormone1DiffPro = 0.6; /// this is made up i think,
 double horm1Efficacy = 0.0000;
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 0.00025 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double hormone2DiffCoeff = 0.0005 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 
-double RDfeedRate = 0.035;
-double RDkillRate = 0.072;
-double reactRate1to2 = 66000;
+double RDfeedRate = 0.039;
+double RDkillRate = 0.053;
+double reactRate1to2 = 1/timestep;
+double lengthOfHorm2Prod = 30*timestep;
 
 
 // mitosis parameters
