@@ -143,7 +143,7 @@ public:  /// these are attributes that can be called outside of the script
     }
 
     void linearDisplayHormone() {
-        double linearHormConc = myTotalHormone1 / 1.5;
+        double linearHormConc = myTotalHormone1 / 0.3;
         glColor4f((linearHormConc), (0.5 - 0.5*linearHormConc), (1 - linearHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
