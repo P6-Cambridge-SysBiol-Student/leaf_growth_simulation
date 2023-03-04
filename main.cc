@@ -179,7 +179,7 @@ void startHormoneBD(double inputStartTime){
             }
         }
     /// set this point as the hormone producer
-    pointsArray[closest_point_index].isHormoneProducer = true;
+    pointsArray[closest_point_index].isHormone1Producer = true;
         printf("Closest point is point %d\n", closest_point_index);
     }
     else{
@@ -190,7 +190,7 @@ void calcHormBirthDeath(double inputStartTime){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
-        if ((cell.isHormoneProducer == true)){
+        if ((cell.isHormone1Producer == true)){
             cell.produceHormone1BD(hormone1ProdRate);
             cell.degradeHormone1BD(hormone1DegRate);
         }
@@ -204,24 +204,41 @@ void calcHormBirthDeath(double inputStartTime){
 
 void hormReactDiffuse(double inputStartTime){
     static bool flag = false;
-    if ((currentTime > inputStartTime) and (flag == false)){ /// TODO is selecting point, need to add code to make some noise
+    if ((currentTime > inputStartTime) and (flag == false)){
         flag = true;
-        /// introduce noise
-        for (int k = 0; k<nbo; k++){
-            pointsArray[k].produceHormone1ReactD(10*RDfeedRate*myPrand());
-            pointsArray[k].produceHormone2ForInit(10*RDfeedRate*myPrand());
+        /// find the point closest to the hormone Origin
+        int closest_point_index = -1;
+        double squareMinDist = 1000*1000*xBound;
+        for (int i = 0; i < nbo; i++) {
+            double squareDisFromOrigin = (pointsArray[i].disVec - hormone1Origin).magnitude_squared();
+            if (squareDisFromOrigin < squareMinDist) {
+                squareMinDist = squareDisFromOrigin;
+                closest_point_index = i;
+            }
         }
+        /// set this point as the hormone producer
+        pointsArray[closest_point_index].isHormone2Producer = true;
+        printf("Closest point is point %d\n", closest_point_index);
     }
     else{
     }
 
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
+        if ((cell.isHormone2Producer == true) and (currentTime < lengthOfHorm2Prod)){
         /// in reaction diffusion all cells produce horm1
         cell.produceHormone1ReactD(RDfeedRate);
+        cell.myTotalHormone2 = 50*RDfeedRate;
         cell.degradeHormone2ReactD(RDkillRate, RDfeedRate);
         cell.react1With2(reactRate1to2);
+        printf("Horm2 origin spot active\n");
         }
+    else{
+        cell.produceHormone1ReactD(RDfeedRate);
+        cell.react1With2(reactRate1to2);
+        cell.degradeHormone2ReactD(RDkillRate, RDfeedRate);
+    }
+    }
 }
 
 void v1DiffuseHorm(int** neighbourhoods) {
@@ -432,8 +449,7 @@ int main(int argc, char *argv[]){
     {
         static int iterationNumber = 1;
         double now = glfwGetTime();
-        if ( now > next)
-        {
+        if ( now > next){
             while (iterationNumber <= finalIterationNumber){
 #if REGULAR_LATTICE
                 if (iterationNumber == 1){
