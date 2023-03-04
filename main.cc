@@ -458,7 +458,7 @@ int main(int argc, char *argv[]){
 
                 iterateDisplace();
                 v1DiffuseHorm(neighbourhoods);
-                calcHormBirthDeath(hormone1IntroTime);
+                //calcHormBirthDeath(hormone1IntroTime);
                 hormReactDiffuse(hormone1IntroTime);
                 //calcMitosis();
                 updateTotalHormone();
