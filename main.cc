@@ -20,12 +20,12 @@
 #include <vector>
 
 #include "random.h"
-#include "arrays.h"
 #include "vector.h"
 #include "param.h"
 #include "hormone.h"
 #include "object.h"
 #include "polish.h"
+#include "arrays.h"
 #include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together
 #include "graphics.h"
 #include "springs.h"
@@ -73,6 +73,30 @@ void initRegularTriangularLattice() {
         printf("NBO DOES NOT EQUAL numPointsX * numPointsY\n");
     }
 }
+
+void initPerfectCircle(double circleRadius) {
+    int index = 0;
+    double angleSpacing = 2 * M_PI / nbo;
+    double xSum = 0.0, ySum = 0.0;
+
+    for (int i = 0; i < nbo; i++) {
+        double angle = 5*i * angleSpacing;
+        double x = circleRadius * cos(angle);
+        double y = circleRadius * sin(angle);
+        Point& p = pointsArray[index];
+        p.disVec = vector2D(x, y);
+        xSum += x;
+        ySum += y;
+        index++;
+    }
+
+    double xCenter = xSum / nbo;
+    double yCenter = ySum / nbo;
+    for (int i = 0; i < nbo; i++) {
+        pointsArray[i].disVec -= vector2D(xCenter, yCenter);
+    }
+}
+
 
 /// creates an array of xy co-ords for the delaunay triangulation function, then execute it
 void create_triangles_list(){
@@ -172,7 +196,7 @@ void startHormoneBD(double inputStartTime){
         int closest_point_index = -1;
         double squareMinDist = 1000*1000*xBound;
         for (int i = 0; i < nbo; i++) {
-            double squareDisFromOrigin = (pointsArray[i].disVec - hormone1Origin).magnitude_squared();
+            double squareDisFromOrigin = (pointsArray[i].disVec - horm2Source1).magnitude_squared();
             if (squareDisFromOrigin < squareMinDist) {
                 squareMinDist = squareDisFromOrigin;
                 closest_point_index = i;
@@ -202,43 +226,49 @@ void calcHormBirthDeath(double inputStartTime){
 
 // TODO add function to create noise and allow the pattern to form
 
-void hormReactDiffuse(double inputStartTime){
+void hormReactDiffuse(double inputStartTime) {
     static bool flag = false;
-    if ((currentTime > inputStartTime) and (flag == false)){
+    if ((currentTime > inputStartTime) and (flag == false)) {
         flag = true;
         /// find the point closest to the hormone Origin
-        int closest_point_index = -1;
-        double squareMinDist = 1000*1000*xBound;
+        int closest_point_source1_index = -1;
+        int closest_point_source2_index = -1;
+        double squareMinDist1 = 1000 * 1000 * xBound;
         for (int i = 0; i < nbo; i++) {
-            double squareDisFromOrigin = (pointsArray[i].disVec - hormone1Origin).magnitude_squared();
-            if (squareDisFromOrigin < squareMinDist) {
-                squareMinDist = squareDisFromOrigin;
-                closest_point_index = i;
+            double squareDisFromOrigin = (pointsArray[i].disVec - horm2Source1).magnitude_squared();
+            if (squareDisFromOrigin < squareMinDist1) {
+                squareMinDist1 = squareDisFromOrigin;
+                closest_point_source1_index = i;
             }
         }
-        /// set this point as the hormone producer
-        pointsArray[closest_point_index].isHormone2Producer = true;
-        printf("Closest point is point %d\n", closest_point_index);
-    }
-    else{
-    }
-
-    for (int i = 0; i < nbo; i++){
-        Point& cell = pointsArray[i]; /// alias for pointsArray[i]
-        if ((cell.isHormone2Producer == true) and (currentTime < lengthOfHorm2Prod)){
-        /// in reaction diffusion all cells produce horm1
-        cell.produceHormone1ReactD(RDfeedRate);
-        cell.myTotalHormone2 = 50*RDfeedRate;
-        cell.degradeHormone2ReactD(RDkillRate, RDfeedRate);
-        cell.react1With2(reactRate1to2);
-        printf("Horm2 origin spot active\n");
+        double squareMinDist2 = 1000 * 1000 * xBound;
+        for (int k = 0; k < nbo; k++) {
+            double squareDisFromOrigin = (pointsArray[k].disVec - horm2Srouce2).magnitude_squared();
+            if (squareDisFromOrigin < squareMinDist1) {
+                squareMinDist2 = squareDisFromOrigin;
+                closest_point_source2_index = k;
+            }
+            /// set this point as the hormone producer
+            pointsArray[closest_point_source1_index].isHormone2Producer = true;
+            pointsArray[closest_point_source2_index].isHormone2Producer = true;
         }
-    else{
-        cell.produceHormone1ReactD(RDfeedRate);
-        cell.react1With2(reactRate1to2);
-        cell.degradeHormone2ReactD(RDkillRate, RDfeedRate);
     }
-    }
+        for (int i = 0; i < nbo; i++) {
+            Point &cell = pointsArray[i]; /// alias for pointsArray[i]
+            /// in reaction diffusion all cells produce horm1
+            if (cell.isHormone2Producer == true) {
+                cell.produceHormone1ReactD( RDfeedRate);
+                cell.productHormone2ReactD( 2*RDfeedRate);
+                cell.react1With2( reactRate1to2);
+                cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
+                //printf("Point %d is a horm2 producer\n", i);
+                //printf("Point %d is a horm2 producer\n", i);
+            } else {
+                cell.produceHormone1ReactD( RDfeedRate);
+                cell.react1With2( reactRate1to2);
+                cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
+            }
+        }
 }
 
 void v1DiffuseHorm(int** neighbourhoods) {
@@ -294,20 +324,9 @@ int findMaxHormone(){
     return maxPointer;
 }
 
-void updateTotalHormone(){
+void globalUpdateHormone(){
     for (int i = 0; i<nbo; i++){
-        pointsArray[i].myTotalHormone1 += pointsArray[i].myDeltaHormone1;
-        pointsArray[i].myDeltaHormone1 = 0;
-        pointsArray[i].myTotalHormone2 += pointsArray[i].myDeltaHormone2;
-        pointsArray[i].myDeltaHormone2 = 0;
-
-        if (pointsArray[i].myTotalHormone1 < 0) {
-            pointsArray[i].myTotalHormone1 = 0;
-        }
-
-        if (pointsArray[i].myTotalHormone2 < 0) {
-            pointsArray[i].myTotalHormone2 = 0;
-        }
+        pointsArray[i].updateTotalHormone();
     }
 }
 
@@ -373,7 +392,45 @@ void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
             printf("c[%d] = %f + %fi\n", k, re, im);
         }
     }
-};
+}
+
+void printFourierCoeffs(double xx[], int xxLength, double yy[], int yyLength) {
+    if (xxLength != yyLength){
+        printf("ERROR! x and y arrays are different lengths\n");
+    }
+    else{
+        double t = 1.0; /// period length
+        double sampleFreq = xxLength / t;
+        double nyquistLim = sampleFreq / 2; /// coefficients representing sample distances greater than 2 per period result in aliasing
+
+
+        double fourierCoeffs[xxLength][2]; /// array of real-valued Fourier coefficients, a read and imaginary component per Coeff
+
+        /// Compute DFT
+        for (int k = 0; k < nyquistLim; k++) {
+            double angle = 2 * M_PI * k; /// M_PI is math.h definition of PI to high precision
+            double C = cos(angle), S = sin(angle);
+            double sum_re = 0, sum_im = 0;
+            for (int n = 0; n < xxLength; n++) {
+                double rad = sqrt(xx[n] * xx[n] + yy[n] * yy[n]); /// Compute radius
+                double ang = atan2(yy[n], xx[n]); /// Compute angle
+
+                sum_re += rad * cos(ang) * C + rad * sin(ang) * S;
+                sum_im += rad * sin(ang) * C - rad * cos(ang) * S;
+            }
+            /// multiplied by 2 to account for nyquist lim
+            fourierCoeffs[k][0] = 2 * sum_re / xxLength;
+            fourierCoeffs[k][1] = 2 * sum_im / xxLength;
+        }
+
+        /// Print coefficients
+        for (int k = 0; k < nyquistLim; k++) {
+            double re = fourierCoeffs[k][0];
+            double im = fourierCoeffs[k][1];
+            printf("c[%d] = %f + %fi\n", k, re, im);
+        }
+    }
+}
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
@@ -453,7 +510,7 @@ int main(int argc, char *argv[]){
             while (iterationNumber <= finalIterationNumber){
 #if REGULAR_LATTICE
                 if (iterationNumber == 1){
-                    initRegularTriangularLattice();
+                    initPerfectCircle(15*SCALING_FACTOR);
                 }
 #endif
                 iterationNumber++;
@@ -474,10 +531,9 @@ int main(int argc, char *argv[]){
 
                 iterateDisplace();
                 v1DiffuseHorm(neighbourhoods);
-                //calcHormBirthDeath(hormone1IntroTime);
                 hormReactDiffuse(hormone1IntroTime);
                 //calcMitosis();
-                updateTotalHormone();
+                globalUpdateHormone();
                 //hormoneExpandEffect();
 
                 drawTrianglesAndPoints();
@@ -492,6 +548,13 @@ int main(int argc, char *argv[]){
                 free(totalArray);
                 //free(alphaShapePoints);
                 glfwSwapBuffers(win);
+                if (iterationNumber == finalIterationNumber){
+                    double* xxArr = returnXValuesFromPointsArray();
+                    double* yyArr = returnYValuesFromPointsArray();
+                    printFourierCoeffs(xxArr, nbo, yyArr, nbo);
+                    free(xxArr);
+                    free(yyArr);
+                }
             }
         }
         if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)

@@ -103,12 +103,12 @@ public:  /// these are attributes that can be called outside of the script
 /// BD here represents Birth-death process, need new functions for reaction-diffusion
     void produceHormone1BD(double inputProdRate){
         myRateOfProd1 = inputProdRate;
-        myDeltaHormone1 += timestep*(myRateOfProd1);
+        myDeltaHormone1 += myRateOfProd1;
     }
 
     void degradeHormone1BD(double inputDegRate){
         myRateOfDeg1 = inputDegRate;
-        myDeltaHormone1 += -timestep*(myRateOfDeg1*myTotalHormone1);
+        myDeltaHormone1 += myRateOfDeg1*myTotalHormone1;
     }
 
     void produceHormone1ReactD(double inputFeedRate){
@@ -119,20 +119,32 @@ public:  /// these are attributes that can be called outside of the script
         myDeltaHormone2 += inputFeedRate;
     }
 
+    void productHormone2ReactD(double inputFeedRate){
+        myDeltaHormone2 += inputFeedRate;
+    }
+
     void degradeHormone2ReactD(double inputKillRate, double inputFeedRate) {
         myDeltaHormone2 += -(inputFeedRate + inputKillRate) * myTotalHormone2;
         /// feedrate added to killrate so killrate is never < feedrate
     }
 
     void react1With2(double input1and2ReactRate){
-        double deltaHormoneReaction = timestep*(input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
+        double deltaHormoneReaction = (input1and2ReactRate*myTotalHormone1*myTotalHormone2*myTotalHormone2);
         myDeltaHormone1 -= deltaHormoneReaction;
         myDeltaHormone2 += deltaHormoneReaction;
     }
 
     void updateTotalHormone(){
-        myTotalHormone1 += myDeltaHormone1;
-        myTotalHormone2 += myDeltaHormone2;
+        myTotalHormone1 += timestep*(myDeltaHormone1);
+        myTotalHormone2 += timestep*(myDeltaHormone2);
+        myDeltaHormone1 = 0;
+        myDeltaHormone2 = 0;
+        if (myTotalHormone1 < 0){
+            myTotalHormone1 = 0;
+        }
+        if (myTotalHormone2 < 0){
+            myTotalHormone2 = 0;
+        }
     }
 
     void sigmoidDisplayHormone() {

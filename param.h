@@ -13,7 +13,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 35*35;    /// initial number of objects (points)
+int nbo = 100;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -31,7 +31,7 @@ unsigned long seed = 2; /// seed for random number generator
 double hormone1ProdRate = 5000;
 double hormone1DegRate = 50; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00006;
-vector2D hormone1Origin = vector2D(0.1*xBound,0.1*xBound);
+vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
 double hormone1DiffCoeff = 0.005 * SCALING_FACTOR;
 double hormone1DiffPro = 0.6; /// this is made up i think,
 double horm1Efficacy = 0.0000;
@@ -39,6 +39,8 @@ double horm1Efficacy = 0.0000;
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
 double hormone2DiffCoeff = 0.0005 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+vector2D horm2Source1 = vector2D(0.2, 0);
+vector2D horm2Srouce2 = vector2D(-0.2, -0.3);
 
 double RDfeedRate = 0.039;
 double RDkillRate = 0.053;
@@ -52,7 +54,7 @@ double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
-int finalIterationNumber = 10000;  /// iterations before final frame
+int finalIterationNumber = 100;  /// iterations before final frame
 
 
 

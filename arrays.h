@@ -35,3 +35,19 @@ void init1DArray(int* input1DArrayPointer, int size, int inputFillValue){
     memset(input1DArrayPointer, inputFillValue, size * sizeof(int));
 }
 
+double* returnXValuesFromPointsArray(){
+    double* array = (double*) malloc(nbo * sizeof(double));
+    for (int i =0; i<nbo; i++){
+        array[i] = pointsArray[i].disVec.xx;
+    }
+    return array;
+}
+
+double* returnYValuesFromPointsArray(){
+    double* array = (double*) malloc(nbo * sizeof(double));
+    for (int i =0; i<nbo; i++){
+        array[i] = pointsArray[i].disVec.yy;
+    }
+    return array;
+}
+
