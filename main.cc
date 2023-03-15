@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 #define DEBUG false
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
@@ -80,7 +81,7 @@ void initPerfectCircle(double circleRadius) {
     double xSum = 0.0, ySum = 0.0;
 
     for (int i = 0; i < nbo; i++) {
-        double angle = 5*i * angleSpacing;
+        double angle = 2 * i * angleSpacing;
         double x = circleRadius * cos(angle);
         double y = circleRadius * sin(angle);
         Point& p = pointsArray[index];
@@ -224,8 +225,6 @@ void calcHormBirthDeath(double inputStartTime){
     }
 }
 
-// TODO add function to create noise and allow the pattern to form
-
 void hormReactDiffuse(double inputStartTime) {
     static bool flag = false;
     if ((currentTime > inputStartTime) and (flag == false)) {
@@ -357,6 +356,21 @@ void calcMitosis(){
     }
 }
 
+bool comparePointsByAngle(const Point& a, const Point& b) {
+    vector2D reference(0, 1);
+    vector2D vecA = a.disVec;
+    vector2D vecB = b.disVec;
+
+    double angleA = angleBetweenVecs(reference, vecA);
+    double angleB = angleBetweenVecs(reference, vecB);
+
+    return angleA < angleB;
+}
+
+void sortPointsByAngle(Point pointsArray[], size_t size) {
+    std::sort(pointsArray, pointsArray + size, comparePointsByAngle);
+}
+
 void computerDiscreteFourierCoeffs(int iteration, int finalIterationInput){
 
     if(iteration == finalIterationInput){
@@ -398,25 +412,22 @@ void printFourierCoeffs(double xx[], int xxLength, double yy[], int yyLength) {
     if (xxLength != yyLength){
         printf("ERROR! x and y arrays are different lengths\n");
     }
-    else{
+    else {
         double t = 1.0; /// period length
         double sampleFreq = xxLength / t;
-        double nyquistLim = sampleFreq / 2; /// coefficients representing sample distances greater than 2 per period result in aliasing
+        int nyquistLim = (int)(sampleFreq / 2); /// coefficients representing sample distances greater than 2 per period result in aliasing
 
-
-        double fourierCoeffs[xxLength][2]; /// array of real-valued Fourier coefficients, a read and imaginary component per Coeff
+        double fourierCoeffs[xxLength][2]; /// array of real-valued Fourier coefficients, a real and imaginary component per Coeff
 
         /// Compute DFT
         for (int k = 0; k < nyquistLim; k++) {
-            double angle = 2 * M_PI * k; /// M_PI is math.h definition of PI to high precision
-            double C = cos(angle), S = sin(angle);
             double sum_re = 0, sum_im = 0;
             for (int n = 0; n < xxLength; n++) {
-                double rad = sqrt(xx[n] * xx[n] + yy[n] * yy[n]); /// Compute radius
-                double ang = atan2(yy[n], xx[n]); /// Compute angle
+                double angle = 2 * M_PI * k * n / xxLength;
+                double C = cos(angle), S = sin(angle);
 
-                sum_re += rad * cos(ang) * C + rad * sin(ang) * S;
-                sum_im += rad * sin(ang) * C - rad * cos(ang) * S;
+                sum_re += xx[n] * C + yy[n] * S;
+                sum_im += yy[n] * C - xx[n] * S;
             }
             /// multiplied by 2 to account for nyquist lim
             fourierCoeffs[k][0] = 2 * sum_re / xxLength;
@@ -538,7 +549,7 @@ int main(int argc, char *argv[]){
 
                 drawTrianglesAndPoints();
                 // printf("This is iteration: %d \n\n\n", interationNumber);
-                computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
+                //computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
                 //int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
                 //drawConcaveHull(alphaShapePoints);
 
@@ -549,6 +560,7 @@ int main(int argc, char *argv[]){
                 //free(alphaShapePoints);
                 glfwSwapBuffers(win);
                 if (iterationNumber == finalIterationNumber){
+                    sortPointsByAngle(pointsArray, nbo);
                     double* xxArr = returnXValuesFromPointsArray();
                     double* yyArr = returnYValuesFromPointsArray();
                     printFourierCoeffs(xxArr, nbo, yyArr, nbo);
