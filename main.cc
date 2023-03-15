@@ -98,6 +98,44 @@ void initPerfectCircle(double circleRadius) {
     }
 }
 
+void initHollowSquare(double sideLength, int nbo) {
+    int index = 0;
+    int pointsPerSide = nbo / 4;
+    double spacing = sideLength / (pointsPerSide - 1);
+    double xSum = 0.0, ySum = 0.0;
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < pointsPerSide; j++) {
+            double x, y;
+
+            if (i == 0) {
+                x = j * spacing - sideLength / 2;
+                y = -sideLength / 2;
+            } else if (i == 1) {
+                x = sideLength / 2;
+                y = j * spacing - sideLength / 2;
+            } else if (i == 2) {
+                x = sideLength / 2 - j * spacing;
+                y = sideLength / 2;
+            } else { // i == 3
+                x = -sideLength / 2;
+                y = sideLength / 2 - j * spacing;
+            }
+
+            Point& p = pointsArray[index];
+            p.disVec = vector2D(x, y);
+            xSum += x;
+            ySum += y;
+            index++;
+        }
+    }
+
+    double xCenter = xSum / nbo;
+    double yCenter = ySum / nbo;
+    for (int i = 0; i < nbo; i++) {
+        pointsArray[i].disVec -= vector2D(xCenter, yCenter);
+    }
+}
 
 /// creates an array of xy co-ords for the delaunay triangulation function, then execute it
 void create_triangles_list(){
@@ -430,8 +468,8 @@ void printFourierCoeffs(double xx[], int xxLength, double yy[], int yyLength) {
                 sum_im += yy[n] * C - xx[n] * S;
             }
             /// multiplied by 2 to account for nyquist lim
-            fourierCoeffs[k][0] = 2 * sum_re / xxLength;
-            fourierCoeffs[k][1] = 2 * sum_im / xxLength;
+            fourierCoeffs[k][0] =  sum_re / xxLength;
+            fourierCoeffs[k][1] =  sum_im / xxLength;
         }
 
         /// Print coefficients
@@ -521,7 +559,7 @@ int main(int argc, char *argv[]){
             while (iterationNumber <= finalIterationNumber){
 #if REGULAR_LATTICE
                 if (iterationNumber == 1){
-                    initPerfectCircle(15*SCALING_FACTOR);
+                    initHollowSquare(20*SCALING_FACTOR, nbo);
                 }
 #endif
                 iterationNumber++;
@@ -545,7 +583,6 @@ int main(int argc, char *argv[]){
                 hormReactDiffuse(hormone1IntroTime);
                 //calcMitosis();
                 globalUpdateHormone();
-                //hormoneExpandEffect();
 
                 drawTrianglesAndPoints();
                 // printf("This is iteration: %d \n\n\n", interationNumber);
@@ -557,10 +594,9 @@ int main(int argc, char *argv[]){
                 free(triangleIndexList);
                 free(neighbourhoods);
                 free(totalArray);
-                //free(alphaShapePoints);
                 glfwSwapBuffers(win);
                 if (iterationNumber == finalIterationNumber){
-                    sortPointsByAngle(pointsArray, nbo);
+                    sortPointsByAngle(pointsArray, nbo); /// this assumes the shape is centered at (0,0)
                     double* xxArr = returnXValuesFromPointsArray();
                     double* yyArr = returnYValuesFromPointsArray();
                     printFourierCoeffs(xxArr, nbo, yyArr, nbo);
