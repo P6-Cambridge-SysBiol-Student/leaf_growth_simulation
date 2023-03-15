@@ -105,7 +105,7 @@ double dotProd(vector2D vecA, vector2D vecB){
     return vecA.xx * vecB.xx + vecB.yy * vecA.yy;
 }
 
-double angleBetweenVecs(vector2D vecA, vector2D vecB){  /// computer in Counter-clockwise direction
+double angleBetweenVecs(vector2D vecA, vector2D vecB){  /// compute in clockwise direction
     double cross = crossProd(vecA, vecB);
     double dot = dotProd(vecA, vecB);
     double angle = atan2(cross, dot);  /// compute angle clockwise
