@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <sstream>
+#include <fstream>
 const double SCALING_FACTOR = 100000;
 
 // physical parameters:  ensure to add any new parameters to the readOption() function
@@ -56,6 +57,8 @@ double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 10;  /// iterations before final frame
 
+bool displayInverseFourier = true;
+
 
 
 //-----------------------------------------------------------------------------
@@ -78,8 +81,20 @@ int readOption(const char arg[])
     if ( readParameter(arg, "seed=",  seed) )   return 1;
     if ( readParameter(arg, "delay=", delay) )  return 1;
     if ( readParameter(arg, "bounds=", xBound) )  return 1;
-    //if ( readParameter(arg, "timestep=", &timestep) ) return 1;
 
     return 0;
+}
+
+void readFile(const char path[])
+{
+    std::string line;
+    std::ifstream is(path);
+    if ( !is.good() )
+        printf("File `%s' cannot be read\n", path);
+    while ( is.good() )
+    {
+        getline(is, line);
+        readOption(line.c_str());
+    }
 }
 
