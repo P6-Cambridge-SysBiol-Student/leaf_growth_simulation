@@ -643,11 +643,6 @@ int main(int argc, char *argv[]) {
                 globalUpdateHormone();
 
                 drawTrianglesAndPoints();
-                // printf("This is iteration: %d \n\n\n", interationNumber);
-                //computerDiscreteFourierCoeffs(iterationNumber, finalIterationNumber);
-                //int* alphaShapePoints = findAlphaShapePoints(neighbourhoods);
-                //drawConcaveHull(alphaShapePoints);
-
 
                 free(triangleIndexList);
                 free(neighbourhoods);
@@ -661,13 +656,6 @@ int main(int argc, char *argv[]) {
                     glfwPollEvents();
                     printf("Displaying iteration %d", iterationNumber);
                 }
-                /*sortPointsByAngle(pointsArray, nbo); /// this assumes the shape is centered at (0,0)
-                double* xxArr = returnXValuesFromPointsArray();
-                double* yyArr = returnYValuesFromPointsArray();
-                printFourierCoeffs(xxArr, nbo, yyArr, nbo);
-                free(xxArr);
-                free(yyArr);*/
-
             }
         }
     }
