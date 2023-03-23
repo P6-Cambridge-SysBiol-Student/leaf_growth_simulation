@@ -479,6 +479,63 @@ void printFourierCoeffs(double xx[], int xxLength, double yy[], int yyLength) {
             printf("c[%d] = %f + %fi\n", k, re, im);
         }
     }
+}///deprecated
+
+void printDeltaFourierCoeffs(){
+    double polarCoords[nbo][2];
+    double sinComponents[nbo];
+    double cosComponents[nbo];
+    double angFreq[nbo];
+    double fundamentalFreq = 2*M_PI;
+
+
+    for (int i = 0; i < nbo; i++){
+        Point& cell = pointsArray[i];
+        polarCoords[i][0] =  cell.disVec.magnitude(); ///the radius value
+        polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
+    }
+
+    for (int k = 0; k < nbo; k++) {
+        sinComponents[k] = 0;
+        cosComponents[k] = 0;
+        for (int n = 0; n < nbo; n++) {
+            angFreq[k] = 2*M_PI*k/fundamentalFreq;
+            sinComponents[k] -= polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]);
+            cosComponents[k] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]);
+        }
+    }
+
+    for (int m = 0; m<nbo; m++)
+    {
+        printf("Magnitude/Phase of coefficient %d: %f   %f\n", m, sqrt(sinComponents[m]*sinComponents[m] + cosComponents[m]*cosComponents[m]),
+                                                                         atan2(cosComponents[m], sinComponents[m]));
+    }
+
+    if (displayInverseFourier) {
+        double x, y, r, theta;
+        static double t = 0;
+
+        glBegin(GL_LINE_STRIP);
+        for (int j = 0; j < 1000; j++) {
+            glVertex2f(cos(2 * M_PI * j / 1000), sin(2 * M_PI * j / 1000));
+        }
+        glEnd();
+
+        glPointSize(5);
+        glBegin(GL_POINTS);
+        for (int i = 0; i < nbo; i++) {
+            x = 0;
+            y = 0;
+            for (int k = 0; k < nbo; k++) {
+                x += (sinComponents[k] * cos(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) / nbo;
+                y += (sinComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) / nbo;
+            }
+            glVertex2f(x, y);
+        }
+        glEnd();
+
+        t += 0.001;
+    }
 }
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
@@ -515,13 +572,16 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
-int main(int argc, char *argv[]){
-    for ( int i=1; i<argc; ++i ) {  /// iterates through arguements
-       if ( 0 == readOption(argv[i]) )
-           printf("Argument '%s' was ignored\n", argv[i]);
-    }
-    if ( !glfwInit() )
-    {
+int main(int argc, char *argv[]) {
+        for (int i = 1; i < argc; ++i) {
+            const char *arg = argv[i];
+            size_t n = strlen(arg);
+            if (n > 4 && 0 == strcmp(arg + n - 4, ".cym"))
+                readFile(arg);
+            else if (0 == readOption(arg))
+                printf("Argument '%s' was ignored\n", arg);
+        }
+    if (!glfwInit()) {
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
     }
@@ -531,9 +591,8 @@ int main(int argc, char *argv[]){
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
-    GLFWwindow* win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
-    if (!win)
-    {
+    GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
+    if (!win) {
         fprintf(stderr, "Failed to open GLFW window\n");
         glfwTerminate();
         return EXIT_FAILURE;
@@ -551,26 +610,26 @@ int main(int argc, char *argv[]){
 
 #if DISPLAY
     double next = 0;
-    while( !glfwWindowShouldClose(win) )
-    {
+    while (!glfwWindowShouldClose(win)) {
         static int iterationNumber = 1;
         double now = glfwGetTime();
-        if ( now > next){
-            while (iterationNumber <= finalIterationNumber){
+        if (now > next) {
+            while (iterationNumber <= 100 * finalIterationNumber) {
 #if REGULAR_LATTICE
-                if (iterationNumber == 1){
-                    initHollowSquare(20*SCALING_FACTOR, nbo);
+                if (iterationNumber == 1) {
+                    //initPerfectCircle(20*SCALING_FACTOR);
+                    initHollowSquare(20 * SCALING_FACTOR, nbo);
                 }
 #endif
                 iterationNumber++;
-                next += delay/100000;
+                next += delay / 100000;
                 trackTime();
 
                 printf("nbo is %d\n", nbo);
                 create_triangles_list();
-                int** neighbourhoods = create2Darray(nbo, NAW);
+                int **neighbourhoods = create2Darray(nbo, NAW);
                 init2DArray(neighbourhoods, nbo, NAW, -1);
-                int* totalArray = create1Darray(nbo);
+                int *totalArray = create1Darray(nbo);
                 init1DArray(totalArray, nbo, -1);
                 fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
 
@@ -595,20 +654,27 @@ int main(int argc, char *argv[]){
                 free(neighbourhoods);
                 free(totalArray);
                 glfwSwapBuffers(win);
-                if (iterationNumber == finalIterationNumber){
-                    sortPointsByAngle(pointsArray, nbo); /// this assumes the shape is centered at (0,0)
-                    double* xxArr = returnXValuesFromPointsArray();
-                    double* yyArr = returnYValuesFromPointsArray();
-                    printFourierCoeffs(xxArr, nbo, yyArr, nbo);
-                    free(xxArr);
-                    free(yyArr);
+                if (iterationNumber >= finalIterationNumber) {
+                    printDeltaFourierCoeffs();
                 }
+                if (displayInverseFourier) {
+                    glfwSwapBuffers(win);
+                    glfwPollEvents();
+                    printf("Displaying iteration %d", iterationNumber);
+                }
+                /*sortPointsByAngle(pointsArray, nbo); /// this assumes the shape is centered at (0,0)
+                double* xxArr = returnXValuesFromPointsArray();
+                double* yyArr = returnYValuesFromPointsArray();
+                printFourierCoeffs(xxArr, nbo, yyArr, nbo);
+                free(xxArr);
+                free(yyArr);*/
+
             }
         }
-        if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(win, GLFW_TRUE);
     }
-
+    if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(win, GLFW_TRUE);
+    }
     glfwDestroyWindow(win);
     glfwTerminate();
 #endif
