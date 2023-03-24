@@ -98,35 +98,33 @@ void initPerfectCircle(double circleRadius) {
 }
 
 void initHollowSquare(double sideLength, int nbo) {
-    int index = 0;
     int pointsPerSide = nbo / 4;
-    double spacing = sideLength / (pointsPerSide - 1);
+    double spacing = sideLength / (pointsPerSide);
     double xSum = 0.0, ySum = 0.0;
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < pointsPerSide; j++) {
-            double x, y;
+    for (int i = 0; i < nbo; i++) {
+        int side = i / pointsPerSide;
+        int j = i % pointsPerSide;
+        double x, y;
 
-            if (i == 0) {
-                x = j * spacing - sideLength / 2;
-                y = -sideLength / 2;
-            } else if (i == 1) {
-                x = sideLength / 2;
-                y = j * spacing - sideLength / 2;
-            } else if (i == 2) {
-                x = sideLength / 2 - j * spacing;
-                y = sideLength / 2;
-            } else { // i == 3
-                x = -sideLength / 2;
-                y = sideLength / 2 - j * spacing;
-            }
-
-            Point& p = pointsArray[index];
-            p.disVec = vector2D(x, y);
-            xSum += x;
-            ySum += y;
-            index++;
+        if (side == 0) {
+            x = j * spacing - sideLength / 2;
+            y = -sideLength / 2;
+        } else if (side == 1) {
+            x = sideLength / 2;
+            y = j * spacing - sideLength / 2;
+        } else if (side == 2) {
+            x = sideLength / 2 - j * spacing;
+            y = sideLength / 2;
+        } else { // side == 3
+            x = -sideLength / 2;
+            y = sideLength / 2 - j * spacing;
         }
+
+        Point& p = pointsArray[i];
+        p.disVec = vector2D(x, y);
+        xSum += x;
+        ySum += y;
     }
 
     double xCenter = xSum / nbo;
@@ -135,6 +133,7 @@ void initHollowSquare(double sideLength, int nbo) {
         pointsArray[i].disVec -= vector2D(xCenter, yCenter);
     }
 }
+
 
 /// creates an array of xy co-ords for the delaunay triangulation function, then execute it
 void create_triangles_list(){
@@ -487,23 +486,23 @@ void printDeltaFourierCoeffs(){
     double angFreq[nbo];
     double fundamentalFreq = 2*M_PI;
     double T = 1; /// the "total period" of the function
-    double dt = T / nbo; /// the timestep for numeric integrration
+    double dTheta = T /nbo; /// the timestep for numeric integrration
 
 
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i];
-        polarCoords[i][0] =  cell.disVec.magnitude(); ///the radius value
+        polarCoords[i][0] = cell.disVec.magnitude(); ///the radius value
         polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
     }
 
     /// calculate the sin and cos components of the fourier coeffieints
-    for (int k = 0; k < nbo; k++) {
+    for (int k = 0; k <= nbo; k++) {
         sinComponents[k] = 0;
         cosComponents[k] = 0;
+        double angFreq_k = k * fundamentalFreq;
         for (int n = 0; n < nbo; n++) {
-            angFreq[k] = 2*M_PI*k/fundamentalFreq;
-            sinComponents[k] += polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]) * dt;
-            cosComponents[k] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]) * dt;
+            sinComponents[k] += polarCoords[n][0] * sin(angFreq_k * polarCoords[n][1]) * dTheta;
+            cosComponents[k] += polarCoords[n][0] * cos(angFreq_k * polarCoords[n][1]) * dTheta;
         }
     }
 
@@ -516,22 +515,24 @@ void printDeltaFourierCoeffs(){
     /// display the inverse fourier, as an animation of the inverse
     if (displayInverseFourier) {
         double x, y;
-        static double t = 0;
+        int numPoints = 1000; /// higher = smoother curve
+        double dt = 2*T / numPoints; /// stepsize for the curve, note
 
-        glPointSize(5);
-        glBegin(GL_POINTS);
-        for (int i = 0; i < nbo; i++) {
+        glClear(GL_COLOR_BUFFER_BIT);
+        drawSquare(xBound, yBound);
+        glBegin(GL_LINE_STRIP);
+
+        for (int i = 0; i < numPoints; i++) {
             x = 0;
             y = 0;
             for (int k = 0; k < nbo; k++) {
-                x += (sinComponents[k] * cos(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) * 2 / T;
-                y += (sinComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
+                x += (sinComponents[k] * cos(angFreq[k] * dt) - cosComponents[k] * sin(angFreq[k] * dt)) * 2 / T;
+                y += (sinComponents[k] * sin(angFreq[k] * dt) + cosComponents[k] * cos(angFreq[k] * dt)) * 2 / T;
             }
             glVertex2f(x, y);
         }
         glEnd();
-
-        t += 0.01; // Increment the time variable for the animation
+        glFlush();
     }
 }
 
@@ -584,9 +585,9 @@ int main(int argc, char *argv[]) {
     }
     glfwSetErrorCallback(error);
 
-    glfwWindowHint(GLFW_DEPTH_BITS, 0);
+    //glfwWindowHint(GLFW_DEPTH_BITS, 0);
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-    //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
     GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
     if (!win) {

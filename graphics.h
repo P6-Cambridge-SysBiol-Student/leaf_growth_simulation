@@ -54,12 +54,12 @@ static void drawTrianglesAndPoints(){
         }
         glEnd();
         /// overlay points on top
+        glPointSize(12);
+        glBegin(GL_POINTS);
         for(int k = 0; k < nbo; k += 1) {
-            glPointSize(12);
-            glBegin(GL_POINTS);
             pointsArray[k].linearDisplayHormone();
-            glEnd();
         }
+        glEnd();
     }
 
     printf("\ndraw @ %f\n", realTime);
@@ -93,8 +93,6 @@ static void drawConcaveHull(int* inputConcaveHullArray){
         p.displayGreen(); // call displayGreen() using an object of the Point class
     }
     glEnd();
-
-    glFlush();
 }
 
 /// some more graphics stuff
