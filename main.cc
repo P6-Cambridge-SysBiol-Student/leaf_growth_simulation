@@ -621,8 +621,8 @@ int main(int argc, char *argv[]) {
             while (iterationNumber <= 100 * finalIterationNumber) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
-                    initPerfectCircle(20*SCALING_FACTOR);
-                    //initHollowSquare(20 * SCALING_FACTOR, nbo);
+                    //initPerfectCircle(20*SCALING_FACTOR);
+                    initHollowSquare(20 * SCALING_FACTOR, nbo);
                 }
 #endif
                 iterationNumber++;
