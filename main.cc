@@ -484,9 +484,9 @@ void printDeltaFourierCoeffs(){
     double sinComponents[nbo];
     double cosComponents[nbo];
     double angFreq[nbo];
-    double fundamentalFreq = 2*M_PI;
-    double T = 1; /// the "total period" of the function
-    double dTheta = T /nbo; /// the timestep for numeric integrration
+    double fundamentalFreq = 1;
+    double T = 2*M_PI;  /// the "total period" of the function
+    double dTheta = T/nbo; /// the timestep for numeric integration
 
 
     for (int i = 0; i < nbo; i++){
@@ -496,13 +496,13 @@ void printDeltaFourierCoeffs(){
     }
 
     /// calculate the sin and cos components of the fourier coeffieints
-    for (int k = 0; k <= nbo; k++) {
+    for (int k = 0; k < nbo; k++) {
         sinComponents[k] = 0;
         cosComponents[k] = 0;
-        double angFreq_k = k * fundamentalFreq;
+        angFreq[k] = k * fundamentalFreq;
         for (int n = 0; n < nbo; n++) {
-            sinComponents[k] += polarCoords[n][0] * sin(angFreq_k * polarCoords[n][1]) * dTheta;
-            cosComponents[k] += polarCoords[n][0] * cos(angFreq_k * polarCoords[n][1]) * dTheta;
+            sinComponents[k] += polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]) * dTheta;
+            cosComponents[k] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]) * dTheta;
         }
     }
 
@@ -512,11 +512,11 @@ void printDeltaFourierCoeffs(){
                                                                          atan2(cosComponents[m], sinComponents[m]));
     }
 
-    /// display the inverse fourier, as an animation of the inverse
+    ///display inverse fourier
     if (displayInverseFourier) {
         double x, y;
         int numPoints = 1000; /// higher = smoother curve
-        double dt = 2*T / numPoints; /// stepsize for the curve, note
+        double dt = 2 * T / numPoints; /// stepsize for the curve
 
         glClear(GL_COLOR_BUFFER_BIT);
         drawSquare(xBound, yBound);
@@ -525,9 +525,10 @@ void printDeltaFourierCoeffs(){
         for (int i = 0; i < numPoints; i++) {
             x = 0;
             y = 0;
+            double t = i * dt; /// Calculate the angle t for the current step
             for (int k = 0; k < nbo; k++) {
-                x += (sinComponents[k] * cos(angFreq[k] * dt) - cosComponents[k] * sin(angFreq[k] * dt)) * 2 / T;
-                y += (sinComponents[k] * sin(angFreq[k] * dt) + cosComponents[k] * cos(angFreq[k] * dt)) * 2 / T;
+                x += (sinComponents[k] * cos(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) * 2 / T;
+                y += (sinComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
             }
             glVertex2f(x, y);
         }
