@@ -477,16 +477,21 @@ void printFourierCoeffs(double xx[], int xxLength, double yy[], int yyLength) {
             printf("c[%d] = %f + %fi\n", k, re, im);
         }
     }
-}///deprecated
+}
+// TODO 1) decreasing integration timestep changes fourier coefficient size??
+// TODO 2) realeaseMemory error in clarkson-delaunay.cpp at > 150 nbo, but may be issue of square regular shape
+// TODO 3) shape is not centered on 0,0
+// TODO 4) arguments not being read correct by readFile function?
+// TODO 5)
 
 void printDeltaFourierCoeffs(){
     double polarCoords[nbo][2];
     double sinComponents[nbo];
     double cosComponents[nbo];
     double angFreq[nbo];
-    double fundamentalFreq = 1;
-    double T = 2*M_PI;  /// the "total period" of the function
-    double dTheta = T/nbo; /// the timestep for numeric integration
+    double T = 1;  /// the "total period" of the function
+    double fundamentalFreq = 1/T;
+    double dTheta = 0.5* T/nbo; /// the timestep for numeric integration
 
 
     for (int i = 0; i < nbo; i++){
@@ -515,7 +520,7 @@ void printDeltaFourierCoeffs(){
     ///display inverse fourier
     if (displayInverseFourier) {
         double x, y;
-        int numPoints = 1000; /// higher = smoother curve
+        int numPoints = 3000; /// higher = smoother curve
         double dt = 2 * T / numPoints; /// stepsize for the curve
 
         glClear(GL_COLOR_BUFFER_BIT);
@@ -616,8 +621,8 @@ int main(int argc, char *argv[]) {
             while (iterationNumber <= 100 * finalIterationNumber) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
-                    //initPerfectCircle(20*SCALING_FACTOR);
-                    initHollowSquare(20 * SCALING_FACTOR, nbo);
+                    initPerfectCircle(20*SCALING_FACTOR);
+                    //initHollowSquare(20 * SCALING_FACTOR, nbo);
                 }
 #endif
                 iterationNumber++;
