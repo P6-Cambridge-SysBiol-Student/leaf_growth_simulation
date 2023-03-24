@@ -27,7 +27,7 @@
 #include "object.h"
 #include "polish.h"
 #include "arrays.h"
-#include "Clarkson-Delaunay.cpp"  /// this is slightly odd, would be better to compile them seperately and link together
+#include "Clarkson-Delaunay.cpp"
 #include "graphics.h"
 #include "springs.h"
 
@@ -486,6 +486,8 @@ void printDeltaFourierCoeffs(){
     double cosComponents[nbo];
     double angFreq[nbo];
     double fundamentalFreq = 2*M_PI;
+    double T = 1; /// the "total period" of the function
+    double dt = T / nbo; /// the timestep for numeric integrration
 
 
     for (int i = 0; i < nbo; i++){
@@ -494,13 +496,14 @@ void printDeltaFourierCoeffs(){
         polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
     }
 
+    /// calculate the sin and cos components of the fourier coeffieints
     for (int k = 0; k < nbo; k++) {
         sinComponents[k] = 0;
         cosComponents[k] = 0;
         for (int n = 0; n < nbo; n++) {
             angFreq[k] = 2*M_PI*k/fundamentalFreq;
-            sinComponents[k] -= polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]);
-            cosComponents[k] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]);
+            sinComponents[k] += polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]) * dt;
+            cosComponents[k] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]) * dt;
         }
     }
 
@@ -510,15 +513,10 @@ void printDeltaFourierCoeffs(){
                                                                          atan2(cosComponents[m], sinComponents[m]));
     }
 
+    /// display the inverse fourier, as an animation of the inverse
     if (displayInverseFourier) {
-        double x, y, r, theta;
+        double x, y;
         static double t = 0;
-
-        glBegin(GL_LINE_STRIP);
-        for (int j = 0; j < 1000; j++) {
-            glVertex2f(cos(2 * M_PI * j / 1000), sin(2 * M_PI * j / 1000));
-        }
-        glEnd();
 
         glPointSize(5);
         glBegin(GL_POINTS);
@@ -526,14 +524,14 @@ void printDeltaFourierCoeffs(){
             x = 0;
             y = 0;
             for (int k = 0; k < nbo; k++) {
-                x += (sinComponents[k] * cos(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) / nbo;
-                y += (sinComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) / nbo;
+                x += (sinComponents[k] * cos(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) * 2 / T;
+                y += (sinComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
             }
             glVertex2f(x, y);
         }
         glEnd();
 
-        t += 0.001;
+        t += 0.01; // Increment the time variable for the animation
     }
 }
 
@@ -642,7 +640,7 @@ int main(int argc, char *argv[]) {
                 //calcMitosis();
                 globalUpdateHormone();
 
-                drawTrianglesAndPoints();
+                drawPoints();
 
                 free(triangleIndexList);
                 free(neighbourhoods);
@@ -654,7 +652,7 @@ int main(int argc, char *argv[]) {
                 if (displayInverseFourier) {
                     glfwSwapBuffers(win);
                     glfwPollEvents();
-                    printf("Displaying iteration %d", iterationNumber);
+                    printf("Displaying iteration %d\n", iterationNumber);
                 }
             }
         }
