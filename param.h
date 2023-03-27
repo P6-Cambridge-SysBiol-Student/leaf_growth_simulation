@@ -58,7 +58,7 @@ double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 10;  /// iterations before final frame
 int fourierCoeffsNum = 10;
 
-bool displayInverseFourier = true;
+bool displayInverseFourier = false;
 
 
 

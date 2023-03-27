@@ -402,15 +402,13 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) {
     /// mallocing the memory for the pointers to each row
     double **sinCosFourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
     /// mallocing memory for each column
-    for (int i = 0; i < nbo; i++) {
+    for (int i = 0; i < desiredNumFourierCoeffs; i++) {
         sinCosFourierCoeffs[i] = (double *) malloc(2 * sizeof(double));
     }
     double polarCoords[nbo][2];
-    double angFreq[nbo];
+    double angFreq;
     double T = 1;  /// the "total period" of the function
-    double fundamentalFreq = 1 / T;
-    double dTheta = T / nbo; /// the timestep for numeric integration
-
+    double fundamentalFreq = 1.0 / T;
 
     for (int i = 0; i < nbo; i++) {
         Point &cell = pointsArray[i];
@@ -418,18 +416,35 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) {
         polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
     }
 
-    /// calculate the sin and cos components of the fourier coeffieints
+    /// calculate the sin and cos components of the fourier coefficients
     for (int k = 0; k < desiredNumFourierCoeffs; k++) {
-        sinCosFourierCoeffs[k][0] = 0;
-        sinCosFourierCoeffs[k][1] = 0;
-        angFreq[k] = k * fundamentalFreq; /// relies on k but k is the value of the harmonic, which is fine and expected
+        sinCosFourierCoeffs[k][0] = 0; /// sin terms for each coefficient
+        sinCosFourierCoeffs[k][1] = 0; /// cosine terms for each coeff
+        angFreq = k * fundamentalFreq; /// relies on k but k is the value of the harmonic, which is fine and expected
 
-        for (int n = 0; n < nbo-1; n++) { /// trapezoid rule, points dont need to be evenly spaced
-            if(k==0){
-                sinCosFourierCoeffs[k][0] = 0.5 * polarCoords[n][0]
+        if (k == 0){ /// calculating first coeff done differently, average of all radii taken (scaling by
+            for (int n = 0; n < nbo-1; n++){
+                double &thetaN = polarCoords[n][1];
+                double &radiusN = polarCoords[n][0];
+                double &thetaNplus1 = polarCoords[n+1][1];
+                double &radiusNplus1 = polarCoords[n+1][0];
+                double dTheta = thetaNplus1 - thetaN;
+
+                sinCosFourierCoeffs[k][1] += (radiusN + radiusNplus1) * dTheta / (2.0 * T); /// only cosine term has value in first coeff, integral of the sine function over the period = 0
             }
-            sinCosFourierCoeffs[k][0] += polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]) * dTheta/2;
-            sinCosFourierCoeffs[k][1] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]) * dTheta/2;
+        }
+
+        for (int n = 0; n < nbo-1; n++) { /// trapezoid rule,taking sum of integrals = integral of sums.  points dont need to be evenly spaced
+            double &thetaN = polarCoords[n][1];
+            double &radiusN = polarCoords[n][0];
+            double &thetaNplus1 = polarCoords[n+1][1];
+            double &radiusNplus1 = polarCoords[n+1][0];
+            double dTheta = thetaNplus1 - thetaN;
+
+            sinCosFourierCoeffs[k][0] += dTheta/2 * (radiusN * cos(2*M_PI * thetaN * angFreq) +
+                                                     radiusNplus1 * cos(2*M_PI * angFreq * thetaNplus1));
+            sinCosFourierCoeffs[k][1] += dTheta/2 * (radiusN * sin(2*M_PI * thetaN * angFreq) +
+                                                     radiusNplus1 * sin(2*M_PI * angFreq * thetaNplus1));
         }
     }
     return sinCosFourierCoeffs;
@@ -446,11 +461,12 @@ void printDeltaFourierCoeffs(double** inputSinCosArray, int desiredNumOfFourierC
     }
 }
 
+/*
 void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs, GLFWwindow* inputWin){
     double x, y;
     int numPoints = 3000; /// higher = smoother curve
     double T = 1;
-    double dt = 2 * T / numPoints; /// stepsize for the curve
+    double dt = T / numPoints; /// stepsize for the curve, should be sized to loop once
 
     glfwSwapBuffers(inputWin);
     glfwPollEvents();
@@ -473,6 +489,7 @@ void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs
     glEnd();
     glFlush();
 }
+
 
 void printDeltaFourierCoeffs(){
     double polarCoords[nbo][2];
@@ -532,6 +549,7 @@ void printDeltaFourierCoeffs(){
         glFlush();
     }
 }
+*/
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
@@ -647,8 +665,8 @@ int main(int argc, char *argv[]) {
                 if (iterationNumber >= finalIterationNumber) {
                     double **sinCosFouriers = computeDeltaFourierCoeffs(fourierCoeffsNum);
                     printDeltaFourierCoeffs(sinCosFouriers, fourierCoeffsNum);
+                    printf("\n\n");
                     if (displayInverseFourier) {
-                        displayCoeffOutput();
                     }
                 free(sinCosFouriers);
                 }
