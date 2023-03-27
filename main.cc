@@ -398,6 +398,82 @@ void calcMitosis(){
 // TODO 4) arguments not being read correct by readFile function?
 // TODO 5)
 
+double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) {
+    /// mallocing the memory for the pointers to each row
+    double **sinCosFourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
+    /// mallocing memory for each column
+    for (int i = 0; i < nbo; i++) {
+        sinCosFourierCoeffs[i] = (double *) malloc(2 * sizeof(double));
+    }
+    double polarCoords[nbo][2];
+    double angFreq[nbo];
+    double T = 1;  /// the "total period" of the function
+    double fundamentalFreq = 1 / T;
+    double dTheta = T / nbo; /// the timestep for numeric integration
+
+
+    for (int i = 0; i < nbo; i++) {
+        Point &cell = pointsArray[i];
+        polarCoords[i][0] = cell.disVec.magnitude(); ///the radius value
+        polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
+    }
+
+    /// calculate the sin and cos components of the fourier coeffieints
+    for (int k = 0; k < desiredNumFourierCoeffs; k++) {
+        sinCosFourierCoeffs[k][0] = 0;
+        sinCosFourierCoeffs[k][1] = 0;
+        angFreq[k] = k * fundamentalFreq; /// relies on k but k is the value of the harmonic, which is fine and expected
+
+        for (int n = 0; n < nbo-1; n++) { /// trapezoid rule, points dont need to be evenly spaced
+            if(k==0){
+                sinCosFourierCoeffs[k][0] = 0.5 * polarCoords[n][0]
+            }
+            sinCosFourierCoeffs[k][0] += polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]) * dTheta/2;
+            sinCosFourierCoeffs[k][1] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]) * dTheta/2;
+        }
+    }
+    return sinCosFourierCoeffs;
+}
+
+void printDeltaFourierCoeffs(double** inputSinCosArray, int desiredNumOfFourierCoeffs){
+    for (int m = 0; m<desiredNumOfFourierCoeffs; m++) {
+        double &sinValue = inputSinCosArray[m][0];
+        double &cosValue = inputSinCosArray[m][1];
+        {
+            printf("Magnitude/Phase of coefficient %d: %f   %f\n",
+                   m, sqrt(sinValue*sinValue + cosValue*cosValue), atan2(cosValue, sinValue));
+        }
+    }
+}
+
+void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs, GLFWwindow* inputWin){
+    double x, y;
+    int numPoints = 3000; /// higher = smoother curve
+    double T = 1;
+    double dt = 2 * T / numPoints; /// stepsize for the curve
+
+    glfwSwapBuffers(inputWin);
+    glfwPollEvents();
+    glClear(GL_COLOR_BUFFER_BIT);
+    drawSquare(xBound, yBound);
+    glBegin(GL_LINE_STRIP);
+
+    for (int i = 0; i < numPoints; i++) {
+        x = 0;
+        y = 0;
+        double t = i * dt; /// Calculate the angle t for the current step
+        for (int k = 0; k < desiredNumOfFourierCoeffs; k++) {
+            double &sinValue = inputSinCosArray[k][0];
+            double &cosValue = inputSinCosArray[k][1];
+            x += (sinValue * sinValue * t) - cosValue * sin(angFreq[k] * t)) * 2 / T;
+            y += (cosComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
+        }
+        glVertex2f(x, y);
+    }
+    glEnd();
+    glFlush();
+}
+
 void printDeltaFourierCoeffs(){
     double polarCoords[nbo][2];
     double sinComponents[nbo];
@@ -436,6 +512,7 @@ void printDeltaFourierCoeffs(){
         double x, y;
         int numPoints = 3000; /// higher = smoother curve
         double dt = 2 * T / numPoints; /// stepsize for the curve
+
 
         glClear(GL_COLOR_BUFFER_BIT);
         drawSquare(xBound, yBound);
@@ -491,14 +568,14 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]) {
-        for (int i = 1; i < argc; ++i) {
-            const char *arg = argv[i];
-            size_t n = strlen(arg);
-            if (n > 4 && 0 == strcmp(arg + n - 4, ".cym"))
-                readFile(arg);
-            else if (0 == readOption(arg))
-                printf("Argument '%s' was ignored\n", arg);
-        }
+    for (int i = 1; i < argc; ++i) {
+        const char *arg = argv[i];
+        size_t n = strlen(arg);
+        if (n > 4 && 0 == strcmp(arg + n - 4, ".cym"))
+            readFile(arg);
+        else if (0 == readOption(arg))
+            printf("Argument '%s' was ignored\n", arg);
+    }
     if (!glfwInit()) {
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
@@ -568,20 +645,20 @@ int main(int argc, char *argv[]) {
                 free(totalArray);
                 glfwSwapBuffers(win);
                 if (iterationNumber >= finalIterationNumber) {
-                    printDeltaFourierCoeffs();
-                }
-                if (displayInverseFourier) {
-                    glfwSwapBuffers(win);
-                    glfwPollEvents();
-                    printf("Displaying iteration %d\n", iterationNumber);
+                    double **sinCosFouriers = computeDeltaFourierCoeffs(fourierCoeffsNum);
+                    printDeltaFourierCoeffs(sinCosFouriers, fourierCoeffsNum);
+                    if (displayInverseFourier) {
+                        displayCoeffOutput();
+                    }
+                free(sinCosFouriers);
                 }
             }
         }
-    }
-    if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(win, GLFW_TRUE);
-    }
-    glfwDestroyWindow(win);
-    glfwTerminate();
+        if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(win, GLFW_TRUE);
+        }
+        glfwDestroyWindow(win);
+        glfwTerminate();
 #endif
+    }
 }
