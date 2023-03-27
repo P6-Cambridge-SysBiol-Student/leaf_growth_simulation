@@ -4,6 +4,7 @@
 
 #ifndef FRAP_GRAPHICS_H
 #define FRAP_GRAPHICS_H
+#include <GLFW/glfw3.h>
 
 #endif //FRAP_GRAPHICS_H
 

@@ -14,7 +14,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 100;    /// initial number of objects (points)
+int nbo = 16;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -77,10 +77,12 @@ int readParameter(const char arg[], const char name[], T & ptr)
 // TODO alter readOption so it can read input variables from the genetic algorithm
 int readOption(const char arg[])
 {
+    printf("[%s]\n", arg);
     if ( readParameter(arg, "n=",     nbo) )    return 1;
     if ( readParameter(arg, "seed=",  seed) )   return 1;
     if ( readParameter(arg, "delay=", delay) )  return 1;
     if ( readParameter(arg, "bounds=", xBound) )  return 1;
+    if ( readParameter(arg, "finalIterationNumber=", finalIterationNumber) )  return 1;
 
     return 0;
 }

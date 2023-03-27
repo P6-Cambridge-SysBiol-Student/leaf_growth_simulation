@@ -28,8 +28,8 @@
 #include "polish.h"
 #include "arrays.h"
 #include "Clarkson-Delaunay.cpp"
-#include "graphics.h"
 #include "springs.h"
+#include "graphics.h"
 
 
 ///-----------------------------------------------------------------------------
@@ -346,7 +346,7 @@ void v1DiffuseHorm(int** neighbourhoods) {
         sumHorm1 += cell.myTotalHormone1;
         sumHorm2 += cell.myTotalHormone2;
     }
-printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
+//printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
 }
 
 int findMaxHormone(){
@@ -513,8 +513,8 @@ void printDeltaFourierCoeffs(){
 
     for (int m = 0; m<nbo; m++)
     {
-        printf("Magnitude/Phase of coefficient %d: %f   %f\n", m, sqrt(sinComponents[m]*sinComponents[m] + cosComponents[m]*cosComponents[m]),
-                                                                         atan2(cosComponents[m], sinComponents[m]));
+        //printf("Magnitude/Phase of coefficient %d: %f   %f\n", m, sqrt(sinComponents[m]*sinComponents[m] + cosComponents[m]*cosComponents[m]),
+                                                                         //atan2(cosComponents[m], sinComponents[m]));
     }
 
     ///display inverse fourier
@@ -532,8 +532,8 @@ void printDeltaFourierCoeffs(){
             y = 0;
             double t = i * dt; /// Calculate the angle t for the current step
             for (int k = 0; k < nbo; k++) {
-                x += (sinComponents[k] * cos(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) * 2 / T;
-                y += (sinComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
+                x += (sinComponents[k] * sin(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) * 2 / T;
+                y += (cosComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
             }
             glVertex2f(x, y);
         }
@@ -591,9 +591,9 @@ int main(int argc, char *argv[]) {
     }
     glfwSetErrorCallback(error);
 
-    //glfwWindowHint(GLFW_DEPTH_BITS, 0);
+    glfwWindowHint(GLFW_DEPTH_BITS, 0);
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+    //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
     GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
     if (!win) {
@@ -611,14 +611,14 @@ int main(int argc, char *argv[]) {
         printf("\n");
     }
 #endif
-
+// TODO go back to initial ifrap glfw code, make sure window creation is termination
 #if DISPLAY
     double next = 0;
     while (!glfwWindowShouldClose(win)) {
         static int iterationNumber = 1;
         double now = glfwGetTime();
         if (now > next) {
-            while (iterationNumber <= 100 * finalIterationNumber) {
+            while (iterationNumber <= 10 * finalIterationNumber) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
@@ -629,7 +629,7 @@ int main(int argc, char *argv[]) {
                 next += delay / 100000;
                 trackTime();
 
-                printf("nbo is %d\n", nbo);
+                //printf("nbo is %d\n", nbo);
                 create_triangles_list();
                 int **neighbourhoods = create2Darray(nbo, NAW);
                 init2DArray(neighbourhoods, nbo, NAW, -1);
