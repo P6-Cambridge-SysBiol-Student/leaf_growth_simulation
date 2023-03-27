@@ -441,10 +441,9 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) {
             double &radiusNplus1 = polarCoords[n+1][0];
             double dTheta = thetaNplus1 - thetaN;
 
-            sinCosFourierCoeffs[k][0] += dTheta/2 * (radiusN * cos(2*M_PI * thetaN * angFreq) +
-                                                     radiusNplus1 * cos(2*M_PI * angFreq * thetaNplus1));
-            sinCosFourierCoeffs[k][1] += dTheta/2 * (radiusN * sin(2*M_PI * thetaN * angFreq) +
-                                                     radiusNplus1 * sin(2*M_PI * angFreq * thetaNplus1));
+            sinCosFourierCoeffs[k][0] += (2.0 / T) * dTheta * (radiusN * cos(2 * M_PI * angFreq * thetaN) + radiusNplus1 * cos(2 * M_PI * angFreq * thetaNplus1)) / 2.0;
+            sinCosFourierCoeffs[k][1] += (2.0 / T) * dTheta * (radiusN * sin(2 * M_PI * angFreq * thetaN) + radiusNplus1 * sin(2 * M_PI * angFreq * thetaNplus1)) / 2.0;
+
         }
     }
     return sinCosFourierCoeffs;
@@ -461,15 +460,13 @@ void printDeltaFourierCoeffs(double** inputSinCosArray, int desiredNumOfFourierC
     }
 }
 
-/*
 void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs, GLFWwindow* inputWin){
     double x, y;
     int numPoints = 3000; /// higher = smoother curve
     double T = 1;
     double dt = T / numPoints; /// stepsize for the curve, should be sized to loop once
 
-    glfwSwapBuffers(inputWin);
-    glfwPollEvents();
+
     glClear(GL_COLOR_BUFFER_BIT);
     drawSquare(xBound, yBound);
     glBegin(GL_LINE_STRIP);
@@ -479,10 +476,11 @@ void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs
         y = 0;
         double t = i * dt; /// Calculate the angle t for the current step
         for (int k = 0; k < desiredNumOfFourierCoeffs; k++) {
+            double angFreq = k; /// is technically k * fundamental frequency, but that is arbitrary and set here to 1
             double &sinValue = inputSinCosArray[k][0];
             double &cosValue = inputSinCosArray[k][1];
-            x += (sinValue * sinValue * t) - cosValue * sin(angFreq[k] * t)) * 2 / T;
-            y += (cosComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
+            x += cosValue * cos(angFreq * t) - sinValue * sin(angFreq * t);
+            y += cosValue * sin(angFreq * t) + sinValue * cos(angFreq * t);
         }
         glVertex2f(x, y);
     }
@@ -549,7 +547,7 @@ void printDeltaFourierCoeffs(){
         glFlush();
     }
 }
-*/
+
 
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
@@ -630,8 +628,8 @@ int main(int argc, char *argv[]) {
             while (iterationNumber <= 10 * finalIterationNumber) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
-                    //initPerfectCircle(20*SCALING_FACTOR);
-                    initHollowSquare(20 * SCALING_FACTOR, nbo);
+                    initPerfectCircle(20*SCALING_FACTOR);
+                    //initHollowSquare(20 * SCALING_FACTOR, nbo);
                 }
 #endif
                 iterationNumber++;
@@ -667,6 +665,9 @@ int main(int argc, char *argv[]) {
                     printDeltaFourierCoeffs(sinCosFouriers, fourierCoeffsNum);
                     printf("\n\n");
                     if (displayInverseFourier) {
+                        glfwSwapBuffers(win);
+                        glfwPollEvents();
+                        displayCoeffOutput(sinCosFouriers, fourierCoeffsNum, win);
                     }
                 free(sinCosFouriers);
                 }
@@ -675,8 +676,9 @@ int main(int argc, char *argv[]) {
         if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(win, GLFW_TRUE);
         }
-        glfwDestroyWindow(win);
-        glfwTerminate();
+
 #endif
     }
+    glfwDestroyWindow(win);
+    glfwTerminate();
 }

@@ -14,7 +14,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 16;    /// initial number of objects (points)
+int nbo = 160;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -58,7 +58,7 @@ double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 10;  /// iterations before final frame
 int fourierCoeffsNum = 10;
 
-bool displayInverseFourier = false;
+bool displayInverseFourier = true;
 
 
 
