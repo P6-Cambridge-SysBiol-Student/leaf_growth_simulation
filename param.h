@@ -55,7 +55,7 @@ double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
-int finalIterationNumber = 10;  /// iterations before final frame
+int finalIterationNumber = 100;  /// iterations before final frame
 int fourierCoeffsNum = 10;
 
 bool displayInverseFourier = true;

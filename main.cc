@@ -412,16 +412,13 @@ void sortPointsByAngle(Point pointsArray[], size_t size) {
 }
 
 
-double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// approximates continous fourier transform for non-uniformly sampled points, approximation is too harsh?
+double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// "nonuniform discrete Fourier transform of type II (NUDFT-II)"
     /// mallocing the memory for the pointers to each row
     double **FourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
-    /// mallocing memory for each column
     for (int i = 0; i < desiredNumFourierCoeffs; i++) {
         FourierCoeffs[i] = (double *) malloc(2 * sizeof(double));
     }
     double polarCoords[nbo][2];
-    double T = 1;  /// the "total period" of the function
-    double fundamentalFreq = 1.0 / T;
 
     sortPointsByAngle(pointsArray, nbo);
 
@@ -429,6 +426,13 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// approximat
         Point &cell = pointsArray[i];
         polarCoords[i][0] = cell.disVec.magnitude(); ///the radius value
         polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
+    }
+
+    double maxRadiusValue = 0; /// find max radius value to scale radius_n values to between 0 and 1
+    for (int jj = 0; jj<nbo; jj++){
+        if (polarCoords[jj][0] > maxRadiusValue){
+            maxRadiusValue = polarCoords[jj][0];
+        }
     }
 
     /// calculate the sin and cos components of the fourier coefficients
@@ -439,11 +443,10 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// approximat
         imgComp = 0;
 
         for (int n = 0; n < nbo; n++) {
-            double &thetaN = polarCoords[n][1];
             double &radiusN = polarCoords[n][0];
-
-            realComp += radiusN * cos(-2 * M_PI * (thetaN / (2 * M_PI)) * k);
-            imgComp += radiusN * sin(-2 * M_PI * (thetaN / (2 * M_PI)) * k);
+            double &thetaN = polarCoords[n][1];
+            realComp += 1.0/nbo * radiusN * cos(k * thetaN);
+            imgComp += 1.0/nbo * radiusN * sin(k * thetaN);
         }
     }
     return FourierCoeffs;
@@ -460,7 +463,7 @@ void printDeltaFourierCoeffs(double** inputFourierArray, int desiredNumOfFourier
     }
 }
 
-void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs, GLFWwindow* inputWin){
+void displayCoeffOutput(double** inputFourierArray, int desiredNumOfFourierCoeffs){
     double x, y;
     int numPoints = 3000; /// higher = smoother curve
     double T = 1;
@@ -476,11 +479,12 @@ void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs
         y = 0;
         double t = i * dt; /// Calculate the angle t for the current step
         for (int k = 0; k < desiredNumOfFourierCoeffs; k++) {
-            double angFreq = k; /// is technically k * fundamental frequency, but that is arbitrary and set here to 1
-            double &sinValue = inputSinCosArray[k][0];
-            double &cosValue = inputSinCosArray[k][1];
-            x += cosValue * cos(angFreq * t) - sinValue * sin(angFreq * t);
-            y += cosValue * sin(angFreq * t) + sinValue * cos(angFreq * t);
+            double &cosCoeff = inputFourierArray[k][0];
+            double &sinCoeff = inputFourierArray[k][1];
+            double angFreq = k * 2 * M_PI / T;
+
+            x += cosCoeff * cos(angFreq * t) + sinCoeff * sin(angFreq * t);
+            y += -cosCoeff * sin(angFreq * t) + sinCoeff * cos(angFreq * t);
         }
         glVertex2f(x, y);
     }
@@ -661,16 +665,18 @@ int main(int argc, char *argv[]) {
                 free(neighbourhoods);
                 free(totalArray);
                 glfwSwapBuffers(win);
+
                 if (iterationNumber >= finalIterationNumber) {
-                    double **sinCosFouriers = computeDeltaFourierCoeffs(fourierCoeffsNum);
-                    printDeltaFourierCoeffs(sinCosFouriers, fourierCoeffsNum);
+                    printf("\nInverse should be displaying\n");
+                    double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
+                    printDeltaFourierCoeffs(fourierCoeffs, fourierCoeffsNum);
                     printf("\n\n");
                     if (displayInverseFourier) {
                         glfwSwapBuffers(win);
                         glfwPollEvents();
-                        displayCoeffOutput(sinCosFouriers, fourierCoeffsNum, win);
+                        displayCoeffOutput(fourierCoeffs, fourierCoeffsNum);
                     }
-                free(sinCosFouriers);
+                free(fourierCoeffs);
                 }
             }
         }
