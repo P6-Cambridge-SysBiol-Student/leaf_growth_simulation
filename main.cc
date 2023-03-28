@@ -436,7 +436,7 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// approximat
         double &realComp = FourierCoeffs[k][0];
         double &imgComp = FourierCoeffs[k][1];
         realComp = 0;
-        imgComp = 1;
+        imgComp = 0;
 
         for (int n = 0; n < nbo; n++) {
             double &thetaN = polarCoords[n][1];
