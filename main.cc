@@ -392,13 +392,27 @@ void calcMitosis(){
     }
 }
 
-// TODO 1) decreasing integration timestep changes fourier coefficient size??
-// TODO 2) realeaseMemory error in clarkson-delaunay.cpp at > 150 nbo, but may be issue of square regular shape
 // TODO 3) shape is not centered on 0,0
 // TODO 4) arguments not being read correct by readFile function?
 // TODO 5)
 
-double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) {
+bool comparePointsByAngle(const Point& a, const Point& b) {
+    vector2D reference(0, 1);
+    vector2D vecA = a.disVec;
+    vector2D vecB = b.disVec;
+
+    double angleA = angleBetweenVecs(reference, vecA);
+    double angleB = angleBetweenVecs(reference, vecB);
+
+    return angleA < angleB;
+}
+
+void sortPointsByAngle(Point pointsArray[], size_t size) {
+    std::sort(pointsArray, pointsArray + size, comparePointsByAngle);
+}
+
+
+double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// approximates continous fourier transform for non-uniformly sampled points, approximation is too harsh?
     /// mallocing the memory for the pointers to each row
     double **sinCosFourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
     /// mallocing memory for each column
@@ -409,6 +423,8 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) {
     double angFreq;
     double T = 1;  /// the "total period" of the function
     double fundamentalFreq = 1.0 / T;
+
+    sortPointsByAngle(pointsArray, nbo);
 
     for (int i = 0; i < nbo; i++) {
         Point &cell = pointsArray[i];
@@ -487,6 +503,7 @@ void displayCoeffOutput(double** inputSinCosArray, int desiredNumOfFourierCoeffs
     glEnd();
     glFlush();
 }
+
 
 
 void printDeltaFourierCoeffs(){
