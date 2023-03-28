@@ -414,13 +414,12 @@ void sortPointsByAngle(Point pointsArray[], size_t size) {
 
 double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// approximates continous fourier transform for non-uniformly sampled points, approximation is too harsh?
     /// mallocing the memory for the pointers to each row
-    double **sinCosFourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
+    double **FourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
     /// mallocing memory for each column
     for (int i = 0; i < desiredNumFourierCoeffs; i++) {
-        sinCosFourierCoeffs[i] = (double *) malloc(2 * sizeof(double));
+        FourierCoeffs[i] = (double *) malloc(2 * sizeof(double));
     }
     double polarCoords[nbo][2];
-    double angFreq;
     double T = 1;  /// the "total period" of the function
     double fundamentalFreq = 1.0 / T;
 
@@ -434,44 +433,29 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// approximat
 
     /// calculate the sin and cos components of the fourier coefficients
     for (int k = 0; k < desiredNumFourierCoeffs; k++) {
-        sinCosFourierCoeffs[k][0] = 0; /// sin terms for each coefficient
-        sinCosFourierCoeffs[k][1] = 0; /// cosine terms for each coeff
-        angFreq = k * fundamentalFreq; /// relies on k but k is the value of the harmonic, which is fine and expected
+        double &realComp = FourierCoeffs[k][0];
+        double &imgComp = FourierCoeffs[k][1];
+        realComp = 0;
+        imgComp = 1;
 
-        if (k == 0){ /// calculating first coeff done differently, average of all radii taken (scaling by
-            for (int n = 0; n < nbo-1; n++){
-                double &thetaN = polarCoords[n][1];
-                double &radiusN = polarCoords[n][0];
-                double &thetaNplus1 = polarCoords[n+1][1];
-                double &radiusNplus1 = polarCoords[n+1][0];
-                double dTheta = thetaNplus1 - thetaN;
-
-                sinCosFourierCoeffs[k][1] += (radiusN + radiusNplus1) * dTheta / (2.0 * T); /// only cosine term has value in first coeff, integral of the sine function over the period = 0
-            }
-        }
-
-        for (int n = 0; n < nbo-1; n++) { /// trapezoid rule,taking sum of integrals = integral of sums.  points dont need to be evenly spaced
+        for (int n = 0; n < nbo; n++) {
             double &thetaN = polarCoords[n][1];
             double &radiusN = polarCoords[n][0];
-            double &thetaNplus1 = polarCoords[n+1][1];
-            double &radiusNplus1 = polarCoords[n+1][0];
-            double dTheta = thetaNplus1 - thetaN;
 
-            sinCosFourierCoeffs[k][0] += (2.0 / T) * dTheta * (radiusN * cos(2 * M_PI * angFreq * thetaN) + radiusNplus1 * cos(2 * M_PI * angFreq * thetaNplus1)) / 2.0;
-            sinCosFourierCoeffs[k][1] += (2.0 / T) * dTheta * (radiusN * sin(2 * M_PI * angFreq * thetaN) + radiusNplus1 * sin(2 * M_PI * angFreq * thetaNplus1)) / 2.0;
-
+            realComp += radiusN * cos(-2 * M_PI * (thetaN / (2 * M_PI)) * k);
+            imgComp += radiusN * sin(-2 * M_PI * (thetaN / (2 * M_PI)) * k);
         }
     }
-    return sinCosFourierCoeffs;
+    return FourierCoeffs;
 }
 
-void printDeltaFourierCoeffs(double** inputSinCosArray, int desiredNumOfFourierCoeffs){
+void printDeltaFourierCoeffs(double** inputFourierArray, int desiredNumOfFourierCoeffs){
     for (int m = 0; m<desiredNumOfFourierCoeffs; m++) {
-        double &sinValue = inputSinCosArray[m][0];
-        double &cosValue = inputSinCosArray[m][1];
+        double &realValue = inputFourierArray[m][0];
+        double &imgValue = inputFourierArray[m][1];
         {
             printf("Magnitude/Phase of coefficient %d: %f   %f\n",
-                   m, sqrt(sinValue*sinValue + cosValue*cosValue), atan2(cosValue, sinValue));
+                   m, sqrt(realValue*realValue + imgValue*imgValue), atan2(imgValue, realValue));
         }
     }
 }
@@ -645,8 +629,8 @@ int main(int argc, char *argv[]) {
             while (iterationNumber <= 10 * finalIterationNumber) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
-                    initPerfectCircle(20*SCALING_FACTOR);
-                    //initHollowSquare(20 * SCALING_FACTOR, nbo);
+                    //initPerfectCircle(20*SCALING_FACTOR);
+                    initHollowSquare(20 * SCALING_FACTOR, nbo);
                 }
 #endif
                 iterationNumber++;
