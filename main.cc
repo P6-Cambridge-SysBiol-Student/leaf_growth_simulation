@@ -490,7 +490,7 @@ void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs)
     for (int n = 0; n < numPoints; n++) {
         double reconstructedRadiusN = a_0;
 
-        for (int k = 0; k < desiredNumOfFourierCoeffs; k++) {
+        for (int k = 1; k < desiredNumOfFourierCoeffs; k++) {
             double &realComp = inputFourierArray[k][0];
             double &imgComp = inputFourierArray[k][1];
 
