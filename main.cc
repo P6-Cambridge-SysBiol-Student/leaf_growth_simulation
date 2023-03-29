@@ -41,6 +41,8 @@ static void animate(){
         pointsArray[i].step();
     }
 }
+// TODO intiate random cloud of points in circle
+// TODO maybe use a reaction diffusion method to find edge of the shape
 
 void initRegularTriangularLattice() {
     int index = 0;
@@ -48,7 +50,7 @@ void initRegularTriangularLattice() {
 
     int numPointsX = sqrt(nbo);
     int numPointsY = sqrt(nbo);
-    double spacing = pointsArray[0].cellRadius*0.5;
+    double spacing = pointsArray[0].cellRadius*2;
     double xSum = 0.0, ySum = 0.0;
     int numPoints = numPointsX * numPointsY;
     if (isSqrtNBOWhole){
@@ -595,7 +597,8 @@ int main(int argc, char *argv[]) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
-                    initHollowSquare(20 * SCALING_FACTOR, nbo);
+                    //initHollowSquare(20 * SCALING_FACTOR, nbo);
+                    initRegularTriangularLattice();
                 }
 #endif
                 glClear(GL_COLOR_BUFFER_BIT);
