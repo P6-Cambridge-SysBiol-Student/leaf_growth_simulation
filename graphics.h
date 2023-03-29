@@ -35,8 +35,8 @@ static void drawPoints(){
     glEnd();
 
     //printf("draw @ %f\n", realTime);
-    glFlush();
 }
+
 
 /// connects 3 consecutive points into triangles, if using the indexed list of points created
 /// by the delaunay triangulation it should produce the triangulation
@@ -66,6 +66,10 @@ static void drawTrianglesAndPoints(){
     printf("\ndraw @ %f\n", realTime);
     glFlush();
 }
+
+
+
+
 
 static void drawTriangles(){
     glClear(GL_COLOR_BUFFER_BIT);

@@ -442,11 +442,21 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// "nonunifor
         realComp = 0;
         imgComp = 0;
 
-        for (int n = 0; n < nbo; n++) {
-            double &radiusN = polarCoords[n][0];
-            double &thetaN = polarCoords[n][1];
-            realComp += 1.0/nbo * radiusN * cos(k * thetaN);
-            imgComp += 1.0/nbo * radiusN * sin(k * thetaN);
+        if (k == 0) {
+            for (int n = 0; n < nbo; n++) {
+                double &radiusN = polarCoords[n][0];
+                double &thetaN = polarCoords[n][1];
+
+                realComp += 1.0/nbo * radiusN;
+
+            }
+        } else {
+            for (int n = 0; n < nbo; n++) {
+                double &radiusN = polarCoords[n][0];
+                double &thetaN = polarCoords[n][1];
+                realComp += 1.0/nbo * radiusN * cos(k * thetaN);
+                imgComp += 1.0/nbo * radiusN * sin(k * thetaN);
+            }
         }
     }
     return FourierCoeffs;
@@ -463,94 +473,45 @@ void printDeltaFourierCoeffs(double** inputFourierArray, int desiredNumOfFourier
     }
 }
 
-void displayCoeffOutput(double** inputFourierArray, int desiredNumOfFourierCoeffs){
+void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs){
     double x, y;
     int numPoints = 3000; /// higher = smoother curve
     double T = 1;
-    double dt = T / numPoints; /// stepsize for the curve, should be sized to loop once
+    double dTheta = 2*M_PI / numPoints; /// stepsize for the curve, should be sized to loop once
+    double currentTheta = 0;
+
+    double &a_0_real = inputFourierArray[0][0];
+    double a_0 = sqrt(a_0_real*a_0_real);
+
+    double reconstructedPolarCoords[numPoints][2];
 
 
-    glClear(GL_COLOR_BUFFER_BIT);
-    drawSquare(xBound, yBound);
-    glBegin(GL_LINE_STRIP);
+    /// f(t) = a_0 + Σ(a_n*cos(2*pi*n*t/T) + b_n*sin(2*pi*n*t/T))
+    for (int n = 0; n < numPoints; n++) {
+        double reconstructedRadiusN = a_0;
 
-    for (int i = 0; i < numPoints; i++) {
-        x = 0;
-        y = 0;
-        double t = i * dt; /// Calculate the angle t for the current step
         for (int k = 0; k < desiredNumOfFourierCoeffs; k++) {
-            double &cosCoeff = inputFourierArray[k][0];
-            double &sinCoeff = inputFourierArray[k][1];
-            double angFreq = k * 2 * M_PI / T;
+            double &realComp = inputFourierArray[k][0];
+            double &imgComp = inputFourierArray[k][1];
 
-            x += cosCoeff * cos(angFreq * t) + sinCoeff * sin(angFreq * t);
-            y += -cosCoeff * sin(angFreq * t) + sinCoeff * cos(angFreq * t);
+            reconstructedRadiusN += realComp * cos(k * currentTheta) + imgComp * sin(k * currentTheta);
         }
+        reconstructedPolarCoords[n][0] = reconstructedRadiusN;
+        reconstructedPolarCoords[n][1] = currentTheta;
+        currentTheta += dTheta;
+    }
+
+    drawSquare(xBound, yBound);
+    glLineWidth(3);
+    glBegin(GL_LINE_LOOP);
+    for (int i = 0; i < numPoints; i++) {
+        double theta = i * dTheta; /// Calculate the angle t for the current step
+        x = reconstructedPolarCoords[i][0] * cos(theta);
+        y = reconstructedPolarCoords[i][0] * sin(theta);
+        glColor3f(1.0,1.0,1.0);
         glVertex2f(x, y);
     }
     glEnd();
-    glFlush();
-}
-
-
-
-void printDeltaFourierCoeffs(){
-    double polarCoords[nbo][2];
-    double sinComponents[nbo];
-    double cosComponents[nbo];
-    double angFreq[nbo];
-    double T = 1;  /// the "total period" of the function
-    double fundamentalFreq = 1/T;
-    double dTheta = 0.5* T/nbo; /// the timestep for numeric integration
-
-
-    for (int i = 0; i < nbo; i++){
-        Point& cell = pointsArray[i];
-        polarCoords[i][0] = cell.disVec.magnitude(); ///the radius value
-        polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
-    }
-
-    /// calculate the sin and cos components of the fourier coeffieints
-    for (int k = 0; k < nbo; k++) {
-        sinComponents[k] = 0;
-        cosComponents[k] = 0;
-        angFreq[k] = k * fundamentalFreq;
-        for (int n = 0; n < nbo; n++) {
-            sinComponents[k] += polarCoords[n][0] * sin(angFreq[k] * polarCoords[n][1]) * dTheta;
-            cosComponents[k] += polarCoords[n][0] * cos(angFreq[k] * polarCoords[n][1]) * dTheta;
-        }
-    }
-
-    for (int m = 0; m<nbo; m++)
-    {
-        //printf("Magnitude/Phase of coefficient %d: %f   %f\n", m, sqrt(sinComponents[m]*sinComponents[m] + cosComponents[m]*cosComponents[m]),
-                                                                         //atan2(cosComponents[m], sinComponents[m]));
-    }
-
-    ///display inverse fourier
-    if (displayInverseFourier) {
-        double x, y;
-        int numPoints = 3000; /// higher = smoother curve
-        double dt = 2 * T / numPoints; /// stepsize for the curve
-
-
-        glClear(GL_COLOR_BUFFER_BIT);
-        drawSquare(xBound, yBound);
-        glBegin(GL_LINE_STRIP);
-
-        for (int i = 0; i < numPoints; i++) {
-            x = 0;
-            y = 0;
-            double t = i * dt; /// Calculate the angle t for the current step
-            for (int k = 0; k < nbo; k++) {
-                x += (sinComponents[k] * sin(angFreq[k] * t) - cosComponents[k] * sin(angFreq[k] * t)) * 2 / T;
-                y += (cosComponents[k] * sin(angFreq[k] * t) + cosComponents[k] * cos(angFreq[k] * t)) * 2 / T;
-            }
-            glVertex2f(x, y);
-        }
-        glEnd();
-        glFlush();
-    }
 }
 
 
@@ -637,6 +598,7 @@ int main(int argc, char *argv[]) {
                     initHollowSquare(20 * SCALING_FACTOR, nbo);
                 }
 #endif
+                glClear(GL_COLOR_BUFFER_BIT);
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
@@ -659,12 +621,11 @@ int main(int argc, char *argv[]) {
                 //calcMitosis();
                 globalUpdateHormone();
 
-                drawPoints();
+                drawPoints(); // calls
 
                 free(triangleIndexList);
                 free(neighbourhoods);
                 free(totalArray);
-                glfwSwapBuffers(win);
 
                 if (iterationNumber >= finalIterationNumber) {
                     printf("\nInverse should be displaying\n");
@@ -672,12 +633,14 @@ int main(int argc, char *argv[]) {
                     printDeltaFourierCoeffs(fourierCoeffs, fourierCoeffsNum);
                     printf("\n\n");
                     if (displayInverseFourier) {
-                        glfwSwapBuffers(win);
                         glfwPollEvents();
-                        displayCoeffOutput(fourierCoeffs, fourierCoeffsNum);
+                        reconstructShape(fourierCoeffs, fourierCoeffsNum);
                     }
                 free(fourierCoeffs);
                 }
+                glFlush();
+                glfwSwapBuffers(win);
+
             }
         }
         if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
