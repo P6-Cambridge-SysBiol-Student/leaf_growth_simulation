@@ -12,7 +12,7 @@
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
-#define MOVING_POINTS false
+#define MOVING_POINTS true
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -490,7 +490,7 @@ void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs)
 
     /// f(t) = a_0 + Σ(a_n*cos(2*pi*n*t/T) + b_n*sin(2*pi*n*t/T))
     for (int n = 0; n < numPoints; n++) {
-        double reconstructedRadiusN = a_0;
+        double reconstructedRadiusN = 2*a_0; /// doubling first coeff to account for how this is the average
 
         for (int k = 1; k < desiredNumOfFourierCoeffs; k++) {
             double &realComp = inputFourierArray[k][0];
@@ -593,12 +593,12 @@ int main(int argc, char *argv[]) {
         static int iterationNumber = 1;
         double now = glfwGetTime();
         if (now > next) {
-            while (iterationNumber <= 10 * finalIterationNumber) {
+            while (iterationNumber <= 50 * finalIterationNumber) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
                     //initHollowSquare(20 * SCALING_FACTOR, nbo);
-                    initRegularTriangularLattice();
+                    //initRegularTriangularLattice();
                 }
 #endif
                 glClear(GL_COLOR_BUFFER_BIT);
@@ -621,7 +621,7 @@ int main(int argc, char *argv[]) {
                 iterateDisplace();
                 v1DiffuseHorm(neighbourhoods);
                 hormReactDiffuse(hormone1IntroTime);
-                //calcMitosis();
+                calcMitosis();
                 globalUpdateHormone();
 
                 drawPoints(); // calls
@@ -631,6 +631,10 @@ int main(int argc, char *argv[]) {
                 free(totalArray);
 
                 if (iterationNumber >= finalIterationNumber) {
+                    int fourierCoeffsNum = 0.5*nbo;
+                    if (nbo > 2*maxFourierCoeffs){
+                        fourierCoeffsNum = maxFourierCoeffs;
+                    }
                     printf("\nInverse should be displaying\n");
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
                     printDeltaFourierCoeffs(fourierCoeffs, fourierCoeffsNum);
