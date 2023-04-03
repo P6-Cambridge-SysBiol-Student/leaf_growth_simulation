@@ -50,13 +50,13 @@ double lengthOfHorm2Prod = 30*timestep;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.0001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseMaxProbOfDiv = 0.003; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
 double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
-int fourierCoeffsNum = 50;
+int maxFourierCoeffs = 20;
 
 bool displayInverseFourier = true;
 

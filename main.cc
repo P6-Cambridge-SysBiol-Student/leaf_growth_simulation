@@ -12,7 +12,7 @@
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
-#define MOVING_POINTS false
+#define MOVING_POINTS true
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -67,10 +67,10 @@ void initRegularTriangularLattice() {
         }
         double xCenter = xSum / numPoints;
         double yCenter = ySum / numPoints;
-            for (int i = 0; i < numPoints; i++) {
-                pointsArray[i].disVec -= vector2D(xCenter, yCenter);
-            }
+        for (int i = 0; i < numPoints; i++) {
+            pointsArray[i].disVec -= vector2D(xCenter, yCenter);
         }
+    }
     else{
         printf("NBO DOES NOT EQUAL numPointsX * numPointsY\n");
     }
@@ -179,7 +179,7 @@ void fill2DArrayNeighbourhoods(int** neighbourhoods, int* total, int rows){
         neighbourhoods[triangleIndexList[v + 2]][total[triangleIndexList[v + 2]]] = triangleIndexList[v + 1];
     }
 #if DEBUG
-        printf("Neighbourhood array BEFORE cleaning: \n");
+    printf("Neighbourhood array BEFORE cleaning: \n");
     for (int n = 0; n < nbo; n++){
         printf("nbo %d:  ", n);
         for (int i = 0; i < NAW; i++){
@@ -189,21 +189,21 @@ void fill2DArrayNeighbourhoods(int** neighbourhoods, int* total, int rows){
     }
     printf("\n\n");
 #endif
-        /// remove duplicates
-        for (int i = 0; i < nbo; i++) {    /// for each row
-            for (int j = 0; j < (total[i]+1); j++) {    /// for each value in the row
-                for (int k = j+1; k < (total[i]+1); k++) {    /// for each subsequent value until the end of filled elements
-                    if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are pairwise duplicates
-                        for (int l = k; l < (total[i]+1); l++) {
-                            neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// override duplicate and shift all values left
-                            neighbourhoods[i][total[i]] = -1;  /// left most value is converted to empty element
-                        }
-                        total[i]--; /// decrement pointer for the array to account for this
-                        j--;    /// pointer to possible duplicates shifts left one
+    /// remove duplicates
+    for (int i = 0; i < nbo; i++) {    /// for each row
+        for (int j = 0; j < (total[i]+1); j++) {    /// for each value in the row
+            for (int k = j+1; k < (total[i]+1); k++) {    /// for each subsequent value until the end of filled elements
+                if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are pairwise duplicates
+                    for (int l = k; l < (total[i]+1); l++) {
+                        neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// override duplicate and shift all values left
+                        neighbourhoods[i][total[i]] = -1;  /// left most value is converted to empty element
                     }
+                    total[i]--; /// decrement pointer for the array to account for this
+                    j--;    /// pointer to possible duplicates shifts left one
                 }
             }
         }
+    }
 #if DEBUG
     printf("Neighbourhood array AFTER cleaning: \n");
     for (int n = 0; n < nbo; n++){
@@ -241,8 +241,8 @@ void startHormoneBD(double inputStartTime){
                 closest_point_index = i;
             }
         }
-    /// set this point as the hormone producer
-    pointsArray[closest_point_index].isHormone1Producer = true;
+        /// set this point as the hormone producer
+        pointsArray[closest_point_index].isHormone1Producer = true;
         printf("Closest point is point %d\n", closest_point_index);
     }
     else{
@@ -290,22 +290,22 @@ void hormReactDiffuse(double inputStartTime) {
             pointsArray[closest_point_source2_index].isHormone2Producer = true;
         }
     }
-        for (int i = 0; i < nbo; i++) {
-            Point &cell = pointsArray[i]; /// alias for pointsArray[i]
-            /// in reaction diffusion all cells produce horm1
-            if (cell.isHormone2Producer == true) {
-                cell.produceHormone1ReactD( RDfeedRate);
-                cell.productHormone2ReactD( 2*RDfeedRate);
-                cell.react1With2( reactRate1to2);
-                cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
-                //printf("Point %d is a horm2 producer\n", i);
-                //printf("Point %d is a horm2 producer\n", i);
-            } else {
-                cell.produceHormone1ReactD( RDfeedRate);
-                cell.react1With2( reactRate1to2);
-                cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
-            }
+    for (int i = 0; i < nbo; i++) {
+        Point &cell = pointsArray[i]; /// alias for pointsArray[i]
+        /// in reaction diffusion all cells produce horm1
+        if (cell.isHormone2Producer == true) {
+            cell.produceHormone1ReactD( RDfeedRate);
+            cell.productHormone2ReactD( 2*RDfeedRate);
+            cell.react1With2( reactRate1to2);
+            cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
+            //printf("Point %d is a horm2 producer\n", i);
+            //printf("Point %d is a horm2 producer\n", i);
+        } else {
+            cell.produceHormone1ReactD( RDfeedRate);
+            cell.react1With2( reactRate1to2);
+            cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
         }
+    }
 }
 
 void v1DiffuseHorm(int** neighbourhoods) {
@@ -369,15 +369,15 @@ void globalUpdateHormone(){
 
 void hormoneExpandEffect(){
     for (int i = 0; i < nbo; i++){
-    Point& centre = pointsArray[i];
-    centre.cellRadius = centre.cellRadiusBase + (horm1Efficacy * centre.myTotalHormone1 * SCALING_FACTOR);
+        Point& centre = pointsArray[i];
+        centre.cellRadius = centre.cellRadiusBase + (horm1Efficacy * centre.myTotalHormone1 * SCALING_FACTOR);
     }
 }
 
 // TODO add a check so that cells cannot divide immediately after dividing again
 void calcMitosis(){
     for (int i = 0; i < nbo; i++){
-    Point &motherCell = pointsArray[i];
+        Point &motherCell = pointsArray[i];
         if (myPrand() < motherCell.divisionProb(baseMaxProbOfDiv, nbo, baseDesiredTotalCells)){
 
             nbo++; /// MAX points already exist, need to increase pointer by one to access new cell
@@ -490,7 +490,7 @@ void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs)
 
     /// f(t) = a_0 + Σ(a_n*cos(2*pi*n*t/T) + b_n*sin(2*pi*n*t/T))
     for (int n = 0; n < numPoints; n++) {
-        double reconstructedRadiusN = a_0;
+        double reconstructedRadiusN = a_0; /// doubling first coeff to account for how this is the average
 
         for (int k = 1; k < desiredNumOfFourierCoeffs; k++) {
             double &realComp = inputFourierArray[k][0];
@@ -520,28 +520,28 @@ void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs)
 void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
     double now =glfwGetTime();
     for (int i = 0; i < iterationNumber; i++)
-        {
-            create_triangles_list();
-            if (versionOfAlgoUsed == 1){
-                v1CalcSprings();
-                iterateDisplace();
-            }
-            else if (versionOfAlgoUsed == 2){
-                v2CalcSprings();
-                iterateDisplace();
-            }
-            else if (versionOfAlgoUsed == 3){
-                int** neighbourhoods = create2Darray(nbo, NAW);
-                init2DArray(neighbourhoods, nbo, NAW, -1);
-                int* totalArray = create1Darray(nbo);
-                init1DArray(totalArray, nbo, -1);
-                fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
-                v3CalcSprings(neighbourhoods);
-                iterateDisplace();
-                free(neighbourhoods);
-                free(totalArray);
-            }
+    {
+        create_triangles_list();
+        if (versionOfAlgoUsed == 1){
+            v1CalcSprings();
+            iterateDisplace();
         }
+        else if (versionOfAlgoUsed == 2){
+            v2CalcSprings();
+            iterateDisplace();
+        }
+        else if (versionOfAlgoUsed == 3){
+            int** neighbourhoods = create2Darray(nbo, NAW);
+            init2DArray(neighbourhoods, nbo, NAW, -1);
+            int* totalArray = create1Darray(nbo);
+            init1DArray(totalArray, nbo, -1);
+            fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
+            v3CalcSprings(neighbourhoods);
+            iterateDisplace();
+            free(neighbourhoods);
+            free(totalArray);
+        }
+    }
     double cpu = glfwGetTime() - now;
     printf("Iterations = %d\n Time taken = %f \n", iterationNumber, cpu);
 
@@ -593,12 +593,12 @@ int main(int argc, char *argv[]) {
         static int iterationNumber = 1;
         double now = glfwGetTime();
         if (now > next) {
-            while (iterationNumber <= 10 * finalIterationNumber) {
+            while (iterationNumber <= 50 * finalIterationNumber) {
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
                     //initHollowSquare(20 * SCALING_FACTOR, nbo);
-                    initRegularTriangularLattice();
+                    //initRegularTriangularLattice();
                 }
 #endif
                 glClear(GL_COLOR_BUFFER_BIT);
@@ -621,7 +621,7 @@ int main(int argc, char *argv[]) {
                 iterateDisplace();
                 v1DiffuseHorm(neighbourhoods);
                 hormReactDiffuse(hormone1IntroTime);
-                //calcMitosis();
+                calcMitosis();
                 globalUpdateHormone();
 
                 drawPoints(); // calls
@@ -630,7 +630,11 @@ int main(int argc, char *argv[]) {
                 free(neighbourhoods);
                 free(totalArray);
 
-                if (iterationNumber >= finalIterationNumber) {
+                if (iterationNumber >= 0/*finalIterationNumber*/) {
+                    int fourierCoeffsNum = 0.5*nbo;
+                    if (nbo > 2*maxFourierCoeffs){
+                        fourierCoeffsNum = maxFourierCoeffs;
+                    }
                     printf("\nInverse should be displaying\n");
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
                     printDeltaFourierCoeffs(fourierCoeffs, fourierCoeffsNum);
@@ -639,7 +643,7 @@ int main(int argc, char *argv[]) {
                         glfwPollEvents();
                         reconstructShape(fourierCoeffs, fourierCoeffsNum);
                     }
-                free(fourierCoeffs);
+                    free(fourierCoeffs);
                 }
                 glFlush();
                 glfwSwapBuffers(win);
