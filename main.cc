@@ -9,7 +9,7 @@
 #include <string.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY true /// set to true to display
+#define DISPLAY false /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
 #define MOVING_POINTS true
@@ -399,6 +399,7 @@ int main(int argc, char *argv[]) {
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
+#if DISPLAY
     GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
     if (!win) {
         fprintf(stderr, "Failed to open GLFW window\n");
@@ -406,7 +407,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     init(win);
-
+#endif
 #if BENCHMARK
     for (int i = 1; i < 11; i++) {
         nbo = 100 * i;
@@ -415,10 +416,13 @@ int main(int argc, char *argv[]) {
         printf("\n");
     }
 #endif
-// TODO go back to initial ifrap glfw code, make sure window creation is termination
-#if DISPLAY
+
     double next = 0;
+#if DISPLAY
     while (!glfwWindowShouldClose(win)) {
+#else
+        while(true){
+#endif
         static int iterationNumber = 1;
         double now = glfwGetTime();
         if (now > next) {
@@ -434,7 +438,9 @@ int main(int argc, char *argv[]) {
                     //initRegularTriangularLattice();
                 }
 #endif
+#if DISPLAY
                 glClear(GL_COLOR_BUFFER_BIT);
+#endif
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
@@ -450,7 +456,6 @@ int main(int argc, char *argv[]) {
 #if MOVING_POINTS
                 v3CalcSprings(neighbourhoods);
 #endif
-
                 iterateDisplace();
                 startHormoneBD(hormone1IntroTime);
                 calcHormBirthDeath();
@@ -460,7 +465,9 @@ int main(int argc, char *argv[]) {
                 globalUpdateHormone();
 
                 double maxHormone = findMaxHormone();
+#if DISPLAY
                 drawPoints(maxHormone); // calls
+#endif
 
                 free(triangleIndexList);
                 free(neighbourhoods);
@@ -473,24 +480,29 @@ int main(int argc, char *argv[]) {
                     }
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
                     //printDeltaFourierCoeffs(fourierCoeffs, fourierCoeffsNum);
-                    printf("\n\n");
+#if DISPLAY
                     if (displayInverseFourier) {
                         glfwPollEvents();
                         reconstructShape(fourierCoeffs, fourierCoeffsNum);
                     }
+#endif
                     free(fourierCoeffs);
                 }
+#if DISPLAY
                 glFlush();
                 glfwSwapBuffers(win);
+#endif
 
             }
         }
+#if DISPLAY
         if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(win, GLFW_TRUE);
         }
-
 #endif
     }
+#if DISPLAY
     glfwDestroyWindow(win);
     glfwTerminate();
+#endif
 }
