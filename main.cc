@@ -309,7 +309,6 @@ void printDeltaFourierCoeffs(double** inputFourierArray, int desiredNumOfFourier
 void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs){
     double x, y;
     int numPoints = 3000; /// higher = smoother curve
-    double T = 1;
     double dTheta = 2*M_PI / numPoints; /// stepsize for the curve, should be sized to loop once
     double currentTheta = 0;
 
@@ -450,12 +449,15 @@ int main(int argc, char *argv[]) {
 #endif
 
                 iterateDisplace();
+                startHormoneBD(hormone1IntroTime);
+                calcHormBirthDeath();
                 v1DiffuseHorm(neighbourhoods);
                 //hormReactDiffuse(hormone1IntroTime);
                 calcMitosis();
                 globalUpdateHormone();
 
-                drawPoints(); // calls
+                double maxHormone = findMaxHormone();
+                drawPoints(maxHormone); // calls
 
                 free(triangleIndexList);
                 free(neighbourhoods);
@@ -466,9 +468,8 @@ int main(int argc, char *argv[]) {
                     if (nbo > 2*maxFourierCoeffs){
                         fourierCoeffsNum = maxFourierCoeffs;
                     }
-                    printf("\nInverse should be displaying\n");
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
-                    printDeltaFourierCoeffs(fourierCoeffs, fourierCoeffsNum);
+                    //printDeltaFourierCoeffs(fourierCoeffs, fourierCoeffsNum);
                     printf("\n\n");
                     if (displayInverseFourier) {
                         glfwPollEvents();

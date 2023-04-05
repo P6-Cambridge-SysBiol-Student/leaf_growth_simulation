@@ -60,7 +60,7 @@ void startHormoneBD(double inputStartTime){
     }
 }
 
-void calcHormBirthDeath(double inputStartTime){
+void calcHormBirthDeath(){
     for (int i = 0; i < nbo; i++){
         Point& cell = pointsArray[i]; /// alias for pointsArray[i]
         /// calculate amount of hormone made by producers
@@ -162,14 +162,14 @@ void v1DiffuseHorm(int** neighbourhoods) {
 //printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
 }
 
-int findMaxHormone(){
-    int maxPointer = 0;
+double findMaxHormone(){
+    double maxHormone = 0;
     for (int i = 0; i<nbo; i++){
-        if (pointsArray[i].myTotalHormone1 > pointsArray[maxPointer].myTotalHormone1){
-            maxPointer = i;
+        if (pointsArray[i].myTotalHormone1 > maxHormone){
+            maxHormone = i;
         }
     }
-    return maxPointer;
+    return maxHormone;
 }
 
 void globalUpdateHormone(){

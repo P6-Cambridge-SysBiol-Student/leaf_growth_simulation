@@ -153,11 +153,18 @@ public:  /// these are attributes that can be called outside of the script
         glVertex2f(disVec.xx, disVec.yy);
     }
 
-    void linearDisplayHormone() {
-        double linearHormConc = myTotalHormone2 / 0.3;
+    void linearDisplayHormone2(double inputMaxHormone) {
+        double linearHormConc = myTotalHormone2 / inputMaxHormone;
         glColor4f((linearHormConc), (0.5 - 0.5*linearHormConc), (1 - linearHormConc), 1);
         glVertex2f(disVec.xx, disVec.yy);
     }
+
+    void linearDisplayHormone1(double inputMaxHormone) {
+        double linearHormConc = myTotalHormone1 / 0.5*inputMaxHormone;
+        glColor4f((linearHormConc), (0.5 - 0.5*linearHormConc), (1 - linearHormConc), 1);
+        glVertex2f(disVec.xx, disVec.yy);
+    }
+
 
     double divisionProb(double maxProbOfDiv, int numCurrentCells, int finalTotCells) { /// each cell has a p(mitosis) varied by number of existing points, cell size etc.
         double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv + (myTotalHormone1 * horm1Efficacy); /// just a linear equation

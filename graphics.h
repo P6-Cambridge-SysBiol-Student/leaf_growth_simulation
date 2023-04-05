@@ -21,7 +21,7 @@ void drawSquare(float w, float h){
 }
 
 /// draws the points as single points in the window
-static void drawPoints(){
+static void drawPoints(int inputMaxHormone){
     glClear(GL_COLOR_BUFFER_BIT);
 
     // draw system's edges
@@ -31,7 +31,8 @@ static void drawPoints(){
     glPointSize(10);
     glBegin(GL_POINTS);
     for(int k = 0; k < nbo; k += 1) {
-        pointsArray[k].linearDisplayHormone();
+        //pointsArray[k].linearDisplayHormone2(inputMaxHormone);
+        pointsArray[k].linearDisplayHormone1(inputMaxHormone);
     }
     glEnd();
 
@@ -41,7 +42,7 @@ static void drawPoints(){
 
 /// connects 3 consecutive points into triangles, if using the indexed list of points created
 /// by the delaunay triangulation it should produce the triangulation
-static void drawTrianglesAndPoints(){
+static void drawTrianglesAndPoints(double inputMaxHormone){
     glClear(GL_COLOR_BUFFER_BIT);
 
     /// draw system's edges
@@ -59,7 +60,7 @@ static void drawTrianglesAndPoints(){
         glPointSize(12);
         glBegin(GL_POINTS);
         for(int k = 0; k < nbo; k += 1) {
-            pointsArray[k].linearDisplayHormone();
+            pointsArray[k].linearDisplayHormone1(inputMaxHormone);
         }
         glEnd();
     }
