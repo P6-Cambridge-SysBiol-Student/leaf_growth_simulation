@@ -41,11 +41,11 @@ public:  /// these are attributes that can be called outside of the script
     /// initialize each point in a random position with random x and y velocities
     void reset()
     {
-        extendedHooks = 10;
-        compressedHooks = 30;
-        innerMultiplier = 2;
+        extendedHooks = 0.2;
+        compressedHooks = 0.06;
+        innerMultiplier = 3;
         innerCompressedHooks = innerMultiplier * compressedHooks;
-        cellRadiusBase = 1 * SCALING_FACTOR; /// in micrometers
+        cellRadiusBase = 0.006 * SCALING_FACTOR; /// in micrometers
         cellRadius = cellRadiusBase;
         cellMass = 1; /// in nanograms
         color = 1;
@@ -54,14 +54,6 @@ public:  /// these are attributes that can be called outside of the script
     /// call initialize
     Point(){
         reset();
-    }
-
-    /// particles bounce off walls
-    void bounce(){
-        if ( disVec.xx >  xBound )  disVec.xx =  2*xBound - disVec.xx, velVec.xx = -velVec.xx;
-        if ( disVec.xx >  xBound )  disVec.xx =  2*xBound - disVec.xx, velVec.xx = -velVec.xx;
-        if ( disVec.yy >  xBound )  disVec.yy =  2*xBound - disVec.yy, velVec.yy = -velVec.yy;
-        if ( disVec.yy >  xBound )  disVec.yy =  2*xBound - disVec.yy, velVec.yy = -velVec.yy;
     }
 
 

@@ -427,7 +427,8 @@ int main(int argc, char *argv[]) {
             static double currentTime = 0;
             while (currentTime <= 1) {
                 currentTime += timestep;
-                printf("Current time is %f", currentTime);
+                printf("Current time is %f\n", currentTime);
+                printf("%d cells exist\n", nbo);
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
