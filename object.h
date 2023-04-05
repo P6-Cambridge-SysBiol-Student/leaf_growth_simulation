@@ -41,9 +41,9 @@ public:  /// these are attributes that can be called outside of the script
     /// initialize each point in a random position with random x and y velocities
     void reset()
     {
-        extendedHooks = 0.2;
-        compressedHooks = 0.06;
-        innerMultiplier = 3;
+        extendedHooks = 0.02;
+        compressedHooks = 0.2;
+        innerMultiplier = 10;
         innerCompressedHooks = innerMultiplier * compressedHooks;
         cellRadiusBase = 0.006 * SCALING_FACTOR; /// in micrometers
         cellRadius = cellRadiusBase;
