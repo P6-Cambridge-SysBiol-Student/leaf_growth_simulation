@@ -35,6 +35,10 @@ double hormone1IntroTime = 0.00360;
 vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
 double hormone1DiffCoeff = 0.005 * SCALING_FACTOR;
 double horm1Efficacy = 0.0000;
+double horm1DivOrientVertComp = 5;
+double horm1DivOrientHoriComp = 1;
+vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertComp);
+
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;

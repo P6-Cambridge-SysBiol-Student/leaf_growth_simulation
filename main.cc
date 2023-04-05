@@ -236,7 +236,8 @@ void calcMitosis(){
             nbo++; /// MAX points already exist, need to increase pointer by one to access new cell
 
             Point& daughterCell = pointsArray[nbo-1];
-            vector2D normOrient = vector2D(3*mySrand(), mySrand()).normalise();
+            vector2D OrientVec = vector2D(mySrand(), mySrand()) + (motherCell.myTotalHormone1*horm1DivOrient);
+            vector2D normOrient = OrientVec.normalise();
 
             vector2D displaceVec = 0.15 * motherCell.cellRadius * normOrient;
             daughterCell.disVec = motherCell.disVec + displaceVec; /// change daughter cell to inherit mother cell position + random orientation
