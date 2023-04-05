@@ -14,7 +14,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 200;    /// initial number of objects (points)
+int nbo = 20;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -50,8 +50,8 @@ double lengthOfHorm2Prod = 30*timestep;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.003; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
-double baseDesiredTotalCells = 100; /// used to calculate mitosis probabilites
+double baseMaxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseDesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world

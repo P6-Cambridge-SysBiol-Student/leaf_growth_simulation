@@ -394,26 +394,6 @@ void calcMitosis(){
     }
 }
 
-// TODO 3) shape is not centered on 0,0
-// TODO 4) arguments not being read correct by readFile function?
-// TODO 5)
-
-bool comparePointsByAngle(const Point& a, const Point& b) {
-    vector2D reference(0, 1);
-    vector2D vecA = a.disVec;
-    vector2D vecB = b.disVec;
-
-    double angleA = angleBetweenVecs(reference, vecA);
-    double angleB = angleBetweenVecs(reference, vecB);
-
-    return angleA < angleB;
-}
-
-void sortPointsByAngle(Point pointsArray[], size_t size) {
-    std::sort(pointsArray, pointsArray + size, comparePointsByAngle);
-}
-
-
 double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// "nonuniform discrete Fourier transform of type II (NUDFT-II)"
     /// mallocing the memory for the pointers to each row
     double **FourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
@@ -421,8 +401,6 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// "nonunifor
         FourierCoeffs[i] = (double *) malloc(2 * sizeof(double));
     }
     double polarCoords[nbo][2];
-
-    sortPointsByAngle(pointsArray, nbo);
 
     for (int i = 0; i < nbo; i++) {
         Point &cell = pointsArray[i];
