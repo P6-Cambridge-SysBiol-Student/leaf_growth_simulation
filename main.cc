@@ -321,7 +321,7 @@ void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs)
 
     /// f(t) = a_0 + Σ(a_n*cos(2*pi*n*t/T) + b_n*sin(2*pi*n*t/T))
     for (int n = 0; n < numPoints; n++) {
-        double reconstructedRadiusN = a_0; /// doubling first coeff to account for how this is the average
+        double reconstructedRadiusN = 2*a_0; /// doubling first coeff to account for how this is the average
 
         for (int k = 1; k < desiredNumOfFourierCoeffs; k++) {
             double &realComp = inputFourierArray[k][0];
@@ -424,7 +424,10 @@ int main(int argc, char *argv[]) {
         static int iterationNumber = 1;
         double now = glfwGetTime();
         if (now > next) {
-            while (iterationNumber <= 50 * finalIterationNumber) {
+            static double currentTime = 0;
+            while (currentTime <= 1) {
+                currentTime += timestep;
+                printf("Current time is %f", currentTime);
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);

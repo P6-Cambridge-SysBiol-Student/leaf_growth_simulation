@@ -9,7 +9,7 @@
 const double SCALING_FACTOR = 100000;
 
 // physical parameters:  ensure to add any new parameters to the readOption() function
-double xBound = 50 * SCALING_FACTOR;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
+double xBound = 100 * SCALING_FACTOR;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
@@ -30,7 +30,7 @@ unsigned long seed = 2; /// seed for random number generator
 // hormone parameters
 
 double hormone1ProdRate = 500;
-double hormone1DegRate = 50; /// not used if reaction-diffusion used
+double hormone1DegRate = 250; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00360;
 vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
 double hormone1DiffCoeff = 0.005 * SCALING_FACTOR;
@@ -54,7 +54,7 @@ double lengthOfHorm2Prod = 30*timestep;
 
 // mitosis parameters
 double baseMaxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
-double baseDesiredTotalCells = 1000; /// used to calculate mitosis probabilites
+double baseDesiredTotalCells = 12000; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
