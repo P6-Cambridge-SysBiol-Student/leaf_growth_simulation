@@ -29,12 +29,11 @@ unsigned long seed = 2; /// seed for random number generator
 
 // hormone parameters
 
-double hormone1ProdRate = 5000;
+double hormone1ProdRate = 5;
 double hormone1DegRate = 50; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00006;
 vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
 double hormone1DiffCoeff = 0.005 * SCALING_FACTOR;
-double hormone1DiffPro = 0.6; /// this is made up i think,
 double horm1Efficacy = 0.0000;
 
 double hormone2ProdRate = 33333;

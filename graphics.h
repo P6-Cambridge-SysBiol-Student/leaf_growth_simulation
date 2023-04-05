@@ -28,10 +28,11 @@ static void drawPoints(){
     drawSquare(xBound, yBound);
 
     // draw particles as points:
-    glPointSize(6);
+    glPointSize(10);
     glBegin(GL_POINTS);
-    for ( size_t i = 0; i < nbo; ++i )
-        pointsArray[i].displayYellow();
+    for(int k = 0; k < nbo; k += 1) {
+        pointsArray[k].linearDisplayHormone();
+    }
     glEnd();
 
     //printf("draw @ %f\n", realTime);
