@@ -41,8 +41,6 @@ static void animate(){
         pointsArray[i].step();
     }
 }
-// TODO intiate random cloud of points in circle
-// TODO maybe use a reaction diffusion method to find edge of the shape
 
 void initRegularTriangularLattice() {
     int index = 0;
@@ -242,8 +240,6 @@ void calcMitosis(){
             vector2D displaceVec = 0.15 * motherCell.cellRadius * normOrient;
             daughterCell.disVec = motherCell.disVec + displaceVec; /// change daughter cell to inherit mother cell position + random orientation
             motherCell.disVec -= displaceVec;  /// mother cell displaced in opposite direction
-            // TODO add something that can alter orientation of division
-            // TODO maybe add something at causes orientation of division to align with tension
         }
     }
 }
