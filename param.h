@@ -6,10 +6,10 @@
 #include <cmath>
 #include <sstream>
 #include <fstream>
-const double SCALING_FACTOR = 100000;
+const double SCALING_FACTOR = 1000000;
 
 // physical parameters:  ensure to add any new parameters to the readOption() function
-double xBound = 100 * SCALING_FACTOR;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
+double xBound = 2 * SCALING_FACTOR;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
