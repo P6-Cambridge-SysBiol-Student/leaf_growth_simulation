@@ -9,7 +9,7 @@
 #include <string.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY false /// set to true to display
+#define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
 #define MOVING_POINTS true
@@ -427,15 +427,13 @@ int main(int argc, char *argv[]) {
         double now = glfwGetTime();
         if (now > next) {
             static double currentTime = 0;
-            while (currentTime <= 1) {
+            while (currentTime <= (1+timestep)) {
                 currentTime += timestep;
                 printf("Current time is %f\n", currentTime);
                 printf("%d cells exist\n", nbo);
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
-                    //initPerfectCircle(20*SCALING_FACTOR);
-                    //initHollowSquare(20 * SCALING_FACTOR, nbo);
-                    //initRegularTriangularLattice();
+                    initHollowSquare(20 * SCALING_FACTOR, nbo);
                 }
 #endif
 #if DISPLAY
@@ -457,15 +455,13 @@ int main(int argc, char *argv[]) {
                 v3CalcSprings(neighbourhoods);
 #endif
                 iterateDisplace();
-                startHormoneBD(hormone1IntroTime);
                 calcHormBirthDeath();
                 v1DiffuseHorm(neighbourhoods);
-                //hormReactDiffuse(hormone1IntroTime);
+                hormReactDiffuse(hormone1IntroTime);
                 calcMitosis();
                 globalUpdateHormone();
-
-                double maxHormone = findMaxHormone();
 #if DISPLAY
+                double maxHormone = findMaxHormone();
                 drawPoints(maxHormone); // calls
 #endif
 
@@ -473,7 +469,7 @@ int main(int argc, char *argv[]) {
                 free(neighbourhoods);
                 free(totalArray);
 
-                if (iterationNumber >= 0/*finalIterationNumber*/) {
+                if (currentTime >= 1) {
                     int fourierCoeffsNum = 0.5*nbo;
                     if (nbo > 2*maxFourierCoeffs){
                         fourierCoeffsNum = maxFourierCoeffs;
