@@ -57,7 +57,7 @@ double lengthOfHorm2Prod = 30*timestep;
 
 // mitosis parameters
 double baseMaxProbOfDiv = 0.0005; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
-double DesiredTotalCells = 7000; /// used to calculate mitosis probabilites
+double DesiredTotalCells = 700; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world

@@ -9,7 +9,7 @@
 #include <string.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY false /// set to true to display
+#define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
 #define MOVING_POINTS true
@@ -417,16 +417,15 @@ int main(int argc, char *argv[]) {
     }
 #endif
     double next = 0;
-    double currentTime = 0;
-    bool continue_simulation = true;
 #if DISPLAY
     while (!glfwWindowShouldClose(win)) {
 #else
-    while (continue_simulation) {
+        while(true){
 #endif
         static int iterationNumber = 1;
         double now = glfwGetTime();
         if (now > next) {
+            static double currentTime = 0;
             while (currentTime <= 1) {
                 currentTime += timestep;
 
@@ -445,6 +444,8 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
+                calcMitosis();
+
 
                 //printf("nbo is %d\n", nbo);
                 create_triangles_list();
@@ -462,7 +463,6 @@ int main(int argc, char *argv[]) {
                 calcHormBirthDeath();
                 v1DiffuseHorm(neighbourhoods);
                 //hormReactDiffuse(hormone1IntroTime);
-                calcMitosis();
                 globalUpdateHormone();
 
                 double maxHormone = findMaxHormone();
@@ -474,9 +474,9 @@ int main(int argc, char *argv[]) {
                 free(neighbourhoods);
                 free(totalArray);
 
-                if (iterationNumber >= 1) {
-                    int fourierCoeffsNum = 0.5 * nbo;
-                    if (nbo > 2 * maxFourierCoeffs) {
+                if (iterationNumber >= 0/*finalIterationNumber*/) {
+                    int fourierCoeffsNum = 0.5*nbo;
+                    if (nbo > 2*maxFourierCoeffs){
                         fourierCoeffsNum = maxFourierCoeffs;
                     }
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
@@ -488,7 +488,6 @@ int main(int argc, char *argv[]) {
                     }
 #endif
                     free(fourierCoeffs);
-                    break;
                 }
 #if DISPLAY
                 glFlush();
@@ -500,10 +499,6 @@ int main(int argc, char *argv[]) {
 #if DISPLAY
         if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(win, GLFW_TRUE);
-        }
-#else
-        if (currentTime > (1 + timestep)) {
-            continue_simulation = false;
         }
 #endif
     }
