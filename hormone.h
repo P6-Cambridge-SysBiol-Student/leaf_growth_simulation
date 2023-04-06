@@ -7,37 +7,6 @@
 
 #endif //FRAP_HORMONE_H
 
-/// includes parameters relevant to diffusion and behaviour of hormones
-class Hormone{
-public:
-    /// member variables
-    double myDiffCoeff, myRateOfProd, myRateOfDeg, myExpandEffect, myEfficacy, myMitosisRateEffect, myMitosisOrientEffect;
-
-    /// default constructor
-    Hormone() :
-            myDiffCoeff(0.0),
-            myRateOfProd(0.0),
-            myRateOfDeg(0.0),
-            myExpandEffect(0.0),
-            myMitosisRateEffect(0.0),
-            myMitosisOrientEffect(0.0),
-            myEfficacy(0.0)
-    {}
-
-    /// constructor with arguments
-    Hormone(double inputDiffCoeff, double inputProdRate, double inputExpansion, double inputEfficacy,
-            double inputDegRate, double inputMitosisRateEffect, double inputMitosisOrientEffect) :
-            myDiffCoeff(inputDiffCoeff),
-            myRateOfProd(inputProdRate),
-            myRateOfDeg(inputDegRate),
-            myExpandEffect(inputExpansion),
-            myMitosisRateEffect(inputMitosisRateEffect),
-            myMitosisOrientEffect(inputMitosisOrientEffect),
-            myEfficacy(inputEfficacy)
-    {}
-};
-
-
 void startHormoneBD(double inputStartTime){
     static bool flag = false;
     if ((currentTime > inputStartTime) and (flag == false)){
@@ -159,7 +128,7 @@ void v1DiffuseHorm(int** neighbourhoods) {
         sumHorm1 += cell.myTotalHormone1;
         sumHorm2 += cell.myTotalHormone2;
     }
-//printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
+printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
 }
 
 double findMaxHormone(){

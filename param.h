@@ -14,7 +14,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 20;    /// initial number of objects (points)
+int nbo = 20*20;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -29,11 +29,11 @@ unsigned long seed = 2; /// seed for random number generator
 
 // hormone parameters
 
-double hormone1ProdRate = 500;
-double hormone1DegRate = 250; /// not used if reaction-diffusion used
+double hormone1ProdRate = 100;
+double hormone1DegRate = 10; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00360;
 vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
-double hormone1DiffCoeff = 0.005 * SCALING_FACTOR;
+double hormone1DiffCoeff = 0.16 * SCALING_FACTOR;
 double horm1Efficacy = 0.0001;
 double horm1DivOrientVertComp = 5;
 double horm1DivOrientHoriComp = 0;
@@ -42,7 +42,7 @@ vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertCom
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 0.0005 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double hormone2DiffCoeff = 0.08 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 vector2D horm2Source1 = vector2D(0.2, 0);
 vector2D horm2Srouce2 = vector2D(-0.2, -0.3);
 double horm2DivOrientVertComp = 0;
@@ -50,19 +50,19 @@ double horm2DivOrientHoriComp = 5;
 vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertComp);
 
 double RDfeedRate = 0.039;
-double RDkillRate = 0.053;
+double RDkillRate = 0.057;
 double reactRate1to2 = 1/timestep;
 double lengthOfHorm2Prod = 30*timestep;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.0005; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseMaxProbOfDiv = 0.002; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
 double DesiredTotalCells = 700; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
-int maxFourierCoeffs = 20;
+int maxFourierCoeffs = 30;
 
 bool displayInverseFourier = true;
 

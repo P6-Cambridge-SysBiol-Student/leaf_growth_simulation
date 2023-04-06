@@ -12,7 +12,7 @@
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE true
-#define MOVING_POINTS true
+#define MOVING_POINTS false
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -194,10 +194,10 @@ void fill2DArrayNeighbourhoods(int** neighbourhoods, int* total, int rows){
                 if (neighbourhoods[i][j] == neighbourhoods[i][k]) {    /// check if there are pairwise duplicates
                     for (int l = k; l < (total[i]+1); l++) {
                         neighbourhoods[i][l] = neighbourhoods[i][l+1];  /// override duplicate and shift all values left
-                        neighbourhoods[i][total[i]] = -1;  /// left most value is converted to empty element
                     }
                     total[i]--; /// decrement pointer for the array to account for this
                     j--;    /// pointer to possible duplicates shifts left one
+                    neighbourhoods[i][total[i] + 1] = -1;  /// set the correct value to -1 (empty element)
                 }
             }
         }
@@ -435,7 +435,7 @@ int main(int argc, char *argv[]) {
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
                     //initHollowSquare(20 * SCALING_FACTOR, nbo);
-                    //initRegularTriangularLattice();
+                    initRegularTriangularLattice();
                 }
 #endif
 #if DISPLAY
@@ -444,25 +444,23 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
-                calcMitosis();
+                //calcMitosis();
 
-
-                //printf("nbo is %d\n", nbo);
                 create_triangles_list();
-                int **neighbourhoods = create2Darray(nbo, NAW);
-                init2DArray(neighbourhoods, nbo, NAW, -1);
-                int *totalArray = create1Darray(nbo);
-                init1DArray(totalArray, nbo, -1);
-                fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW);
+                int **neighbourhoods = create2Darray(nbo, NAW); /// malloc empty nbo * NAW array
+                init2DArray(neighbourhoods, nbo, NAW, -1); /// fill it with -1s
+                int *totalArray = create1Darray(nbo); /// create empty nbo array
+                init1DArray(totalArray, nbo, -1);  /// fill it with -1s
+                fill2DArrayNeighbourhoods(neighbourhoods, totalArray, NAW); /// fill neighbourhood aray
 
 #if MOVING_POINTS
                 v3CalcSprings(neighbourhoods);
 #endif
                 iterateDisplace();
-                startHormoneBD(hormone1IntroTime);
+                //startHormoneBD(hormone1IntroTime);
                 calcHormBirthDeath();
                 v1DiffuseHorm(neighbourhoods);
-                //hormReactDiffuse(hormone1IntroTime);
+                hormReactDiffuse(hormone1IntroTime);
                 globalUpdateHormone();
 
                 double maxHormone = findMaxHormone();
