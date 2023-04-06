@@ -33,8 +33,8 @@ double hormone1ProdRate = 100;
 double hormone1DegRate = 10; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00360;
 vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
-double hormone1DiffCoeff = 16 * SCALING_FACTOR;
-double horm1Efficacy = 0.0001;
+double hormone1DiffCoeff = 160 * SCALING_FACTOR;
+double horm1Efficacy = 5;
 double horm1DivOrientVertComp = 5;
 double horm1DivOrientHoriComp = 0;
 vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertComp);
@@ -42,21 +42,22 @@ vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertCom
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 14 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double hormone2DiffCoeff = 140 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double horm2Efficacy = 10;
 vector2D horm2Source1 = vector2D(0.2, 0);
 vector2D horm2Srouce2 = vector2D(-0.2, -0.3);
 double horm2DivOrientVertComp = 0;
 double horm2DivOrientHoriComp = 5;
 vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertComp);
 
-double RDfeedRate = 0.5;
-double RDkillRate = 0.7;
-double reactRate1to2 = 1;
+double RDfeedRate = 35;
+double RDkillRate = 40;
+double reactRate1to2 = 100;
 double lengthOfHorm2Prod = 1;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseMaxProbOfDiv = 0.002; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
 double DesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 

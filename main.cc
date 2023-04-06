@@ -235,8 +235,8 @@ void calcMitosis(){
 
             Point& daughterCell = pointsArray[nbo-1];
             vector2D OrientVec = vector2D(mySrand(), mySrand())
-                               + (motherCell.myTotalHormone1*horm1DivOrient)
-                               + (motherCell.myTotalHormone2*horm2DivOrient);
+                               + (motherCell.myTotalHormone1*horm1Efficacy*horm1DivOrient)
+                               + (motherCell.myTotalHormone2*horm2Efficacy*horm2DivOrient);
             vector2D normOrient = OrientVec.normalise();
 
             vector2D displaceVec = 0.5 * motherCell.cellRadius * normOrient;
