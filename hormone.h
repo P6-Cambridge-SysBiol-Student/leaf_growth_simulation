@@ -131,11 +131,21 @@ void v1DiffuseHorm(int** neighbourhoods) {
 printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
 }
 
-double findMaxHormone(){
+double findMaxHormone1(){
     double maxHormone = 0;
     for (int i = 0; i<nbo; i++){
         if (pointsArray[i].myTotalHormone1 > maxHormone){
-            maxHormone = i;
+            maxHormone = pointsArray[i].myTotalHormone1;
+        }
+    }
+    return maxHormone;
+}
+
+double findMaxHormone2(){
+    double maxHormone = 0;
+    for (int i = 0; i<nbo; i++){
+        if (pointsArray[i].myTotalHormone2 > maxHormone){
+            maxHormone = pointsArray[i].myTotalHormone2;
         }
     }
     return maxHormone;

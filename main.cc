@@ -462,10 +462,9 @@ int main(int argc, char *argv[]) {
                 v1DiffuseHorm(neighbourhoods);
                 hormReactDiffuse(hormone1IntroTime);
                 globalUpdateHormone();
-
-                double maxHormone = findMaxHormone();
 #if DISPLAY
-                drawPoints(maxHormone); // calls
+                double maxHormone2 = findMaxHormone2();
+                drawPointsHorm2(maxHormone2); // calls
 #endif
 
                 free(triangleIndexList);

@@ -21,7 +21,7 @@ void drawSquare(float w, float h){
 }
 
 /// draws the points as single points in the window
-static void drawPoints(int inputMaxHormone){
+static void drawPointsHorm1(int inputMaxHormone){
     glClear(GL_COLOR_BUFFER_BIT);
 
     // draw system's edges
@@ -31,13 +31,31 @@ static void drawPoints(int inputMaxHormone){
     glPointSize(3);
     glBegin(GL_POINTS);
     for(int k = 0; k < nbo; k += 1) {
-        //pointsArray[k].linearDisplayHormone2(inputMaxHormone);
         pointsArray[k].linearDisplayHormone1(inputMaxHormone);
     }
     glEnd();
 
     //printf("draw @ %f\n", realTime);
 }
+
+/// draws the points as single points in the window
+static void drawPointsHorm2(int inputMaxHormone){
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // draw system's edges
+    drawSquare(xBound, yBound);
+
+    // draw particles as points:
+    glPointSize(3);
+    glBegin(GL_POINTS);
+    for(int k = 0; k < nbo; k += 1) {
+        pointsArray[k].linearDisplayHormone2(inputMaxHormone);
+    }
+    glEnd();
+
+    //printf("draw @ %f\n", realTime);
+}
+
 
 
 /// connects 3 consecutive points into triangles, if using the indexed list of points created
