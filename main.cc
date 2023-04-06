@@ -229,7 +229,7 @@ double trackTime(){
 void calcMitosis(){
     for (int i = 0; i < nbo; i++){
         Point &motherCell = pointsArray[i];
-        if (myPrand() < motherCell.divisionProb(baseMaxProbOfDiv, nbo, baseDesiredTotalCells)){
+        if (myPrand() < motherCell.divisionProb(baseMaxProbOfDiv, nbo, DesiredTotalCells)){
 
             nbo++; /// MAX points already exist, need to increase pointer by one to access new cell
 
@@ -416,19 +416,20 @@ int main(int argc, char *argv[]) {
         printf("\n");
     }
 #endif
-
     double next = 0;
+    double currentTime = 0;
+    bool continue_simulation = true;
 #if DISPLAY
     while (!glfwWindowShouldClose(win)) {
 #else
-        while(true){
+    while (continue_simulation) {
 #endif
         static int iterationNumber = 1;
         double now = glfwGetTime();
         if (now > next) {
-            static double currentTime = 0;
             while (currentTime <= 1) {
                 currentTime += timestep;
+
                 printf("Current time is %f\n", currentTime);
                 printf("%d cells exist\n", nbo);
 #if REGULAR_LATTICE
@@ -473,9 +474,9 @@ int main(int argc, char *argv[]) {
                 free(neighbourhoods);
                 free(totalArray);
 
-                if (iterationNumber >= 0/*finalIterationNumber*/) {
-                    int fourierCoeffsNum = 0.5*nbo;
-                    if (nbo > 2*maxFourierCoeffs){
+                if (iterationNumber >= 1) {
+                    int fourierCoeffsNum = 0.5 * nbo;
+                    if (nbo > 2 * maxFourierCoeffs) {
                         fourierCoeffsNum = maxFourierCoeffs;
                     }
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
@@ -487,6 +488,7 @@ int main(int argc, char *argv[]) {
                     }
 #endif
                     free(fourierCoeffs);
+                    break;
                 }
 #if DISPLAY
                 glFlush();
@@ -498,6 +500,10 @@ int main(int argc, char *argv[]) {
 #if DISPLAY
         if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(win, GLFW_TRUE);
+        }
+#else
+        if (currentTime > (1 + timestep)) {
+            continue_simulation = false;
         }
 #endif
     }

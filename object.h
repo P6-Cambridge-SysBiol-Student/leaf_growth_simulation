@@ -159,7 +159,7 @@ public:  /// these are attributes that can be called outside of the script
 
 
     double divisionProb(double maxProbOfDiv, int numCurrentCells, int finalTotCells) { /// each cell has a p(mitosis) varied by number of existing points, cell size etc.
-        double divisionProb = -(maxProbOfDiv / finalTotCells) * numCurrentCells + maxProbOfDiv + (myTotalHormone1 * horm1Efficacy); /// just a linear equation
+        double divisionProb = maxProbOfDiv * (1 - (numCurrentCells / finalTotCells)) - (myTotalHormone1 * horm1Efficacy) * (numCurrentCells / finalTotCells);
         return divisionProb;
     }
 };

@@ -251,11 +251,11 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
   /usr/include/c++/11/bits/fstream.tcc \
-  ../hormone.h \
   ../object.h \
   ../sigmoid.h \
   ../polish.h \
   ../arrays.h \
+  ../hormone.h \
   ../Clarkson-Delaunay.cpp \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
   ../Clarkson-Delaunay.h \
@@ -777,8 +777,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/c++/11/bits/fstream.tcc:
 
-../hormone.h:
-
 ../arrays.h:
+
+../hormone.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:

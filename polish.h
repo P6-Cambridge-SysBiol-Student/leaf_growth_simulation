@@ -12,7 +12,7 @@
 /// size_t = size in bytes,  const means MAX is immutable
 
 const double PI = 3.14159265358979323846;
-const size_t MAX = 16384;
+const size_t MAX = (16384*2);
 const bool debugStatus = 1;
 
 
@@ -23,7 +23,7 @@ const bool debugStatus = 1;
 Point pointsArray[MAX];
 int numTriangleVertices = 0;
 WORD* triangleIndexList;
-const int NAW = 50;  /// neighbourhood array width
+const int NAW = 80;  /// neighbourhood array width
 double currentTime = 0;   /// a tracker for how many timesteps have passed
 
 /// window size in pixels

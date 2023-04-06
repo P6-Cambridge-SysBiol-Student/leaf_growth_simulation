@@ -34,7 +34,7 @@ double hormone1DegRate = 250; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00360;
 vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
 double hormone1DiffCoeff = 0.005 * SCALING_FACTOR;
-double horm1Efficacy = 0.0000;
+double horm1Efficacy = 0.0001;
 double horm1DivOrientVertComp = 5;
 double horm1DivOrientHoriComp = 0;
 vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertComp);
@@ -56,8 +56,8 @@ double lengthOfHorm2Prod = 30*timestep;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
-double baseDesiredTotalCells = 8000; /// used to calculate mitosis probabilites
+double baseMaxProbOfDiv = 0.0005; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double DesiredTotalCells = 7000; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
