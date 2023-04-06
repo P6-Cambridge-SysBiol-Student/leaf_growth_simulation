@@ -39,7 +39,7 @@ static void drawPointsHorm1(int inputMaxHormone){
 }
 
 /// draws the points as single points in the window
-static void drawPointsHorm2(int inputMaxHormone){
+static void drawPointsHorm2(double inputMaxHormone){
     glClear(GL_COLOR_BUFFER_BIT);
 
     // draw system's edges

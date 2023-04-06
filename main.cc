@@ -11,8 +11,8 @@
 #define DEBUG false
 #define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
-#define REGULAR_LATTICE true
-#define MOVING_POINTS false
+#define REGULAR_LATTICE false
+#define MOVING_POINTS true
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
@@ -444,7 +444,7 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
-                //calcMitosis();
+                calcMitosis();
 
                 create_triangles_list();
                 int **neighbourhoods = create2Darray(nbo, NAW); /// malloc empty nbo * NAW array
@@ -464,6 +464,7 @@ int main(int argc, char *argv[]) {
                 globalUpdateHormone();
 #if DISPLAY
                 double maxHormone2 = findMaxHormone2();
+                double minHormone2 = findMinHormone2();
                 drawPointsHorm2(maxHormone2); // calls
 #endif
 

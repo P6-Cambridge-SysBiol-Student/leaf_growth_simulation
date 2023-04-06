@@ -14,7 +14,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 20*20;    /// initial number of objects (points)
+int nbo = 2000;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -42,27 +42,27 @@ vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertCom
 
 double hormone2ProdRate = 33333;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 0.08 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double hormone2DiffCoeff = 0.14 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 vector2D horm2Source1 = vector2D(0.2, 0);
 vector2D horm2Srouce2 = vector2D(-0.2, -0.3);
 double horm2DivOrientVertComp = 0;
 double horm2DivOrientHoriComp = 5;
 vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertComp);
 
-double RDfeedRate = 0.039;
-double RDkillRate = 0.057;
-double reactRate1to2 = 1/timestep;
-double lengthOfHorm2Prod = 30*timestep;
+double RDfeedRate = 0.05;
+double RDkillRate = 0.07;
+double reactRate1to2 = 1;
+double lengthOfHorm2Prod = 1;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.002; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
-double DesiredTotalCells = 700; /// used to calculate mitosis probabilites
+double baseMaxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double DesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
-int maxFourierCoeffs = 30;
+int maxFourierCoeffs = 15;
 
 bool displayInverseFourier = true;
 

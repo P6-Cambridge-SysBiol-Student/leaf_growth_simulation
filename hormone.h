@@ -4,6 +4,7 @@
 
 #ifndef FRAP_HORMONE_H
 #define FRAP_HORMONE_H
+#include <float.h>
 
 #endif //FRAP_HORMONE_H
 
@@ -79,7 +80,6 @@ void hormReactDiffuse(double inputStartTime) {
             cell.react1With2( reactRate1to2);
             cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
             //printf("Point %d is a horm2 producer\n", i);
-            //printf("Point %d is a horm2 producer\n", i);
         } else {
             cell.produceHormone1ReactD( RDfeedRate);
             cell.react1With2( reactRate1to2);
@@ -141,6 +141,16 @@ double findMaxHormone1(){
     return maxHormone;
 }
 
+double findMinHormone1(){
+    double minHormone = DBL_MAX;
+    for (int i = 0; i<nbo; i++){
+        if (pointsArray[i].myTotalHormone1 < minHormone){
+            minHormone = pointsArray[i].myTotalHormone1;
+        }
+    }
+    return minHormone;
+}
+
 double findMaxHormone2(){
     double maxHormone = 0;
     for (int i = 0; i<nbo; i++){
@@ -149,6 +159,16 @@ double findMaxHormone2(){
         }
     }
     return maxHormone;
+}
+
+double findMinHormone2(){
+    double minHormone = DBL_MAX;
+    for (int i = 0; i<nbo; i++){
+        if (pointsArray[i].myTotalHormone2 < minHormone){
+            minHormone = pointsArray[i].myTotalHormone2;
+        }
+    }
+    return minHormone;
 }
 
 void globalUpdateHormone(){
