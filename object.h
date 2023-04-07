@@ -45,7 +45,7 @@ public:  /// these are attributes that can be called outside of the script
         compressedHooks = 0.2;
         innerMultiplier = 10;
         innerCompressedHooks = innerMultiplier * compressedHooks;
-        cellRadiusBase = 0.006 * SCALING_FACTOR; /// in micrometers
+        cellRadiusBase = 0.012 * SCALING_FACTOR; /// in micrometers
         cellRadius = cellRadiusBase;
         cellMass = 1; /// in nanograms
         color = 1;

@@ -9,7 +9,7 @@
 const double SCALING_FACTOR = 100000;
 
 // physical parameters:  ensure to add any new parameters to the readOption() function
-double xBound = 0.5 * SCALING_FACTOR;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
+double xBound = 1 * SCALING_FACTOR;   /// half-width of box (X) in micrometers. If this value is lower than 100 the deulaunay triangulation misses points
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
@@ -19,14 +19,14 @@ int nbo = 20*20;    /// initial number of objects (points)
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
 const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
-const double breakSpringCoeff = 1.5;
+const double breakSpringCoeff = 1.2;
 
 // timestep parameters
 double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
-double finalTime = 0.05;
+double finalTime = 1;
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
 int maxFourierCoeffs = 15;
@@ -48,8 +48,10 @@ double hormone2ProdRate = 33;
 double hormone2DegRate = 666;
 double hormone2DiffCoeff = 150 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 double horm2Efficacy = 10;
-vector2D horm2Source1 = vector2D(0.2, 0);
-vector2D horm2Srouce2 = vector2D(-0.2, -0.3);
+double hormone2IntroTime = 0.00360;
+double horm2SourceHor = 0.2;
+double horm2SourceVer = 0;
+vector2D horm2Source1 = vector2D(horm2SourceHor, horm2SourceVer);
 double horm2DivOrientVertComp = 0;
 double horm2DivOrientHoriComp = 5;
 vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertComp);

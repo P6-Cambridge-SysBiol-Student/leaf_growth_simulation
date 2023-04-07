@@ -363,8 +363,14 @@ int main(int argc, char *argv[]) {
                 //startHormoneBD(hormone1IntroTime);
                 calcHormBirthDeath();
                 v1DiffuseHorm(neighbourhoods);
-                hormReactDiffuse(hormone1IntroTime);
+                hormReactDiffuse(hormone2IntroTime);
                 globalUpdateHormone();
+                double globalHorm2 = sumHormone2();
+                if (isnan(globalHorm2)){
+                    shouldTerminate = true;
+                    printf("Hormone2 is NaN\n");
+                    break;
+                }
 #if DISPLAY
                 double maxHormone2 = findMaxHormone2();
                 double minHormone2 = findMinHormone2();
