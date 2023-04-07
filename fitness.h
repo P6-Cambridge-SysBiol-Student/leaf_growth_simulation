@@ -106,3 +106,26 @@ void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs)
     }
     glEnd();
 }
+
+void outputFourierToFile(double** inputFourierArray, int desiredNumOfFourierCoeffs, const char* filename) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+    fprintf(file, "Index,Real,Imaginary,Magnitude,Phase\n");
+    for (int m = 0; m < desiredNumOfFourierCoeffs; m++) {
+        double &realValue = inputFourierArray[m][0];
+        double &imgValue = inputFourierArray[m][1];
+        double magnitude = sqrt(realValue * realValue + imgValue * imgValue);
+        double phase = atan2(imgValue, realValue);
+
+        fprintf(file, "%d,%f,%f,%f,%f\n", m, realValue, imgValue, magnitude, phase);
+    }
+
+    fclose(file);
+}
+
+
+
