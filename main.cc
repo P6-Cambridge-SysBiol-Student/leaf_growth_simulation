@@ -9,7 +9,7 @@
 #include <string.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY false /// set to true to display
+#define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE false
 #define MOVING_POINTS true
@@ -348,7 +348,7 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
-                //calcMitosis();
+                calcMitosis();
 
                 create_triangles_list();
                 int **neighbourhoods = create2Darray(nbo, NAW); /// malloc empty nbo * NAW array

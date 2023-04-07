@@ -14,7 +14,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 20*20;    /// initial number of objects (points)
+int nbo = 20;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -37,7 +37,8 @@ double hormone1ProdRate = 100;
 double hormone1DegRate = 10; /// not used if reaction-diffusion used
 double hormone1IntroTime = 0.00360;
 vector2D hormone1OriginV1 = vector2D(0.1*xBound,0.1*xBound);
-double hormone1DiffCoeff = 160 * SCALING_FACTOR;
+double inputHorm1DiffCoeff = 160;
+double hormone1DiffCoeff = inputHorm1DiffCoeff * SCALING_FACTOR;
 double horm1Efficacy = 5;
 double horm1DivOrientVertComp = 5;
 double horm1DivOrientHoriComp = 0;
@@ -46,7 +47,8 @@ vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertCom
 
 double hormone2ProdRate = 33;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 150 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double inputHorm2DiffCoeff = 150;
+double hormone2DiffCoeff = inputHorm2DiffCoeff * SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 double horm2Efficacy = 10;
 double hormone2IntroTime = 0.00360;
 double horm2SourceHor = 0.2;
@@ -57,14 +59,14 @@ double horm2DivOrientHoriComp = 5;
 vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertComp);
 
 double RDfeedRate = 35;
-double RDfeedToKillRatio= 1.14
+double RDfeedToKillRatio= 1.14;
 double RDkillRate = RDfeedRate*RDfeedToKillRatio;
 double reactRate1to2 = 6400;
 double lengthOfHorm2Prod = 1;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.002; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseMaxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
 double DesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 
