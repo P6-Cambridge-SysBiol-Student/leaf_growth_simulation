@@ -34,11 +34,12 @@ def load_target():
 def calculate_fitness(file_path):
     """
     Calculate fitness expressing the relative contribution of the fourth Fourier coefficient.
-    Higher fourth coefficient means higher fitness, while non-4 coefficients negatively affect the score.
+    Higher fourth coefficient means higher fitness.
     """
-    fit = 0  # Initialize the fitness value
+    sum_coeff_values = 0  # Initialize the sum of all coefficient magnitudes
+    fourth_coeff_value = 0  # Initialize the fourth coefficient value
 
-    # Open the CSV file in read mode using a context manager
+    # Open the CSV file in read mode
     with open(file_path, 'r') as csvfile:
         # Create a CSV reader object to read the CSV file line by line
         reader = csv.reader(csvfile)
@@ -49,13 +50,20 @@ def calculate_fitness(file_path):
                 try:
                     coeff_index = int(row[0])  # Parse the first column as an integer (coefficient index)
                     coeff_value = float(row[4])  # Parse the fourth column as a float (coefficient magnitude)
-
+                    if coeff_index != 0:
+                        sum_coeff_values += coeff_value  # Add the coefficient value to the sum of coeff magnitudes
                     # Check if the current row corresponds to the fourth Fourier coefficient (index 4)
                     if coeff_index == 4:
-                        fit += coeff_value  # Add the coefficient value to the fitness value
-                    elif (coeff_index !=4) and (coeff_value!=0):
-                        fit -= coeff_value  # Subtract the coefficient value from the fitness value for non-4 coefficients
+                        fourth_coeff_value = coeff_value  # Set the fourth coefficient value
+
                 except ValueError:
                     pass  # Ignore lines that cannot be parsed (e.g., headers, non-numeric data)
-    return fit  # Return the calculated fitness value
+
+    # Calculate the fitness value by dividing the fourth coefficient value by the sum of all coefficient magnitudes
+    if sum_coeff_values > 0:
+        fit = fourth_coeff_value / sum_coeff_values
+    else:
+        fit = 0
+    return fit
+
 
