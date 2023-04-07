@@ -328,7 +328,7 @@ int main(int argc, char *argv[]) {
         double now = glfwGetTime();
         if (now > next) {
             static double currentTime = 0;
-            while (currentTime <= 1) {
+            while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
 
                 printf("Current time is %f\n", currentTime);
@@ -374,7 +374,7 @@ int main(int argc, char *argv[]) {
                 free(neighbourhoods);
                 free(totalArray);
 
-                if (iterationNumber >= 0/*finalIterationNumber*/) {
+                if (currentTime >= finalTime) {
                     int fourierCoeffsNum = 0.5*nbo;
                     if (nbo > 2*maxFourierCoeffs){
                         fourierCoeffsNum = maxFourierCoeffs;

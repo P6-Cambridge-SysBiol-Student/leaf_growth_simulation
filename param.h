@@ -26,6 +26,10 @@ double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
+double finalTime = 0.05;
+double realTime = 0;     /// time in the simulated world
+int finalIterationNumber = 100;  /// iterations before final frame
+int maxFourierCoeffs = 15;
 
 // hormone parameters
 
@@ -61,9 +65,7 @@ double baseMaxProbOfDiv = 0.002; /// should inform this with the maximal amount 
 double DesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 
-double realTime = 0;     /// time in the simulated world
-int finalIterationNumber = 100;  /// iterations before final frame
-int maxFourierCoeffs = 15;
+
 
 bool displayInverseFourier = true;
 
