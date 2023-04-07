@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <algorithm>
 #define DEBUG false
 #define DISPLAY true /// set to true to display
@@ -283,23 +284,22 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]) {
-    for (int i = 1; i < argc; ++i) {
-        const char *arg = argv[i];
-        size_t n = strlen(arg);
-        if (n > 4 && 0 == strcmp(arg + n - 4, ".cym"))
-            readFile(arg);
-        else if (0 == readOption(arg))
-            printf("Argument '%s' was ignored\n", arg);
+    const char *params_file = "../params.cym";
+    if (access(params_file, F_OK) != -1) {
+        readFile(params_file);
+    } else {
+        printf("params.cym file not found\n");
+        return EXIT_FAILURE;
+
     }
-    if (!glfwInit()) {
+
+    if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
     }
-    glfwSetErrorCallback(error);
 
-    glfwWindowHint(GLFW_DEPTH_BITS, 0);
-    //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-    //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+    glfwSetErrorCallback(error); // Set the error callback after initializing GLFW
+
 
 #if DISPLAY
     GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
