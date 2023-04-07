@@ -380,7 +380,7 @@ int main(int argc, char *argv[]) {
                         fourierCoeffsNum = maxFourierCoeffs;
                     }
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
-                    outputFourierToFile(fourierCoeffs, fourierCoeffsNum, "outputFourierCoeffs.csv");
+                    outputFourierToFile(fourierCoeffs, fourierCoeffsNum, "../outputFourierCoeffs.csv");
 #if DISPLAY
                     if (displayInverseFourier) {
                         glfwPollEvents();
