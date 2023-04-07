@@ -9,7 +9,7 @@
 #include <string.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY true /// set to true to display
+#define DISPLAY false /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE false
 #define MOVING_POINTS true
@@ -331,9 +331,10 @@ int main(int argc, char *argv[]) {
             static double currentTime = 0;
             while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
-
+#if DEBUG
                 printf("Current time is %f\n", currentTime);
                 printf("%d cells exist\n", nbo);
+#endif
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);

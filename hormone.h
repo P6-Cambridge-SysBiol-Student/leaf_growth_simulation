@@ -61,7 +61,7 @@ void hormReactDiffuse(double inputStartTime) {
         }
         double squareMinDist2 = 1000 * 1000 * xBound;
         for (int k = 0; k < nbo; k++) {
-            double squareDisFromOrigin = (pointsArray[k].disVec - horm2Srouce2).magnitude_squared();
+            double squareDisFromOrigin = (pointsArray[k].disVec - horm2Source1).magnitude_squared();
             if (squareDisFromOrigin < squareMinDist1) {
                 squareMinDist2 = squareDisFromOrigin;
                 closest_point_source2_index = k;
@@ -128,7 +128,9 @@ void v1DiffuseHorm(int** neighbourhoods) {
         sumHorm1 += cell.myTotalHormone1;
         sumHorm2 += cell.myTotalHormone2;
     }
+#if DEBUG
 printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sumHorm2); /// test conservation of hormone
+#endif
 }
 
 double sumHormone2(){
