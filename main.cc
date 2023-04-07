@@ -319,10 +319,11 @@ int main(int argc, char *argv[]) {
     }
 #endif
     double next = 0;
+    bool shouldTerminate = false;
 #if DISPLAY
-    while (!glfwWindowShouldClose(win)) {
+    while (!glfwWindowShouldClose(win) && !shouldTerminate) {
 #else
-        while(true){
+        while (!shouldTerminate) {
 #endif
         static int iterationNumber = 1;
         double now = glfwGetTime();
@@ -388,7 +389,9 @@ int main(int argc, char *argv[]) {
                     }
 #endif
                     free(fourierCoeffs);
+                    break;
                 }
+                shouldTerminate = true;
 #if DISPLAY
                 glFlush();
                 glfwSwapBuffers(win);
