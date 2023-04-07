@@ -3,16 +3,16 @@
 # Copyright Sainsbury Laboratory, Cambridge University, UK
 
 try:
-    import os, sys, math, re,
+    import os, sys, math, re, csv
 except ImportError as e:
-    sys.stderr.write("Error loading module: %s\n"%str(e))
+    sys.stderr.write("Error loading module: %s\n" % str(e))
     sys.exit()
 
 # simulation executable must be in current working directory:
-simex = os.path.abspath('sim3')
+simex = os.path.abspath('frap')
 
 # name of file where simulation provides its results, or 'stdout':
-simout = 'result.txt'
+simout = 'outputFourierCoeffs.csv'
 
 # template file used to generate simulation configuration files
 template = 'config.cym.tpl'
@@ -21,6 +21,7 @@ template = 'config.cym.tpl'
 genetic_config = 'genetics.config'
 
 #-------------------------------------------------------------------------------
+
 
 def load_target():
     """return target for optimization, which can be a complex data"""

@@ -57,7 +57,8 @@ double horm2DivOrientHoriComp = 5;
 vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertComp);
 
 double RDfeedRate = 35;
-double RDkillRate = 40;
+double RDfeedToKillRatio= 1.14
+double RDkillRate = RDfeedRate*RDfeedToKillRatio;
 double reactRate1to2 = 6400;
 double lengthOfHorm2Prod = 1;
 
