@@ -3,7 +3,7 @@
 # Copyright Sainsbury Laboratory, Cambridge University, UK
 
 try:
-    import os, sys, math, re
+    import os, sys, math, re,
 except ImportError as e:
     sys.stderr.write("Error loading module: %s\n"%str(e))
     sys.exit()
@@ -30,26 +30,31 @@ def load_target():
 
 #-------------------------------------------------------------------------------
 
-def calculate_fitness(data, target):
+def calculate_fitness(file_path):
     """
-    Calculate fitness expressing how close `data` is to `target`
-    Higher fitness is better.
-    This implements fitness for the plasmid partitionning problem.
+    Calculate fitness expressing the relative contribution of the fourth Fourier coefficient.
+    Higher fourth coefficient means higher fitness, while non-4 coefficients negatively affect the score.
     """
-    fit = 0
-    cnt = 0
-    if isinstance(data, str):
-        raise  Exception("Cannot calculate fitness from string")
-    #print("calculate_fitness from %i data groups" % len(data))
-    for out in data:
-        for line in out.split('\n'):
-            if len(line) > 0 and line[0] != '%':
-                fit += float(line)
-                cnt += 1
-    if fit:
-        fit = cnt / abs(fit)
-    else:
-        fit = 1000000
-    #print("fitness = %.4f from %i datalines" % (fit, x[0]))
-    return fit
+    fit = 0  # Initialize the fitness value
+
+    # Open the CSV file in read mode using a context manager
+    with open(file_path, 'r') as csvfile:
+        # Create a CSV reader object to read the CSV file line by line
+        reader = csv.reader(csvfile)
+
+        # Iterate through each row in the CSV file
+        for row in reader:
+            if row:  # Check if the row is not empty
+                try:
+                    coeff_index = int(row[0])  # Parse the first column as an integer (coefficient index)
+                    coeff_value = float(row[4])  # Parse the fourth column as a float (coefficient magnitude)
+
+                    # Check if the current row corresponds to the fourth Fourier coefficient (index 4)
+                    if coeff_index == 4:
+                        fit += coeff_value  # Add the coefficient value to the fitness value
+                    elif (coeff_index !=4) and (coeff_value!=0):
+                        fit -= coeff_value  # Subtract the coefficient value from the fitness value for non-4 coefficients
+                except ValueError:
+                    pass  # Ignore lines that cannot be parsed (e.g., headers, non-numeric data)
+    return fit  # Return the calculated fitness value
 

@@ -209,8 +209,9 @@ CMakeFiles/frap.dir/main.cc.o: \
  /home/finley/SLCU/frapc_with_triangles/polish.h \
  /home/finley/SLCU/frapc_with_triangles/arrays.h \
  /home/finley/SLCU/frapc_with_triangles/hormone.h \
- /home/finley/SLCU/frapc_with_triangles/Clarkson-Delaunay.cpp \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
+ /home/finley/SLCU/frapc_with_triangles/Clarkson-Delaunay.cpp \
  /home/finley/SLCU/frapc_with_triangles/Clarkson-Delaunay.h \
  /home/finley/SLCU/frapc_with_triangles/springs.h \
- /home/finley/SLCU/frapc_with_triangles/graphics.h
+ /home/finley/SLCU/frapc_with_triangles/graphics.h \
+ /home/finley/SLCU/frapc_with_triangles/fitness.h
