@@ -14,7 +14,7 @@ double yBound = xBound;   /// half-height of box (Y), is set to be equal to y fo
 double pixel = 1;    /// size of one pixel in GL units
 
 
-int nbo = 20;    /// initial number of objects (points)
+int nbo = 20*20;    /// initial number of objects (points)
 
 // spring-physics parameters
 const double fluidViscosity = 0.0016; /// Pa.s, velocity of water at 20 degrees celcius
@@ -40,9 +40,9 @@ double horm1DivOrientHoriComp = 0;
 vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertComp);
 
 
-double hormone2ProdRate = 33333;
+double hormone2ProdRate = 33;
 double hormone2DegRate = 666;
-double hormone2DiffCoeff = 140 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double hormone2DiffCoeff = 150 *SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 double horm2Efficacy = 10;
 vector2D horm2Source1 = vector2D(0.2, 0);
 vector2D horm2Srouce2 = vector2D(-0.2, -0.3);
@@ -52,7 +52,7 @@ vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertCom
 
 double RDfeedRate = 35;
 double RDkillRate = 40;
-double reactRate1to2 = 100;
+double reactRate1to2 = 6400;
 double lengthOfHorm2Prod = 1;
 
 

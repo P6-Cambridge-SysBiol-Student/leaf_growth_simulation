@@ -444,7 +444,7 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
-                calcMitosis();
+                //calcMitosis();
 
                 create_triangles_list();
                 int **neighbourhoods = create2Darray(nbo, NAW); /// malloc empty nbo * NAW array

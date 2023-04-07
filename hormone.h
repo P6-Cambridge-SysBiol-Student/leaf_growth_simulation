@@ -76,7 +76,7 @@ void hormReactDiffuse(double inputStartTime) {
         /// in reaction diffusion all cells produce horm1
         if (cell.isHormone2Producer == true) {
             cell.produceHormone1ReactD( RDfeedRate);
-            cell.productHormone2ReactD( 2*RDfeedRate);
+            cell.productHormone2ReactD( 5*RDfeedRate);
             cell.react1With2( reactRate1to2);
             cell.degradeHormone2ReactD( RDkillRate,  RDfeedRate);
             //printf("Point %d is a horm2 producer\n", i);
