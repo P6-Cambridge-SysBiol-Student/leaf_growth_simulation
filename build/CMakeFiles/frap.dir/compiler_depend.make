@@ -110,6 +110,14 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   /usr/include/c++/11/cstdlib \
   /usr/include/string.h \
   /usr/include/strings.h \
+  /usr/include/unistd.h \
+  /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+  /usr/include/x86_64-linux-gnu/bits/environments.h \
+  /usr/include/x86_64-linux-gnu/bits/confname.h \
+  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
+  /usr/include/linux/close_range.h \
   /usr/include/c++/11/algorithm \
   /usr/include/c++/11/utility \
   /usr/include/c++/11/bits/stl_relops.h \
@@ -256,22 +264,47 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
   ../polish.h \
   ../arrays.h \
   ../hormone.h \
-  ../Clarkson-Delaunay.cpp \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
+  ../Clarkson-Delaunay.cpp \
   ../Clarkson-Delaunay.h \
   ../springs.h \
-  ../graphics.h
+  ../graphics.h \
+  ../fitness.h
 
+
+../fitness.h:
 
 ../graphics.h:
 
-/usr/include/c++/11/backward/binders.h:
+../Clarkson-Delaunay.cpp:
 
-/usr/include/c++/11/algorithm:
+/usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:
+
+../hormone.h:
+
+../arrays.h:
+
+../object.h:
+
+/usr/include/c++/11/bits/fstream.tcc:
 
 /usr/include/c++/11/bits/stl_construct.h:
 
 /usr/include/c++/11/tr1/exp_integral.tcc:
+
+/usr/include/c++/11/algorithm:
+
+/usr/include/c++/11/backward/binders.h:
+
+/usr/include/linux/close_range.h:
+
+/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:
+
+/usr/include/x86_64-linux-gnu/bits/confname.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/strings.h:
 
@@ -289,11 +322,11 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/c++/11/string:
 
+/usr/include/c++/11/debug/assertions.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
+
 /usr/include/c++/11/tr1/poly_hermite.tcc:
-
-/usr/include/c++/11/bits/exception.h:
-
-/usr/include/c++/11/bits/locale_facets.h:
 
 /usr/include/c++/11/tr1/hypergeometric.tcc:
 
@@ -307,15 +340,7 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/c++/11/bits/stl_iterator_base_types.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
-
-/usr/include/c++/11/debug/assertions.h:
-
 /usr/include/c++/11/tuple:
-
-/usr/include/c++/11/bits/char_traits.h:
-
-/usr/include/asm-generic/errno-base.h:
 
 /usr/include/c++/11/bits/stl_relops.h:
 
@@ -343,10 +368,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
-/usr/include/c++/11/tr1/beta_function.tcc:
-
-/usr/include/c++/11/array:
-
 ../springs.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
@@ -359,6 +380,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/c++/11/tr1/riemann_zeta.tcc:
 
+/usr/include/unistd.h:
+
 /usr/include/c++/11/bits/stl_algobase.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h:
@@ -368,8 +391,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
 /usr/include/c++/11/bits/stl_algo.h:
-
-/usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/c++/11/bits/predefined_ops.h:
 
@@ -391,7 +412,13 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/c++/11/bits/exception_defines.h:
 
+/usr/include/x86_64-linux-gnu/bits/environments.h:
+
 /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h:
+
+../polish.h:
+
+/usr/include/x86_64-linux-gnu/bits/endian.h:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs.h:
 
@@ -411,8 +438,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/c++/11/bits/streambuf.tcc:
 
-../Clarkson-Delaunay.cpp:
-
 /usr/include/c++/11/math.h:
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
@@ -424,8 +449,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/bits/time64.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
-
-../object.h:
 
 /usr/include/errno.h:
 
@@ -443,8 +466,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/sys/single_threaded.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
-
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
@@ -456,6 +477,10 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/bits/fp-logb.h:
 
 /usr/include/c++/11/bits/ios_base.h:
+
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:
+
+/usr/include/c++/11/vector:
 
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
@@ -471,13 +496,13 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
-/usr/include/wchar.h:
-
-/usr/include/c++/11/bits/cxxabi_init_exception.h:
-
 /usr/include/stdlib.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
+
+../deps/glad/gl.h:
+
+/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
 
 /usr/include/c++/11/debug/debug.h:
 
@@ -519,6 +544,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/locale.h:
 
+/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
+
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
 /usr/include/c++/11/ext/aligned_buffer.h:
@@ -541,15 +568,27 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
 
-/usr/include/x86_64-linux-gnu/bits/endian.h:
-
-../polish.h:
-
 /usr/include/c++/11/pstl/execution_defs.h:
 
 /usr/include/c++/11/bits/algorithmfwd.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+/usr/include/c++/11/bits/locale_facets.h:
+
+/usr/include/c++/11/bits/exception.h:
+
+/usr/include/wchar.h:
+
+/usr/include/c++/11/bits/cxxabi_init_exception.h:
+
+/usr/include/c++/11/bits/char_traits.h:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/c++/11/tr1/beta_function.tcc:
+
+/usr/include/c++/11/array:
 
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
 
@@ -610,12 +649,6 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/asm-generic/errno.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h:
-
-/usr/include/c++/11/vector:
-
-/usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
-
-../deps/glad/gl.h:
 
 /usr/include/c++/11/bits/stl_uninitialized.h:
 
@@ -689,6 +722,8 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
 
+/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
+
 /usr/include/x86_64-linux-gnu/bits/setjmp.h:
 
 /usr/include/time.h:
@@ -699,9 +734,9 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
-/usr/include/c++/11/tr1/legendre_function.tcc:
-
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h:
+
+/usr/include/c++/11/tr1/legendre_function.tcc:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
@@ -774,11 +809,3 @@ CMakeFiles/frap.dir/main.cc.o: ../main.cc \
 /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h:
-
-/usr/include/c++/11/bits/fstream.tcc:
-
-../arrays.h:
-
-../hormone.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/float.h:

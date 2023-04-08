@@ -284,15 +284,23 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]) {
-    const char *params_file = "../params.cym";
-    if (access(params_file, F_OK) != -1) {
-        readFile(params_file);
-    } else {
-        printf("params.cym file not found\n");
-        return EXIT_FAILURE;
+    bool cym_file_found = false;
 
+    for (int i = 1; i < argc; ++i) {
+        const char *arg = argv[i];
+        size_t n = strlen(arg);
+        if (n > 4 && strcmp(arg + n - 4, ".cym") == 0) {
+            cym_file_found = true;
+            readFile(arg);
+            break;
+        }
     }
 
+    if (!cym_file_found) {
+        printf(".cym file not found\n");
+        return EXIT_FAILURE;
+    }
+    
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
@@ -367,7 +375,7 @@ int main(int argc, char *argv[]) {
                 hormReactDiffuse(hormone2IntroTime);
                 globalUpdateHormone();
                 double globalHorm2 = sumHormone2();
-                if (isnan(globalHorm2)){
+                if ((currentTime > hormone2IntroTime) and isnan(globalHorm2)){
                     shouldTerminate = true;
                     printf("Hormone2 is NaN\n");
                     break;

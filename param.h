@@ -47,8 +47,8 @@ vector2D horm1DivOrient = vector2D(horm1DivOrientHoriComp, horm1DivOrientVertCom
 
 double hormone2ProdRate = 33;
 double hormone2DegRate = 666;
-double inputHorm2DiffCoeff = 150;
-double hormone2DiffCoeff = inputHorm2DiffCoeff * SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
+double horm1toHorm2Ratio = 0.9375;
+double hormone2DiffCoeff = horm1toHorm2Ratio * hormone1DiffCoeff * SCALING_FACTOR; /// in the gray-scott model the rate of diff of horm2 is twice 1
 double horm2Efficacy = 10;
 double hormone2IntroTime = 0.00360;
 double horm2SourceHor = 0.2;
@@ -94,11 +94,23 @@ int readOption(const char arg[])
 {
     printf("[%s]\n", arg);
     if ( readParameter(arg, "n=",     nbo) )    return 1;
-    if ( readParameter(arg, "seed=",  seed) )   return 1;
-    if ( readParameter(arg, "delay=", delay) )  return 1;
-    if ( readParameter(arg, "bounds=", xBound) )  return 1;
-    if ( readParameter(arg, "finalIterationNumber=", finalIterationNumber) )  return 1;
+    if ( readParameter(arg, "inputHorm1DiffCoeff=",  inputHorm1DiffCoeff) )   return 1;
+    if ( readParameter(arg, "horm1Efficacy=", horm1Efficacy) )  return 1;
+    if ( readParameter(arg, "horm1DivOrientVertComp=", horm1DivOrientVertComp) )  return 1;
+    if ( readParameter(arg, "horm1DivOrientHoriComp=", horm1DivOrientHoriComp) )  return 1;
 
+    if ( readParameter(arg, "horm1toHorm2Ratio=",     horm1toHorm2Ratio) )    return 1;
+    if ( readParameter(arg, "horm2Efficacy=",  horm2Efficacy) )   return 1;
+    if ( readParameter(arg, "hormone2IntroTime=", hormone2IntroTime) )  return 1;
+    if ( readParameter(arg, "horm2SourceHor=", horm2SourceHor) )  return 1;
+    if ( readParameter(arg, "horm2SourceVer=", horm2SourceVer) )  return 1;
+    if ( readParameter(arg, "horm2DivOrientVertComp=",     horm2DivOrientVertComp) )    return 1;
+    if ( readParameter(arg, "horm2DivOrientHoriComp=",  horm2DivOrientHoriComp) )   return 1;
+    if ( readParameter(arg, "lengthOfHorm2Prod=",  lengthOfHorm2Prod) )   return 1;
+
+    if ( readParameter(arg, "RDfeedRate=", RDfeedRate) )  return 1;
+    if ( readParameter(arg, "RDfeedToKillRatio=", RDfeedToKillRatio) )  return 1;
+    if ( readParameter(arg, "reactRate1to2=", reactRate1to2) )  return 1;
     return 0;
 }
 

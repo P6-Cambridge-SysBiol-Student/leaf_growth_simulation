@@ -9,7 +9,7 @@ except ImportError as e:
     sys.exit()
 
 # simulation executable must be in current working directory:
-simex = os.path.abspath('frap')
+simex = os.path.abspath('/home/finley/SLCU/frapc_with_triangles/build')
 
 # name of file where simulation provides its results, or 'stdout':
 simout = 'outputFourierCoeffs.csv'
@@ -25,7 +25,7 @@ genetic_config = 'genetics.config'
 
 def load_target():
     """return target for optimization, which can be a complex data"""
-    filename = 'target.txt'
+    filename = 'outputFourierCoeffs.csv'
     return 0
 
 
