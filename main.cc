@@ -372,19 +372,18 @@ int main(int argc, char *argv[]) {
                 v3CalcSprings(neighbourhoods);
 #endif
                 iterateDisplace();
-                //startHormoneBD(hormone1IntroTime);
                 calcHormBirthDeath();
                 v1DiffuseHorm(neighbourhoods);
                 hormReactDiffuse(hormone2IntroTime);
                 globalUpdateHormone();
                 double globalHorm2 = sumHormone2();
-                /*
+
                 if ((currentTime > hormone2IntroTime) and isnan(globalHorm2)){
                     shouldTerminate = true;
                     printf("Hormone2 is NaN\n");
                     break;
                 }
-                 */
+
 #if DISPLAY
                 double maxHormone2 = findMaxHormone2();
                 double minHormone2 = findMinHormone2();
