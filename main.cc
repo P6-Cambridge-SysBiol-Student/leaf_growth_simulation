@@ -284,7 +284,7 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]) {
-    /*
+
     bool cym_file_found = false;
 
     for (int i = 1; i < argc; ++i) {
@@ -301,7 +301,7 @@ int main(int argc, char *argv[]) {
         printf(".cym file not found\n");
         return EXIT_FAILURE;
     }
-    */
+
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
