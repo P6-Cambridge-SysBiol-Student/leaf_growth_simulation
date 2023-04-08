@@ -1,0 +1,17 @@
+inputHorm1DiffCoeff = 180
+horm1Efficacy = 7.631764705882353
+horm1DivOrientVertComp = -0.5607843137254902
+horm1DivOrientHoriComp = -0.2784313725490195
+
+horm1toHorm2Ratio = 0.5218823529411765
+horm2Efficacy = 5.069411764705882
+hormone2IntroTime = 0.022908235294117646
+horm2SourceHor = 0.5529411764705883
+horm2SourceVer = 0.615686274509804
+horm2DivOrientVertComp = 0.6784313725490196
+horm2DivOrientHoriComp = -0.30980392156862746
+
+RDfeedRate = 39.33333333333333
+RDfeedToKillRatio= 0.6625882352941177
+reactRate1to2 = 4776.470588235294
+lengthOfHorm2Prod = 0.43

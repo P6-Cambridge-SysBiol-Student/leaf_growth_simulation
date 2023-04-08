@@ -284,6 +284,7 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]) {
+    /*
     bool cym_file_found = false;
 
     for (int i = 1; i < argc; ++i) {
@@ -300,14 +301,16 @@ int main(int argc, char *argv[]) {
         printf(".cym file not found\n");
         return EXIT_FAILURE;
     }
-    
+    */
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
     }
+    glfwSetErrorCallback(error);
 
-    glfwSetErrorCallback(error); // Set the error callback after initializing GLFW
-
+    glfwWindowHint(GLFW_DEPTH_BITS, 0);
+    //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+    //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
 #if DISPLAY
     GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
@@ -375,11 +378,13 @@ int main(int argc, char *argv[]) {
                 hormReactDiffuse(hormone2IntroTime);
                 globalUpdateHormone();
                 double globalHorm2 = sumHormone2();
+                /*
                 if ((currentTime > hormone2IntroTime) and isnan(globalHorm2)){
                     shouldTerminate = true;
                     printf("Hormone2 is NaN\n");
                     break;
                 }
+                 */
 #if DISPLAY
                 double maxHormone2 = findMaxHormone2();
                 double minHormone2 = findMinHormone2();
