@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY true /// set to true to display
+#define DISPLAY false /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE false
 #define MOVING_POINTS true
@@ -292,8 +292,8 @@ int main(int argc, char *argv[]) {
             readFile(arg);
         else if ( n > 2 && 0 == readLine(arg) )
             printf("warning: argument '%s' was ignored\n", arg);
-    }
 
+    }
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
@@ -334,7 +334,6 @@ int main(int argc, char *argv[]) {
             static double currentTime = 0;
             while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
-                printf("%f\n", horm1Efficacy);
 #if DEBUG
                 printf("Current time is %f\n", currentTime);
                 printf("%d cells exist\n", nbo);
@@ -393,7 +392,7 @@ int main(int argc, char *argv[]) {
                         fourierCoeffsNum = maxFourierCoeffs;
                     }
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
-                    outputFourierToFile(fourierCoeffs, fourierCoeffsNum, "../outputFourierCoeffs.csv");
+                    outputFourierToFile(fourierCoeffs, fourierCoeffsNum, "/outputFourierCoeffs.csv");
 #if DISPLAY
                     if (displayInverseFourier) {
                         glfwPollEvents();
@@ -401,6 +400,7 @@ int main(int argc, char *argv[]) {
                     }
 #endif
                     free(fourierCoeffs);
+                    printf("Fourier Coefficients Saved!\n");
                     break;
                 }
                 shouldTerminate = true;

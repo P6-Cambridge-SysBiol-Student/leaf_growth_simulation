@@ -26,7 +26,7 @@ double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
-double finalTime = 1;
+double finalTime = 0.01;
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
 int maxFourierCoeffs = 15;
@@ -127,6 +127,11 @@ int readLine(const char arg[])
     if ( readParameter(arg, "RDfeedRate=", &RDfeedRate) )  return 1;
     if ( readParameter(arg, "RDfeedToKillRatio=", &RDfeedToKillRatio) )  return 1;
     if ( readParameter(arg, "reactRate1to2=", &reactRate1to2) )  return 1;
+
+    if ( readParameter(arg, "inputHorm1DiffCoeff=",  &inputHorm1DiffCoeff) ) {
+        printf("inputHorm1DiffCoeff updated: %f\n", inputHorm1DiffCoeff);
+        return 1;
+    }
     return 0;
 }
 
@@ -142,6 +147,8 @@ void readFile(const char path[])
         printf("Error: file `%s' cannot be found\n", path);
         return;
     }
+    printf("File '%s' found and opened \n", path);
+
     if ( ferror(file) ) {
         fclose(file);
         printf("Error: file `%s' cannot be read\n", path);
@@ -156,6 +163,7 @@ void readFile(const char path[])
     }
     free(line);
     fclose(file);
+
 }
 
 

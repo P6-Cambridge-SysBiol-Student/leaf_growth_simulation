@@ -1,6 +1,9 @@
 //
 // Created by finley on 07/04/23.
 //
+#include <unistd.h>
+#include <libgen.h>
+#include <limits.h>
 
 #ifndef FRAP_FITNESS_H
 #define FRAP_FITNESS_H
@@ -107,7 +110,18 @@ void reconstructShape(double** inputFourierArray, int desiredNumOfFourierCoeffs)
     glEnd();
 }
 
-void outputFourierToFile(double** inputFourierArray, int desiredNumOfFourierCoeffs, const char* filename) {
+void outputFourierToFile(double** inputFourierArray, int desiredNumOfFourierCoeffs, const char* base_filename) {
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        perror("getcwd() error");
+        exit(1);
+    }
+
+    char* dir_name = basename(cwd);
+
+    char filename[256];
+    snprintf(filename, sizeof(filename), "%s_%s.csv", dir_name, base_filename);
+
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
         printf("Error opening file!\n");
@@ -126,6 +140,3 @@ void outputFourierToFile(double** inputFourierArray, int desiredNumOfFourierCoef
 
     fclose(file);
 }
-
-
-
