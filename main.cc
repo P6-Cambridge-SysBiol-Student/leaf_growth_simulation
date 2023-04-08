@@ -284,22 +284,14 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 /* program entry */
 /// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]) {
-
-    bool cym_file_found = false;
-
-    for (int i = 1; i < argc; ++i) {
-        const char *arg = argv[i];
+    for ( int i = 1; i < argc; ++i )
+    {
+        const char * arg = argv[i];
         size_t n = strlen(arg);
-        if (n > 4 && strcmp(arg + n - 4, ".cym") == 0) {
-            cym_file_found = true;
+        if ( n > 4 && !strcmp(arg+n-4, ".cym") )
             readFile(arg);
-            break;
-        }
-    }
-
-    if (!cym_file_found) {
-        printf(".cym file not found\n");
-        return EXIT_FAILURE;
+        else if ( n > 2 && 0 == readLine(arg) )
+            printf("warning: argument '%s' was ignored\n", arg);
     }
 
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
@@ -342,6 +334,7 @@ int main(int argc, char *argv[]) {
             static double currentTime = 0;
             while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
+                printf("%f\n", horm1Efficacy);
 #if DEBUG
                 printf("Current time is %f\n", currentTime);
                 printf("%d cells exist\n", nbo);
