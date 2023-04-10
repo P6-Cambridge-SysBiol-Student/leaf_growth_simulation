@@ -78,97 +78,53 @@ bool displayInverseFourier = true;
 
 
 //-----------------------------------------------------------------------------
-int readParameter(const char arg[], const char name[], double *ptr) {
-    int res = 0;
-    char *dup = strdup(arg);
-    char *val = dup;
-    char *key = strsep(&val, "=");
-    char *end = NULL;
-    double d = 0;
 
-    while (isspace(*key)) ++key;
-    if (*key) {
-        if (key == strstr(key, name)) {
-            while (isspace(*val)) ++val;
-            //printf("Found `%s' in [%s] : %s\n", name, key, val); // Added printf statement to print the found parameter name and value
-            d = strtod(val, &end);
-            if (end > val) {
-                *ptr = d;
-                res = 1;
-                printf("Value successfully updated for `%s': %f\n", name,
-                       *ptr); // Added printf statement to print the updated value
-            }
-        }
+template <typename T>
+int readParameter(const char arg[], const char name[], T & ptr)
+{
+    if ( arg == strstr(arg, name) ) {
+        std::istringstream iss(arg+strlen(name));
+        iss >> ptr;
+        return !iss.fail();
     }
-    free(dup);
-    return res;
-}
-
-int readLine(const char arg[]) {
-    printf("[%s]\n", arg);
-    if (readParameter(arg, "inputHorm1DiffCoeff=", &inputHorm1DiffCoeff)) {
-        printf("CHANGED !! InputHorm1DiffCoeff updated to: %f\n", inputHorm1DiffCoeff);
-        return 1;
-    }
-    if (readParameter(arg, "horm1Efficacy=", &horm1Efficacy)) {
-        printf("CHANGED !! horm1Efficacy updated to: %f\n", horm1Efficacy);
-        return 1;
-    }
-    if (readParameter(arg, "horm1DivOrientVertComp=", &horm1DivOrientVertComp)) {
-        printf("CHANGED !! horm1DivOrientVertComp updated to: %f \n", horm1DivOrientVertComp);
-        return 1;
-    }
-
-    if (readParameter(arg, "horm1DivOrientHoriComp=", &horm1DivOrientHoriComp)) return 1;
-
-    if (readParameter(arg, "horm1toHorm2Ratio=", &horm1toHorm2Ratio)) return 1;
-    if (readParameter(arg, "horm2Efficacy=", &horm2Efficacy)) return 1;
-    if (readParameter(arg, "hormone2IntroTime=", &hormone2IntroTime)) return 1;
-    if (readParameter(arg, "horm2SourceHor=", &horm2SourceHor)) return 1;
-    if (readParameter(arg, "horm2SourceVer=", &horm2SourceVer)) return 1;
-    if (readParameter(arg, "horm2DivOrientVertComp=", &horm2DivOrientVertComp)) return 1;
-    if (readParameter(arg, "horm2DivOrientHoriComp=", &horm2DivOrientHoriComp)) return 1;
-    if (readParameter(arg, "lengthOfHorm2Prod=", &lengthOfHorm2Prod)) return 1;
-
-    if (readParameter(arg, "RDfeedRate=", &RDfeedRate)) return 1;
-    if (readParameter(arg, "RDfeedToKillRatio=", &RDfeedToKillRatio)) return 1;
-    if (readParameter(arg, "reactRate1to2=", &reactRate1to2)) return 1;
-
     return 0;
 }
 
+int readOption(const char arg[])
+{
+    printf("[%s]\n", arg);
+    if ( readParameter(arg, "n=",     nbo) )    return 1;
+    if ( readParameter(arg, "inputHorm1DiffCoeff=",  inputHorm1DiffCoeff) )   return 1;
+    if ( readParameter(arg, "horm1Efficacy=", horm1Efficacy) )  return 1;
+    if ( readParameter(arg, "horm1DivOrientVertComp=", horm1DivOrientVertComp) )  return 1;
+    if ( readParameter(arg, "horm1DivOrientHoriComp=", horm1DivOrientHoriComp) )  return 1;
 
-void readFile(const char path[]) {
-    FILE *file = NULL;                     /// declare a file pointer
-    char *line = NULL;                     /// declare a pointer to char to hold each line of text
-    size_t len = 0;                         /// declare a size_t variable to hold the length of each line
-    ssize_t read = 0;                       /// declare a signed ssize_t variable to hold the number of characters read from each line
+    if ( readParameter(arg, "horm1toHorm2Ratio=",     horm1toHorm2Ratio) )    return 1;
+    if ( readParameter(arg, "horm2Efficacy=",  horm2Efficacy) )   return 1;
+    if ( readParameter(arg, "hormone2IntroTime=", hormone2IntroTime) )  return 1;
+    if ( readParameter(arg, "horm2SourceHor=", horm2SourceHor) )  return 1;
+    if ( readParameter(arg, "horm2SourceVer=", horm2SourceVer) )  return 1;
+    if ( readParameter(arg, "horm2DivOrientVertComp=",     horm2DivOrientVertComp) )    return 1;
+    if ( readParameter(arg, "horm2DivOrientHoriComp=",  horm2DivOrientHoriComp) )   return 1;
+    if ( readParameter(arg, "lengthOfHorm2Prod=",  lengthOfHorm2Prod) )   return 1;
 
-    file = fopen(path, "r"); /// open the file at the given path in read mode and store the file pointer in `file`
-    if (!file) {                         /// check if the file is not opened correctly
-        printf("Error: file `%s' cannot be found\n",
-               path); /// print an error message indicating that the file cannot be found
-        return; // exit the function
-    }
-    printf("File '%s' found and opened \n",
-           path); /// print a message indicating that the file is found and opened successfully
-
-    if (ferror(file)) {                          /// check if there's an error in reading the file
-        fclose(file);                              /// close the file
-        printf("Error: file `%s' cannot be read\n",
-               path); /// print an error message indicating that the file cannot be read
-        return;                                                  /// exit the function
-    }
-    //printf("reading file [%s]\n", path);
-    while ((read = getline(&line, &len, file)) !=
-           -1) /// read each line of the file using getline() and store the number of characters read in `read`
-    {
-        line[read - 1] = 0;                                             /// terminate the line with a null character
-        //printf("  reading [%s]:\n", line);
-        readLine(
-                line);                                           /// pass the line to the `readLine()` function for processing
-    }
-    free(line);
-    fclose(file);
+    if ( readParameter(arg, "RDfeedRate=", RDfeedRate) )  return 1;
+    if ( readParameter(arg, "RDfeedToKillRatio=", RDfeedToKillRatio) )  return 1;
+    if ( readParameter(arg, "reactRate1to2=", reactRate1to2) )  return 1;
+    return 0;
 }
+
+void readFile(const char path[])
+{
+    std::string line;
+    std::ifstream is(path);
+    if ( !is.good() )
+        printf("File `%s' cannot be read\n", path);
+    while ( is.good() )
+    {
+        getline(is, line);
+        readOption(line.c_str());
+    }
+}
+
 

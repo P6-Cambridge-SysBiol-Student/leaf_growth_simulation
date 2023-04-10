@@ -283,24 +283,21 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 
 /* program entry */
 int main(int argc, char *argv[]) {
-/// Loop through all command line arguments passed to the program
+    bool cym_file_found = false;
+
     for (int i = 1; i < argc; ++i) {
-        /// Get the current command line argument
         const char *arg = argv[i];
-        /// Get the length of the argument
         size_t n = strlen(arg);
-        /// If the length of the argument is greater than 4 and the last 4 characters are ".cym"
-        if (n > 4 && !strcmp(arg + n - 4, ".cym")) {
-            /// Read the file specified in the argument
-            printf("A configuration file has been found!\n");
+        if (n > 4 && strcmp(arg + n - 4, ".cym") == 0) {
+            cym_file_found = true;
             readFile(arg);
+            break;
         }
-            /// If the length of the argument is greater than 2 and readLine returns 0 (false)
-        else if (n > 2 && 0 == readLine(arg)) {
-            /// Print a message indicating that the argument was ignored
-            printf("Attempting to read line for '%s'\n", arg);
-            printf("warning: argument '%s' was ignored\n", arg);
-        }
+    }
+
+    if (!cym_file_found) {
+        printf(".cym file not found\n");
+        return EXIT_FAILURE;
     }
 
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
@@ -361,6 +358,7 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
+                printf("Current inputHorm1DIffCoeff = %f\n", inputHorm1DiffCoeff);
                 calcMitosis();
 
                 create_triangles_list();
