@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY true /// set to true to display
+#define DISPLAY false /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE false
 #define MOVING_POINTS true
@@ -296,9 +296,9 @@ int main(int argc, char *argv[]) {
     }
 
     if (!cym_file_found) {
-        printf(".cym file not found\n Using Defaults\n");
+        printf(".cym file not found\n Using Defaults\nF");
     }
-#if DISPLAY
+
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
@@ -309,6 +309,7 @@ int main(int argc, char *argv[]) {
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
+#if DISPLAY
     GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
     if (!win) {
         fprintf(stderr, "Failed to open GLFW window\n");
@@ -419,8 +420,8 @@ int main(int argc, char *argv[]) {
                 }
 
                 free(out_of_flat_p_neigh.basis);
-#if DISPLAY
                 shouldTerminate = true;
+#if DISPLAY
 
                 glFlush();
                 glfwSwapBuffers(win);
