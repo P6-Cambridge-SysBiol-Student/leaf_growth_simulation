@@ -30,7 +30,7 @@ def load_target():
 
 #-------------------------------------------------------------------------------
 
-def calculate_fitness(file_path):
+def calculate_fitness(file_path, target):
     """
     Calculate fitness expressing the relative contribution of the fourth Fourier coefficient.
     Higher fourth coefficient means higher fitness.

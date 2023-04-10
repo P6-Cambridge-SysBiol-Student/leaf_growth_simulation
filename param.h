@@ -23,11 +23,11 @@ const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 const double breakSpringCoeff = 1.2;
 
 // timestep parameters
-double timestep = 0.00008; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
+double timestep = 0.00004; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
-double finalTime = 1;
+double finalTime = 0.05;
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
 int maxFourierCoeffs = 15;
@@ -68,7 +68,7 @@ double lengthOfHorm2Prod = 1;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.001; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseMaxProbOfDiv = 0.0005; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
 double DesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 

@@ -296,10 +296,9 @@ int main(int argc, char *argv[]) {
     }
 
     if (!cym_file_found) {
-        printf(".cym file not found\n");
-        return EXIT_FAILURE;
+        printf(".cym file not found\n Using Defaults\n");
     }
-
+#if DISPLAY
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
@@ -310,7 +309,6 @@ int main(int argc, char *argv[]) {
     //glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     //glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
-#if DISPLAY
     GLFWwindow *win = glfwCreateWindow(winW, winH, "LifeSim", NULL, NULL);
     if (!win) {
         fprintf(stderr, "Failed to open GLFW window\n");
@@ -340,7 +338,7 @@ int main(int argc, char *argv[]) {
             static double currentTime = 0;
             while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
-                //printf("Current Time is %f\n", currentTime);
+                printf("Current Time is %f\n", currentTime);
 #if DEBUG
                 printf("Current time is %f\n", currentTime);
                 printf("%d cells exist\n", nbo);
@@ -358,7 +356,8 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
-                printf("Current inputHorm1DIffCoeff = %f\n", inputHorm1DiffCoeff);
+                printf("%d cells exist = %d\n", nbo);
+                printf("Current time = %f\n", currentTime);
                 calcMitosis();
 
                 create_triangles_list();
@@ -389,10 +388,12 @@ int main(int argc, char *argv[]) {
                 double minHormone2 = findMinHormone2();
                 drawPointsHorm2(maxHormone2); // calls
 #endif
-
                 free(triangleIndexList);
-                free(neighbourhoods);
                 free(totalArray);
+                for (int i = 0; i < nbo; i++) {
+                    free(neighbourhoods[i]);
+                }
+                free(neighbourhoods);
 
                 if (currentTime >= finalTime) {
                     int fourierCoeffsNum = 0.5*nbo;
@@ -407,12 +408,20 @@ int main(int argc, char *argv[]) {
                         reconstructShape(fourierCoeffs, fourierCoeffsNum);
                     }
 #endif
+                    for (int i = 0; i < fourierCoeffsNum; i++){
+                        free(fourierCoeffs[i]);
+                    }
                     free(fourierCoeffs);
+
                     printf("Fourier Coefficients Saved!\n");
                     break;
+
                 }
-                shouldTerminate = true;
+
+                free(out_of_flat_p_neigh.basis);
 #if DISPLAY
+                shouldTerminate = true;
+
                 glFlush();
                 glfwSwapBuffers(win);
 #endif
