@@ -22,11 +22,11 @@ const double mobilityCoefficient = 6 * 3.14159 * fluidViscosity;
 const double breakSpringCoeff = 1.2;
 
 // timestep parameters
-double timestep = 0.00006; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
+double timestep = 0.00008; /// viscosity is in Pa.sec so this is seconds. 60 fps means 1sec simulated = 1.8sec realtime
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
-double finalTime = 0.01;
+double finalTime = 1;
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
 int maxFourierCoeffs = 15;
@@ -90,15 +90,17 @@ int readParameter(const char arg[], const char name[], double* ptr)
     while ( isspace(*key) ) ++key;
     if ( *key )
     {
+        printf("Checking key: %s\n", key); // Added printf statement to print the current key
         if ( key == strstr(key, name) )
         {
             while ( isspace(*val) ) ++val;
-            //printf("    found `%s' in [%s] : %s\n", name, key, val);
+            printf("Found `%s' in [%s] : %s\n", name, key, val); // Added printf statement to print the found parameter name and value
             d = strtod(val, &end);
             if ( end > val )
             {
                 *ptr = d;
                 res = 1;
+                printf("Value successfully updated for `%s': %f\n", name, *ptr); // Added printf statement to print the updated value
             }
         }
     }
@@ -110,7 +112,10 @@ int readParameter(const char arg[], const char name[], double* ptr)
 int readLine(const char arg[])
 {
     printf("[%s]\n", arg);
-    if ( readParameter(arg, "inputHorm1DiffCoeff=",  &inputHorm1DiffCoeff) )   return 1;
+    if ( readParameter(arg, "inputHorm1DiffCoeff=",  &inputHorm1DiffCoeff) ){
+        printf("InputHorm1DiffCoeff updated to: %f\n", inputHorm1DiffCoeff);
+        return 1;
+    }
     if ( readParameter(arg, "horm1Efficacy=", &horm1Efficacy) )  return 1;
     if ( readParameter(arg, "horm1DivOrientVertComp=", &horm1DivOrientVertComp) )  return 1;
     if ( readParameter(arg, "horm1DivOrientHoriComp=", &horm1DivOrientHoriComp) )  return 1;
@@ -128,12 +133,9 @@ int readLine(const char arg[])
     if ( readParameter(arg, "RDfeedToKillRatio=", &RDfeedToKillRatio) )  return 1;
     if ( readParameter(arg, "reactRate1to2=", &reactRate1to2) )  return 1;
 
-    if ( readParameter(arg, "inputHorm1DiffCoeff=",  &inputHorm1DiffCoeff) ) {
-        printf("inputHorm1DiffCoeff updated: %f\n", inputHorm1DiffCoeff);
-        return 1;
-    }
     return 0;
 }
+
 
 void readFile(const char path[])
 {

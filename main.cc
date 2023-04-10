@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <algorithm>
 #define DEBUG false
-#define DISPLAY false /// set to true to display
+#define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE false
 #define MOVING_POINTS true
@@ -334,6 +334,7 @@ int main(int argc, char *argv[]) {
             static double currentTime = 0;
             while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
+                //printf("Current Time is %f\n", currentTime);
 #if DEBUG
                 printf("Current time is %f\n", currentTime);
                 printf("%d cells exist\n", nbo);
@@ -392,7 +393,7 @@ int main(int argc, char *argv[]) {
                         fourierCoeffsNum = maxFourierCoeffs;
                     }
                     double **fourierCoeffs = computeDeltaFourierCoeffs(fourierCoeffsNum);
-                    outputFourierToFile(fourierCoeffs, fourierCoeffsNum, "/outputFourierCoeffs.csv");
+                    outputFourierToFile(fourierCoeffs, fourierCoeffsNum, "outputFourierCoeffs.csv");
 #if DISPLAY
                     if (displayInverseFourier) {
                         glfwPollEvents();
