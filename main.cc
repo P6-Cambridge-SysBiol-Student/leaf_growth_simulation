@@ -282,18 +282,27 @@ void speedTest(int iterationNumber, int versionOfAlgoUsed, int nboDesired){
 
 
 /* program entry */
-/// argc is the number of arguements, argv    y = yBound * srand(); is pointer to array of strings
 int main(int argc, char *argv[]) {
-    for ( int i = 1; i < argc; ++i )
-    {
-        const char * arg = argv[i];
+/// Loop through all command line arguments passed to the program
+    for (int i = 1; i < argc; ++i) {
+        /// Get the current command line argument
+        const char *arg = argv[i];
+        /// Get the length of the argument
         size_t n = strlen(arg);
-        if ( n > 4 && !strcmp(arg+n-4, ".cym") )
+        /// If the length of the argument is greater than 4 and the last 4 characters are ".cym"
+        if (n > 4 && !strcmp(arg + n - 4, ".cym")) {
+            /// Read the file specified in the argument
+            printf("A configuration file has been found!\n");
             readFile(arg);
-        else if ( n > 2 && 0 == readLine(arg) )
+        }
+            /// If the length of the argument is greater than 2 and readLine returns 0 (false)
+        else if (n > 2 && 0 == readLine(arg)) {
+            /// Print a message indicating that the argument was ignored
+            printf("Attempting to read line for '%s'\n", arg);
             printf("warning: argument '%s' was ignored\n", arg);
-
+        }
     }
+
     if (!glfwInit()) { // Call glfwInit() before using any other GLFW functions
         fprintf(stderr, "Failed to initialize GLFW\n");
         return EXIT_FAILURE;
