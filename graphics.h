@@ -46,7 +46,7 @@ static void drawPointsHorm2(double inputMaxHormone){
     drawSquare(xBound, yBound);
 
     // draw particles as points:
-    glPointSize(5);
+    glPointSize(8);
     glBegin(GL_POINTS);
     for(int k = 0; k < nbo; k += 1) {
         pointsArray[k].linearDisplayHormone2(inputMaxHormone);

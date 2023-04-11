@@ -14,7 +14,6 @@ double xBound = 1 * SCALING_FACTOR;   /// half-width of box (X) in micrometers
 double yBound = xBound;   /// half-height of box (Y), is set to be equal to y for saftey
 double pixel = 1;    /// size of one pixel in GL units
 
-
 int nbo = 20;    /// initial number of objects (points)
 
 // spring-physics parameters
@@ -27,7 +26,7 @@ double timestep = 0.00004; /// viscosity is in Pa.sec so this is seconds. 60 fps
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
-double finalTime = 0.1;
+double finalTime = 0.4;
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
 int maxFourierCoeffs = 15;

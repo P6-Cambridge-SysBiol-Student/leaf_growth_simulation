@@ -283,7 +283,7 @@ def start_job(simex, conf, path):
     """
     # Option 'cwd=path' sets the current working directory of the subprocess
     # Cytosim's option '-' triggers the silent mode, reducing its output
-    sub = Popen([simex, '-', os.path.basename(conf)], stdout=PIPE, stderr=PIPE, cwd=path)
+    sub = Popen([simex, os.path.basename(conf)], stdout=PIPE, stderr=PIPE, cwd=path)
     #print(f'started process {sub.pid} in `{os.getcwd()}`')
     return sub
 

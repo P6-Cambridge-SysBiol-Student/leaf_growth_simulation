@@ -235,7 +235,7 @@ void calcMitosis(){
 
             nbo++; /// MAX points already exist, need to increase pointer by one to access new cell
 
-            Point& daughterCell = pointsArray[nbo-1];
+            Point& daughterCell = pointsArray[nbo-1]; /// nbo-1 as C is 0 indexed
             vector2D OrientVec = vector2D(mySrand(), mySrand())
                                + (motherCell.myTotalHormone1*horm1Efficacy*horm1DivOrient)
                                + (motherCell.myTotalHormone2*horm2Efficacy*horm2DivOrient);
@@ -340,10 +340,6 @@ int main(int argc, char *argv[]) {
             while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
                 printf("Current Time is %f\n", currentTime);
-#if DEBUG
-                printf("Current time is %f\n", currentTime);
-                printf("%d cells exist\n", nbo);
-#endif
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
@@ -377,10 +373,12 @@ int main(int argc, char *argv[]) {
                 hormReactDiffuse(hormone2IntroTime);
                 globalUpdateHormone();
                 double globalHorm2 = sumHormone2();
+                double globalHorm1 = sumHormone1();
+                //printf("Global Horm 2 is %f: Average Horm2 is %f\n", globalHorm2, globalHorm2/nbo);
 
-                if ((currentTime > hormone2IntroTime) and isnan(globalHorm2)){
+                if ((currentTime > hormone2IntroTime) and (isnan(globalHorm2) or isnan(globalHorm1))){
                     shouldTerminate = true;
-                    printf("Hormone2 is NaN\n");
+                    printf("A Hormone Has Exploded!\n");
                     break;
                 }
 

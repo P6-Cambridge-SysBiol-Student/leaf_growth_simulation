@@ -134,17 +134,27 @@ printf("The sum of hormone1 is %f\nThe sum of hormone 2 is %f \n", sumHorm1, sum
 }
 
 double sumHormone2(){
-    double sumHorm1 = 0;
     double sumHorm2 = 0;
 
     for (int j = 0; j < nbo; j++) {
         Point &cell = pointsArray[j];
 
-        sumHorm1 += cell.myTotalHormone1;
         sumHorm2 += cell.myTotalHormone2;
     }
     return sumHorm2;
 }
+
+double sumHormone1(){
+    double sumHorm1 = 0;
+
+    for (int j = 0; j < nbo; j++) {
+        Point &cell = pointsArray[j];
+
+        sumHorm1 += cell.myTotalHormone1;
+    }
+    return sumHorm1;
+}
+
 
 double findMaxHormone1(){
     double maxHormone = 0;
