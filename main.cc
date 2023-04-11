@@ -357,7 +357,7 @@ int main(int argc, char *argv[]) {
                 iterationNumber++;
                 next += delay / 100000;
                 trackTime();
-                printf("%d cells exist = %d\n", nbo);
+                printf("%d cells exist\n", nbo);
                 printf("Current time = %f\n", currentTime);
                 calcMitosis();
 
