@@ -46,7 +46,7 @@ static void drawPointsHorm2(double inputMaxHormone){
     drawSquare(xBound, yBound);
 
     // draw particles as points:
-    glPointSize(3);
+    glPointSize(5);
     glBegin(GL_POINTS);
     for(int k = 0; k < nbo; k += 1) {
         pointsArray[k].linearDisplayHormone2(inputMaxHormone);
@@ -180,7 +180,7 @@ static void init(GLFWwindow* win){
     reshape(win, W, H);
 
     // Init OpenGL rendering
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(1, 1, 1, 1);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_POINT_SMOOTH);
