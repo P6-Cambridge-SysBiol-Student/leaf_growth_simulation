@@ -101,20 +101,21 @@ void v1DiffuseHorm(int** neighbourhoods) {
                 } /// stops diffusion if points overlap
                 else {
                     /// find the magnitude of distance between the neighbouring point and the central point
-                    double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude(); // m
+                    double magnitudeOfDistance = (centre.disVec - neighbour.disVec).magnitude(); //     m
 
                     /// find difference in hormone amount between cells
-                    double hormone1ConcnDiff = centre.myTotalHormone1 - neighbour.myTotalHormone1;  //n / m
+                    double hormone1ConcnDiff = centre.myTotalHormone1 - neighbour.myTotalHormone1;  //  n / m
                     double hormone2ConcnDiff = centre.myTotalHormone2 - neighbour.myTotalHormone2;
 
-                    double hormone1ConcnGrad = hormone1ConcnDiff / magnitudeOfDistance; //n / m^2
+                    double hormone1ConcnGrad = hormone1ConcnDiff / magnitudeOfDistance; //  n / m^2
                     double hormone2ConcnGrad = hormone2ConcnDiff / magnitudeOfDistance;
-                    /// diffuse the hormone from the centre to neighbour
-                    neighbour.myDeltaHormone1 += timestep*(hormone1DiffCoeff * hormone1ConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
-                    centre.myDeltaHormone1 -= timestep*(hormone1DiffCoeff * hormone1ConcnGrad * centre.cellRadius);
 
-                    neighbour.myDeltaHormone2 += timestep*(hormone2DiffCoeff * hormone2ConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
-                    centre.myDeltaHormone2 -= timestep*(hormone2DiffCoeff * hormone2ConcnGrad * centre.cellRadius);
+                    /// diffuse the hormone from the centre to neighbour
+                    neighbour.myDeltaHormone1 += timestep*(hormone1DiffCoeff * hormone1ConcnGrad); //   n/t = t * (m^2/t * n/m^2)
+                    centre.myDeltaHormone1 -= timestep*(hormone1DiffCoeff * hormone1ConcnGrad);
+
+                    neighbour.myDeltaHormone2 += timestep*(hormone2DiffCoeff * hormone2ConcnGrad); //   n/t = t * (m^2/t * n/m^2)
+                    centre.myDeltaHormone2 -= timestep*(hormone2DiffCoeff * hormone2ConcnGrad);
                 }
             }
         }
