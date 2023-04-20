@@ -50,26 +50,15 @@ void hormReactDiffuse(double inputStartTime) {
         flag = true;
         /// find the point closest to the hormone Origin
         int closest_point_source1_index = -1;
-        int closest_point_source2_index = -1;
         double squareMinDist1 = 1000 * 1000 * xBound;
         for (int i = 0; i < nbo; i++) {
-            double squareDisFromOrigin = (pointsArray[i].disVec - horm2Source1).magnitude_squared();
-            if (squareDisFromOrigin < squareMinDist1) {
-                squareMinDist1 = squareDisFromOrigin;
+            double squareDisFromSourceCoords = (pointsArray[i].disVec - horm2Source1).magnitude_squared();
+            if (squareDisFromSourceCoords < squareMinDist1) {
+                squareMinDist1 = squareDisFromSourceCoords;
                 closest_point_source1_index = i;
             }
         }
-        double squareMinDist2 = 1000 * 1000 * xBound;
-        for (int k = 0; k < nbo; k++) {
-            double squareDisFromOrigin = (pointsArray[k].disVec - horm2Source1).magnitude_squared();
-            if (squareDisFromOrigin < squareMinDist1) {
-                squareMinDist2 = squareDisFromOrigin;
-                closest_point_source2_index = k;
-            }
-            /// set this point as the hormone producer
-            pointsArray[closest_point_source1_index].isHormone2Producer = true;
-            pointsArray[closest_point_source2_index].isHormone2Producer = true;
-        }
+        pointsArray[closest_point_source1_index].isHormone2Producer = true;
     }
     for (int i = 0; i < nbo; i++) {
         Point &cell = pointsArray[i]; /// alias for pointsArray[i]

@@ -7,10 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <algorithm>
 #define DEBUG false
-#define DISPLAY false /// set to true to display
+#define DISPLAY true /// set to true to display
 #define BENCHMARK false /// set to true to benchmark (not bottlenecked by printing or displaying)
 #define REGULAR_LATTICE false
 #define MOVING_POINTS true
@@ -339,7 +337,6 @@ int main(int argc, char *argv[]) {
             static double currentTime = 0;
             while (currentTime <= finalTime + timestep) {
                 currentTime += timestep;
-                printf("Current Time is %f\n", currentTime);
 #if REGULAR_LATTICE
                 if (iterationNumber == 1) {
                     //initPerfectCircle(20*SCALING_FACTOR);
@@ -348,12 +345,12 @@ int main(int argc, char *argv[]) {
                 }
 #endif
 #if DISPLAY
+                glfwPollEvents();
                 glClear(GL_COLOR_BUFFER_BIT);
 #endif
                 iterationNumber++;
                 next += delay / 100000;
-                trackTime();
-                printf("%d cells exist\n", nbo);
+                trackTime();printf("%d cells exist\n", nbo);
                 printf("Current time = %f\n", currentTime);
                 calcMitosis();
 
@@ -417,7 +414,7 @@ int main(int argc, char *argv[]) {
 
                 }
 
-                free(out_of_flat_p_neigh.basis);
+                free(out_of_flat_p_neigh.basis); /// not freed in delaunay.cpp by default, causes memory leak if not
                 shouldTerminate = true;
 #if DISPLAY
 

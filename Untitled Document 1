@@ -1,9 +1,0 @@
-Meeting with Helen
-
-- run it again, have removed the '-'
-
-change calculate_fitness
-
-	with open(file_path, 'r') as csv is failing as file_path is not being input, an array is being input 
-	
-	the function that creates all is called run_many, in genetools.py. It takes as an arguement the executable, the name of the output csv file, and the configuration file you want to use. It runs all the 

@@ -26,7 +26,7 @@ double timestep = 0.00004; /// viscosity is in Pa.sec so this is seconds. 60 fps
 int delay = 16;         /// milli-seconds between successive display
 double delta = 0.00001;
 unsigned long seed = 2; /// seed for random number generator
-double finalTime = 0.4;
+double finalTime = 1;
 double realTime = 0;     /// time in the simulated world
 int finalIterationNumber = 100;  /// iterations before final frame
 int maxFourierCoeffs = 15;
@@ -50,11 +50,11 @@ double hormone2DegRate = 666;
 double horm1toHorm2Ratio = 0.9375;
 double hormone2DiffCoeff =
         horm1toHorm2Ratio * hormone1DiffCoeff; /// in the gray-scott model the rate of diff of horm2 is twice 1
-double horm2Efficacy = 10;
+double horm2Efficacy = 1;
 double hormone2IntroTime = 0.00360;
-double horm2SourceHor = 0.2;
-double horm2SourceVer = 0;
-vector2D horm2Source1 = vector2D(horm2SourceHor, horm2SourceVer);
+double horm2SourceHor = 1;
+double horm2SourceVer = 1;
+vector2D horm2Source1 = vector2D(horm2SourceHor * SCALING_FACTOR, horm2SourceVer * SCALING_FACTOR);
 double horm2DivOrientVertComp = 0;
 double horm2DivOrientHoriComp = 5;
 vector2D horm2DivOrient = vector2D(horm2DivOrientHoriComp, horm2DivOrientVertComp);
@@ -67,7 +67,7 @@ double lengthOfHorm2Prod = 1;
 
 
 // mitosis parameters
-double baseMaxProbOfDiv = 0.0005; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
+double baseMaxProbOfDiv = 0.00025; /// should inform this with the maximal amount of cell division that can occur, dont think this should be tunable
 double DesiredTotalCells = 1000; /// used to calculate mitosis probabilites
 
 
