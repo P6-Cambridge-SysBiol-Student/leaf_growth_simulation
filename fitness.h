@@ -7,9 +7,7 @@
 
 #endif //FRAP_FITNESS_H
 
-
-double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// "nonuniform discrete Fourier transform of type II (NUDFT-II)"
-    /// mallocing the memory for the pointers to each row
+double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) {
     double **FourierCoeffs = (double **) malloc(desiredNumFourierCoeffs * sizeof(double *));
     for (int i = 0; i < desiredNumFourierCoeffs; i++) {
         FourierCoeffs[i] = (double *) malloc(2 * sizeof(double));
@@ -18,18 +16,17 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// "nonunifor
 
     for (int i = 0; i < nbo; i++) {
         Point &cell = pointsArray[i];
-        polarCoords[i][0] = cell.disVec.magnitude(); ///the radius value
-        polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx); ///the theta value
+        polarCoords[i][0] = cell.disVec.magnitude();
+        polarCoords[i][1] = atan2(cell.disVec.yy, cell.disVec.xx);
     }
 
-    double maxRadiusValue = 0; /// find max radius value to scale radius_n values to between 0 and 1
-    for (int jj = 0; jj<nbo; jj++){
+    double maxRadiusValue = 0;
+    for (int jj = 0; jj < nbo; jj++){
         if (polarCoords[jj][0] > maxRadiusValue){
             maxRadiusValue = polarCoords[jj][0];
         }
     }
 
-    /// calculate the sin and cos components of the fourier coefficients
     for (int k = 0; k < desiredNumFourierCoeffs; k++) {
         double &realComp = FourierCoeffs[k][0];
         double &imgComp = FourierCoeffs[k][1];
@@ -41,15 +38,14 @@ double** computeDeltaFourierCoeffs(int desiredNumFourierCoeffs) { /// "nonunifor
                 double &radiusN = polarCoords[n][0];
                 double &thetaN = polarCoords[n][1];
 
-                realComp += 1.0/nbo * radiusN;
-
+                realComp += 1.0/nbo * (radiusN / maxRadiusValue);
             }
         } else {
             for (int n = 0; n < nbo; n++) {
                 double &radiusN = polarCoords[n][0];
                 double &thetaN = polarCoords[n][1];
-                realComp += 1.0/nbo * radiusN * cos(k * thetaN);
-                imgComp += 1.0/nbo * radiusN * sin(k * thetaN);
+                realComp += 1.0/nbo * (radiusN / maxRadiusValue) * cos(k * thetaN);
+                imgComp += 1.0/nbo * (radiusN / maxRadiusValue) * sin(k * thetaN);
             }
         }
     }
