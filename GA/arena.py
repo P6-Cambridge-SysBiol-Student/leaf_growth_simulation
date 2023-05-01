@@ -9,7 +9,7 @@ except ImportError as e:
     sys.exit()
 
 # simulation executable must be in current working directory:
-simex = os.path.abspath('/home/finley/SLCU/frapc_with_triangles/GA/frap')
+simex = os.path.abspath('/home/finley/SLCU/frapc_with_triangles/GA/leafsim')
 
 # name of file where simulation provides its results, or 'stdout':
 simout = 'outputFourierCoeffs.csv'
