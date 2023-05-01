@@ -14,7 +14,7 @@ Then run
 mkdir build
 cd build
 cmake ..
-make
+make leafsim
 ```
 
 To run, ensure you are in the /build directory
