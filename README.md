@@ -7,6 +7,7 @@ Based on FRAPc by Francois Nedelec
 ## How to Build
 
 Make sure the terminal is in the leafsim directory and cmake/make is installed
+
 Then run
 
 ```
