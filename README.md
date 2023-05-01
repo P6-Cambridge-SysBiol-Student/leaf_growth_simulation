@@ -19,14 +19,23 @@ make
 To run, ensure you are in the /build directory
 
 ```
-./frap
+./leafsim
 ```
 
-## Integrate with your tools
+To run a Genetic Algorithm parameter search, copy the executable to the /GA
+directory
+
+```
+cd build
+cp leafsim ../GA
+cd GA
+./evolve.py
+``
 
 ## Authors and acknowledgment
 
 FJN, 13.11.2021
+FW, 01.05.2023
 
 ## License
 
