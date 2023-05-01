@@ -30,7 +30,7 @@ cd build
 cp leafsim ../GA
 cd GA
 ./evolve.py
-``
+```
 
 ## Authors and acknowledgment
 
