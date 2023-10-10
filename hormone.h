@@ -107,8 +107,8 @@ void v1DiffuseHorm(int** neighbourhoods) {
                     double hormone1ConcnDiff = centre.myTotalHormone1 - neighbour.myTotalHormone1;  //n / m
                     double hormone2ConcnDiff = centre.myTotalHormone2 - neighbour.myTotalHormone2;
 
-                    double hormone1ConcnGrad = hormone1ConcnDiff / magnitudeOfDistance; //n / m^2
-                    double hormone2ConcnGrad = hormone2ConcnDiff / magnitudeOfDistance;
+                    double hormone1ConcnGrad = hormone1ConcnDiff / (magnitudeOfDistance * magnitudeOfDistance); //n / m^2
+                    double hormone2ConcnGrad = hormone2ConcnDiff / (magnitudeOfDistance * magnitudeOfDistance);
                     /// diffuse the hormone from the centre to neighbour
                     neighbour.myDeltaHormone1 += timestep*(hormone1DiffCoeff * hormone1ConcnGrad * centre.cellRadius); //  n = t * (m^2/t * n/m * m)
                     centre.myDeltaHormone1 -= timestep*(hormone1DiffCoeff * hormone1ConcnGrad * centre.cellRadius);
