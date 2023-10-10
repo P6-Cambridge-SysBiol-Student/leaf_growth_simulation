@@ -48,7 +48,7 @@ def calculate_fitness(file_path, target):
             if row:  # Check if the row is not empty
                 try:
                     coeff_index = int(row[0])  # Parse the first column as an integer (coefficient index)
-                    coeff_value = float(row[4])  # Parse the fourth column as a float (coefficient magnitude)
+                    coeff_value = float(row[3])  # Parse the fourth column as a float (coefficient magnitude)
                     if coeff_index != 0:
                         sum_coeff_values += coeff_value  # Add the coefficient value to the sum of coeff magnitudes
                     # Check if the current row corresponds to the fourth Fourier coefficient (index 4)
